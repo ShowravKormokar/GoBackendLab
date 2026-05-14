@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Go Backend Frameworks — Deep Guide</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">Go Backend Frameworks — Deep Guide</div>
+    <h1>Master Go's <span>4 Major</span><br>Backend Frameworks</h1>
+    <p>A production-grade, in-depth reference for Gin, Fiber, Echo & Chi — covering architecture, security, performance,
+      real-world use cases, and decision-making.</p>
+    <div class="fw-pills">
+      <div class="pill gin">🍸 Gin</div>
+      <div class="pill fiber">⚡ Fiber</div>
+      <div class="pill echo">🔊 Echo</div>
+      <div class="pill chi">♟ Chi</div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#overview">Overview</a>
+    <a href="#deep">Deep Dive</a>
+    <a href="#performance">Performance</a>
+    <a href="#security">Security</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#when">When to Use</a>
+    <a href="#usecases">Use Cases</a>
+    <a href="#summary">Summary Table</a>
+  </nav>
+
+  <!-- OVERVIEW -->
+  <section id="overview">
+    <div class="container">
+      <div class="section-label">Section 01</div>
+      <div class="section-title">Framework Overview</div>
+      <div class="fw-grid">
+
+        <div class="fw-card gin">
+          <span class="fw-icon">🍸</span>
+          <div class="fw-name gin">Gin</div>
+          <div class="fw-tagline">// "The Industry Standard"</div>
+          <p class="fw-desc">The most popular Go web framework. Inspired by Martini but 40x faster. Uses a custom
+            high-performance HttpRouter, extensive middleware ecosystem, and has the largest community. Battle-tested in
+            production at scale.</p>
+          <span class="fw-badge gin">⭐ 78K+ GitHub Stars</span>
+        </div>
+
+        <div class="fw-card fiber">
+          <span class="fw-icon">⚡</span>
+          <div class="fw-name fiber">Fiber</div>
+          <div class="fw-tagline">// "Express.js for Go"</div>
+          <p class="fw-desc">Built on top of Fasthttp — the fastest Go HTTP engine — Fiber delivers Express.js-like DX
+            with extreme raw throughput. Ideal for developers migrating from Node.js and performance-critical
+            microservices.</p>
+          <span class="fw-badge fiber">⭐ 32K+ GitHub Stars</span>
+        </div>
+
+        <div class="fw-card echo">
+          <span class="fw-icon">🔊</span>
+          <div class="fw-name echo">Echo</div>
+          <div class="fw-tagline">// "The Elegant Minimalist"</div>
+          <p class="fw-desc">A high-performance, extensible, minimalist web framework. Prioritizes elegant API design,
+            built-in data binding/validation, auto TLS, and clean middleware chains. Excellent for building
+            well-structured REST APIs.</p>
+          <span class="fw-badge echo">⭐ 29K+ GitHub Stars</span>
+        </div>
+
+        <div class="fw-card chi">
+          <span class="fw-icon">♟</span>
+          <div class="fw-name chi">Chi</div>
+          <div class="fw-tagline">// "The Standard Library Hero"</div>
+          <p class="fw-desc">Lightweight, idiomatic, composable Go router built purely on net/http. Zero external
+            dependencies. If you love the Go standard library and want minimal abstraction with maximum flexibility, Chi
+            is your framework.</p>
+          <span class="fw-badge chi">⭐ 18K+ GitHub Stars</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- DEEP DIVE -->
+  <section id="deep">
+    <div class="container">
+      <div class="section-label">Section 02</div>
+      <div class="section-title">Deep Framework Analysis</div>
+
+      <!-- GIN -->
+      <div class="deep-dive">
+        <div class="deep-header gin">
+          <div>
+            <div class="deep-header-name gin">🍸 Gin</div>
+            <div class="deep-header-sub">github.com/gin-gonic/gin · MIT License · Since 2014</div>
+            <div class="stat-row" style="margin-top:8px">
+              <span class="stat">HTTP Engine: net/http</span>
+              <span class="stat">Router: HttpRouter (radix tree)</span>
+              <span class="stat">Context: Custom GinContext</span>
+              <span class="stat">Goroutine-safe: ✓</span>
+            </div>
+          </div>
+        </div>
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot gin"></span> What is Gin?</h4>
+            <p>Gin is a full-featured, production-grade HTTP web framework for Go. It wraps the net/http standard
+              library with a clean API, powerful middleware support (called "handlers"), and a radix-tree based router
+              that achieves near-zero allocation for routing.</p>
+            <p style="margin-top:8px">It ships with JSON/XML/YAML binding, validation, rendering, logging, recovery, and
+              everything a REST API needs out of the box — without pulling in a mountain of dependencies.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot gin"></span> Why Use Gin?</h4>
+            <ul>
+              <li>Largest Go web framework community (most SO answers, tutorials, packages)</li>
+              <li>Zero-allocation router — fast even at high route counts</li>
+              <li>Built-in input binding from JSON, form, query, path, headers</li>
+              <li>Rich middleware ecosystem: JWT, CORS, RateLimiter, Prometheus, Sentry</li>
+              <li>Excellent Swagger / OpenAPI integration (swaggo)</li>
+              <li>Battle-tested — runs at Twitter, Pinterest, Alibaba scale</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot gin"></span> When to Use Gin?</h4>
+            <ul>
+              <li>Building REST APIs that need a full ecosystem immediately</li>
+              <li>Enterprise-level applications (ERP, CRM, HRM systems)</li>
+              <li>When your team is new to Go — highest learning resources</li>
+              <li>Microservices requiring middleware-heavy pipelines</li>
+              <li>Projects needing long-term community support</li>
+              <li>Auth-heavy apps (JWT, OAuth middleware is well-documented)</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot gin"></span> Environments</h4>
+            <ul>
+              <li><strong>Dev mode:</strong> gin.SetMode(gin.DebugMode) — colorful logs</li>
+              <li><strong>Prod mode:</strong> gin.SetMode(gin.ReleaseMode) — minimal output</li>
+              <li><strong>Test mode:</strong> gin.SetMode(gin.TestMode)</li>
+              <li>Auto-detects GIN_MODE env variable</li>
+              <li>Works well with Docker, Kubernetes, AWS ECS, GCP Cloud Run</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot gin"></span> Flexibility & Community</h4>
+            <ul>
+              <li>78K+ GitHub stars, most forked Go web framework</li>
+              <li>100s of community middleware packages</li>
+              <li>Contrib repository (gin-contrib) with official extensions</li>
+              <li>Very flexible — can be used as just a router or full stack</li>
+              <li>Plays well with GORM, sqlx, ent, and all major Go ORMs</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot gin"></span> Best Project Types</h4>
+            <div class="tags">
+              <span class="tag gin-t">ERP Systems</span>
+              <span class="tag gin-t">CRM Backends</span>
+              <span class="tag gin-t">REST APIs</span>
+              <span class="tag gin-t">Microservices</span>
+              <span class="tag gin-t">Admin Panels</span>
+              <span class="tag gin-t">Auth Services</span>
+              <span class="tag gin-t">SaaS Backends</span>
+              <span class="tag gin-t">E-Commerce</span>
+            </div>
+          </div>
+        </div>
+        <div class="code-editor">
+          <div class="editor-header">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <span class="title">main.go</span>
+          </div>
+
+          <pre class="code-block"><code>
+        <span class="cmt">// Gin — Typical REST API setup with middleware chain</span>
+        <span class="kw">package</span> main
+        <span class="kw">import</span> (
+            <span class="str">"github.com/gin-gonic/gin"</span>
+            <span class="str">"github.com/gin-contrib/cors"</span>
+        )
+        
+        <span class="kw">type</span> <span class="pkg">OrderRequest</span> <span class="kw">struct</span> {
+            ProductID <span class="pkg">uint</span> <span class="str">`json:"product_id" binding:"required"`</span>
+            Qty       <span class="pkg">int</span>  <span class="str">`json:"qty" binding:"required,min=1"`</span>
+        }
+        
+        <span class="kw">func</span> <span class="fn">main</span>() {
+            r := gin.<span class="fn">Default</span>() <span class="cmt">// Logger + Recovery middleware</span>
+        
+            r.<span class="fn">Use</span>(cors.<span class="fn">Default</span>()) <span class="cmt">// CORS middleware</span>
+        
+            api := r.<span class="fn">Group</span>(<span class="str">"/api/v1"</span>)
+        
+            api.<span class="fn">POST</span>(<span class="str">"/orders"</span>, <span class="fn">createOrder</span>)
+            api.<span class="fn">GET</span>(<span class="str">"/orders/:id"</span>, <span class="fn">getOrder</span>)
+        
+            r.<span class="fn">Run</span>(<span class="str">":8080"</span>)
+        }
+        
+        <span class="kw">func</span> <span class="fn">createOrder</span>(c *gin.Context) {
+            <span class="kw">var</span> req <span class="pkg">OrderRequest</span>
+        
+            <span class="kw">if</span> err := c.<span class="fn">ShouldBindJSON</span>(&req); err != nil {
+                c.<span class="fn">JSON</span>(400, gin.<span class="fn">H</span>{
+                    <span class="str">"error"</span>: err.<span class="fn">Error</span>(),
+                })
+                <span class="kw">return</span>
+            }
+        
+            c.<span class="fn">JSON</span>(201, gin.<span class="fn">H</span>{
+                <span class="str">"status"</span>: <span class="str">"created"</span>,
+            })
+        }
+          </code></pre>
+        </div>
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ PROS</h4>
+            <ul>
+              <li>Massive community — easiest to find help</li>
+              <li>Comprehensive built-in features (binding, validation, render)</li>
+              <li>Stable, mature, and backward-compatible API</li>
+              <li>Excellent middleware ecosystem</li>
+              <li>Fast radix-tree router with near-zero allocations</li>
+              <li>Detailed error messages in debug mode</li>
+              <li>Works seamlessly with all Go tooling</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ CONS</h4>
+            <ul>
+              <li>Slower than Fiber in raw throughput benchmarks</li>
+              <li>Context is not the standard context.Context by default</li>
+              <li>GinContext can be awkward to pass through layers</li>
+              <li>Middleware writing can be verbose compared to Echo</li>
+              <li>No built-in WebSocket support</li>
+              <li>No built-in auto-TLS (unlike Echo)</li>
+              <li>Slightly opinionated route grouping</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- FIBER -->
+      <div class="deep-dive">
+        <div class="deep-header fiber">
+          <div>
+            <div class="deep-header-name fiber">⚡ Fiber</div>
+            <div class="deep-header-sub">github.com/gofiber/fiber · MIT License · Since 2020</div>
+            <div class="stat-row" style="margin-top:8px">
+              <span class="stat">HTTP Engine: Fasthttp</span>
+              <span class="stat">Router: Radix tree (custom)</span>
+              <span class="stat">Context: *fasthttp.RequestCtx</span>
+              <span class="stat">Zero Alloc: ✓✓</span>
+            </div>
+          </div>
+        </div>
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot fiber"></span> What is Fiber?</h4>
+            <p>Fiber is an Express.js-inspired Go framework built on top of Fasthttp — which is up to 10x faster than
+              net/http for certain workloads. Fiber avoids memory allocations wherever possible by reusing
+              request/response objects (zero-copy design). It's the go-to for raw performance.</p>
+            <p style="margin-top:8px">It has a rich ecosystem including built-in WebSocket, rate limiting, caching,
+              session management, and Prometheus integration.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot fiber"></span> Why Use Fiber?</h4>
+            <ul>
+              <li>Highest raw HTTP throughput among Go frameworks</li>
+              <li>Familiar Express.js-style API for Node.js developers</li>
+              <li>Built-in WebSocket support</li>
+              <li>Zero-copy design minimizes GC pressure</li>
+              <li>Built-in rate limiting, caching, session, CSRF protection</li>
+              <li>Excellent for high-volume financial APIs and real-time data</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot fiber"></span> When to Use Fiber?</h4>
+            <ul>
+              <li>Real-time stock market data streaming</li>
+              <li>High-frequency trading (HFT) APIs</li>
+              <li>High-traffic APIs (100k+ req/s)</li>
+              <li>WebSocket-heavy apps (chat, live dashboards)</li>
+              <li>CDN edge services and reverse proxies</li>
+              <li>Migrating from Node.js/Express to Go</li>
+              <li>Latency-sensitive microservices</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot fiber"></span> ⚠️ Critical Caveat</h4>
+            <p>Fiber uses Fasthttp which is <strong style="color:var(--con)">NOT compatible</strong> with net/http. This
+              means:</p>
+            <ul style="margin-top:8px">
+              <li>Cannot use standard net/http middleware directly</li>
+              <li>Cannot use most database driver HTTP integrations</li>
+              <li>Ctx values are NOT goroutine-safe by default — must use c.Copy()</li>
+              <li>Use adaptor package for net/http compatibility</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot fiber"></span> Environments</h4>
+            <ul>
+              <li>Works in any Linux/macOS/Windows environment</li>
+              <li>Excellent Docker + Kubernetes support</li>
+              <li>Built-in Prefork mode for multi-core servers</li>
+              <li>GOGC tuning recommended for max performance</li>
+              <li>Best with high-memory servers for connection pooling</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot fiber"></span> Best Project Types</h4>
+            <div class="tags">
+              <span class="tag fiber-t">Stock Market APIs</span>
+              <span class="tag fiber-t">Real-time Chat</span>
+              <span class="tag fiber-t">WebSocket Apps</span>
+              <span class="tag fiber-t">HFT Systems</span>
+              <span class="tag fiber-t">High-Traffic APIs</span>
+              <span class="tag fiber-t">CDN Services</span>
+              <span class="tag fiber-t">Game Backends</span>
+              <span class="tag fiber-t">IoT Data Ingestion</span>
+            </div>
+          </div>
+        </div>
+        <div class="code-editor">
+          <div class="editor-header">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <span class="title">fiber.go</span>
+          </div>
+
+          <pre class="code-block"><code>
+        <span class="cmt">// Fiber — Express-inspired high performance framework</span>
+        
+        <span class="kw">package</span> main
+        
+        <span class="kw">import</span> (
+            <span class="str">"github.com/gofiber/fiber/v2"</span>
+            <span class="str">"github.com/gofiber/fiber/v2/middleware/cors"</span>
+            <span class="str">"github.com/gofiber/fiber/v2/middleware/logger"</span>
+        )
+        
+        <span class="kw">type</span> <span class="pkg">OrderRequest</span> <span class="kw">struct</span> {
+            ProductID <span class="pkg">uint</span> <span class="str">`json:"product_id"`</span>
+            Qty       <span class="pkg">int</span>  <span class="str">`json:"qty"`</span>
+        }
+        
+        <span class="kw">func</span> <span class="fn">main</span>() {
+        
+            app := fiber.<span class="fn">New</span>()
+        
+            app.<span class="fn">Use</span>(logger.<span class="fn">New</span>())
+            app.<span class="fn">Use</span>(cors.<span class="fn">New</span>())
+        
+            api := app.<span class="fn">Group</span>(<span class="str">"/api/v1"</span>)
+        
+            api.<span class="fn">Post</span>(<span class="str">"/orders"</span>, <span class="fn">createOrder</span>)
+            api.<span class="fn">Get</span>(<span class="str">"/orders/:id"</span>, <span class="fn">getOrder</span>)
+        
+            app.<span class="fn">Listen</span>(<span class="str">":8080"</span>)
+        }
+        
+        <span class="kw">func</span> <span class="fn">createOrder</span>(c *fiber.Ctx) error {
+        
+            <span class="kw">var</span> req <span class="pkg">OrderRequest</span>
+        
+            <span class="kw">if</span> err := c.<span class="fn">BodyParser</span>(&req); err != nil {
+        
+                <span class="kw">return</span> c.<span class="fn">Status</span>(400).<span class="fn">JSON</span>(fiber.<span class="fn">Map</span>{
+                    <span class="str">"error"</span>: err.<span class="fn">Error</span>(),
+                })
+            }
+        
+            <span class="kw">return</span> c.<span class="fn">Status</span>(201).<span class="fn">JSON</span>(fiber.<span class="fn">Map</span>{
+                <span class="str">"status"</span>: <span class="str">"created"</span>,
+            })
+        }
+          </code></pre>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ PROS</h4>
+            <ul>
+              <li>Fastest raw throughput of all 4 frameworks</li>
+              <li>Built-in WebSocket, rate limiter, cache, session</li>
+              <li>Zero-copy design — minimal GC pressure</li>
+              <li>Express.js API — Node.js devs feel at home</li>
+              <li>Prefork mode for multi-core utilization</li>
+              <li>Rich built-in middleware library</li>
+              <li>Active, growing community</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ CONS</h4>
+            <ul>
+              <li>Fasthttp incompatible with net/http ecosystem</li>
+              <li>Ctx is NOT goroutine-safe without c.Copy()</li>
+              <li>Harder to integrate with standard Go middleware</li>
+              <li>Abstraction leaks Fasthttp internals</li>
+              <li>Smaller community vs Gin</li>
+              <li>Less idiomatic Go compared to Chi</li>
+              <li>Potential context reuse bugs if misused</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ECHO -->
+      <div class="deep-dive">
+        <div class="deep-header echo">
+          <div>
+            <div class="deep-header-name echo">🔊 Echo</div>
+            <div class="deep-header-sub">github.com/labstack/echo · MIT License · Since 2015</div>
+            <div class="stat-row" style="margin-top:8px">
+              <span class="stat">HTTP Engine: net/http</span>
+              <span class="stat">Router: Radix tree</span>
+              <span class="stat">Context: echo.Context (wraps std)</span>
+              <span class="stat">Auto-TLS: ✓</span>
+            </div>
+          </div>
+        </div>
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot echo"></span> What is Echo?</h4>
+            <p>Echo is a high-performance, minimalist, and extensible web framework that sits between "batteries
+              included" and "bring your own". It offers an elegant, clean API with superior built-in features like
+              automatic TLS (via Let's Encrypt), request data binding with struct tags, and a sophisticated middleware
+              chain.</p>
+            <p style="margin-top:8px">Echo is the framework of choice for clean, well-structured API backends where code
+              elegance matters.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot echo"></span> Why Use Echo?</h4>
+            <ul>
+              <li>Most elegant API design of all 4 frameworks</li>
+              <li>Built-in auto-TLS via Let's Encrypt (one line)</li>
+              <li>Superior data binding — JSON, XML, form, query simultaneously</li>
+              <li>Built-in request validator with custom validator support</li>
+              <li>Excellent WebSocket support out of the box</li>
+              <li>Clean middleware ordering (Before/After)</li>
+              <li>HTTP/2 support built in</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot echo"></span> When to Use Echo?</h4>
+            <ul>
+              <li>Building well-structured, maintainable REST APIs</li>
+              <li>Projects requiring HTTPS/TLS with minimal config</li>
+              <li>Security-conscious applications</li>
+              <li>API-first SaaS products</li>
+              <li>Applications needing HTTP/2</li>
+              <li>When code elegance and maintainability is priority</li>
+              <li>Medium-scale apps with moderate traffic</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot echo"></span> Security Features</h4>
+            <ul>
+              <li>Auto-TLS with Let's Encrypt (e.StartAutoTLS)</li>
+              <li>Built-in CSRF protection middleware</li>
+              <li>Secure headers middleware (XSS, HSTS, etc.)</li>
+              <li>Rate limiter middleware</li>
+              <li>JWT middleware (echo-jwt)</li>
+              <li>Body size limiting</li>
+              <li>HTTP/2 push support</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot echo"></span> Flexibility & Community</h4>
+            <ul>
+              <li>29K stars — 3rd largest Go web framework</li>
+              <li>Clean middleware interface — easy to write custom middleware</li>
+              <li>Compatible with net/http middleware via WrapMiddleware</li>
+              <li>Strong TypeScript-like binding approach</li>
+              <li>Good documentation and official cookbook</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot echo"></span> Best Project Types</h4>
+            <div class="tags">
+              <span class="tag echo-t">SaaS APIs</span>
+              <span class="tag echo-t">Security Apps</span>
+              <span class="tag echo-t">Healthcare APIs</span>
+              <span class="tag echo-t">Fintech</span>
+              <span class="tag echo-t">B2B REST APIs</span>
+              <span class="tag echo-t">Auth Services</span>
+              <span class="tag echo-t">Webhook Receivers</span>
+              <span class="tag echo-t">IoT Backends</span>
+            </div>
+          </div>
+        </div>
+        <div class="code-editor">
+          <div class="editor-header">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <span class="title">echo.go</span>
+          </div>
+
+          <pre class="code-block"><code>
+        <span class="cmt">// Echo — Auto-TLS + Custom Validation + Middleware</span>
+        
+        <span class="kw">package</span> main
+        
+        <span class="kw">import</span> (
+            <span class="str">"github.com/labstack/echo/v4"</span>
+            <span class="str">"github.com/labstack/echo/v4/middleware"</span>
+            <span class="str">"github.com/go-playground/validator/v10"</span>
+        )
+        
+        <span class="kw">type</span> <span class="pkg">CustomValidator</span> <span class="kw">struct</span> {
+            validator *validator.Validate
+        }
+        
+        <span class="kw">func</span> (cv *<span class="pkg">CustomValidator</span>) <span class="fn">Validate</span>(i <span class="pkg">interface</span>{}) error {
+            <span class="kw">return</span> cv.validator.<span class="fn">Struct</span>(i)
+        }
+        
+        <span class="kw">func</span> <span class="fn">main</span>() {
+            e := echo.<span class="fn">New</span>()
+        
+            e.Validator = &<span class="pkg">CustomValidator</span>{
+                validator: validator.<span class="fn">New</span>(),
+            }
+        
+            e.<span class="fn">Use</span>(middleware.<span class="fn">Logger</span>())
+            e.<span class="fn">Use</span>(middleware.<span class="fn">Recover</span>())
+            e.<span class="fn">Use</span>(middleware.<span class="fn">CSRF</span>()) <span class="cmt">// CSRF protection</span>
+            e.<span class="fn">Use</span>(middleware.<span class="fn">RateLimiter</span>(...)) <span class="cmt">// Rate limiting</span>
+        
+            e.<span class="fn">POST</span>(<span class="str">"/patients"</span>, <span class="fn">createPatient</span>)
+        
+            <span class="cmt">// One-line HTTPS with auto certificate</span>
+            e.<span class="fn">StartAutoTLS</span>(<span class="str">":443"</span>)
+        }
+          </code></pre>
+        </div>
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ PROS</h4>
+            <ul>
+              <li>Most elegant, clean API of all frameworks</li>
+              <li>One-line auto-TLS with Let's Encrypt</li>
+              <li>Built-in HTTP/2 and WebSocket support</li>
+              <li>Excellent request binding and validation</li>
+              <li>Sophisticated middleware system</li>
+              <li>net/http compatible — use any standard middleware</li>
+              <li>Superior security middleware built-in</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ CONS</h4>
+            <ul>
+              <li>Slower than Fiber in raw benchmarks</li>
+              <li>Smaller community than Gin</li>
+              <li>Custom Context can cause issues in deep layers</li>
+              <li>Less third-party middleware vs Gin ecosystem</li>
+              <li>Can feel "magic" — less explicit than Chi</li>
+              <li>Slight learning curve for middleware ordering</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHI -->
+      <div class="deep-dive">
+        <div class="deep-header chi">
+          <div>
+            <div class="deep-header-name chi">♟ Chi</div>
+            <div class="deep-header-sub">github.com/go-chi/chi · MIT License · Since 2015</div>
+            <div class="stat-row" style="margin-top:8px">
+              <span class="stat">HTTP Engine: net/http</span>
+              <span class="stat">Router: Radix tree (context-aware)</span>
+              <span class="stat">Context: context.Context (standard!)</span>
+              <span class="stat">Zero Dependencies: ✓✓</span>
+            </div>
+          </div>
+        </div>
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot chi"></span> What is Chi?</h4>
+            <p>Chi is a lightweight, idiomatic, and composable router for Go's net/http. Unlike the others, it adds
+              virtually zero abstraction — it uses the standard library's http.Handler interface and context.Context
+              natively. Chi is just a router, not a full framework, and proud of it.</p>
+            <p style="margin-top:8px">It has <strong>zero external dependencies</strong> (only Go stdlib). This makes it
+              the most "Go-idiomatic" choice.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot chi"></span> Why Use Chi?</h4>
+            <ul>
+              <li>100% standard library compatible — use ANY net/http middleware</li>
+              <li>Zero external dependencies (no supply chain risk)</li>
+              <li>Most idiomatic Go — feels like writing stdlib code</li>
+              <li>Context-aware routing with URL params via context</li>
+              <li>Clean middleware composition with chi.Mux</li>
+              <li>Perfect for microservices with no framework lock-in</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot chi"></span> When to Use Chi?</h4>
+            <ul>
+              <li>Government or enterprise where dependency security matters</li>
+              <li>When you want full control over every layer</li>
+              <li>Small to medium services with clean architecture</li>
+              <li>Projects that must use net/http-based middleware</li>
+              <li>Security-audited environments (minimal deps)</li>
+              <li>Teams that prefer idiomatic Go over convenience</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot chi"></span> Architecture Strength</h4>
+            <ul>
+              <li>Forces clean architecture by not providing shortcuts</li>
+              <li>Naturally encourages Dependency Injection patterns</li>
+              <li>Repository pattern works seamlessly</li>
+              <li>Handler functions are pure http.HandlerFunc — fully testable</li>
+              <li>Sub-routers with middleware scoping is elegant</li>
+              <li>Works perfectly with Hexagonal Architecture</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot chi"></span> Flexibility & Community</h4>
+            <ul>
+              <li>18K stars — smaller but dedicated community</li>
+              <li>chi/middleware provides common middlewares</li>
+              <li>All negroni/net/http middlewares work directly</li>
+              <li>Least opinionated — completely flexible project structure</li>
+              <li>Popular in Go standard library evangelism circles</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot chi"></span> Best Project Types</h4>
+            <div class="tags">
+              <span class="tag chi-t">Gov't Systems</span>
+              <span class="tag chi-t">Security-critical Apps</span>
+              <span class="tag chi-t">Clean Arch Projects</span>
+              <span class="tag chi-t">Audit-ready Apps</span>
+              <span class="tag chi-t">Internal Tools</span>
+              <span class="tag chi-t">Library Wrappers</span>
+              <span class="tag chi-t">Minimal Microservices</span>
+            </div>
+          </div>
+        </div>
+        <div class="code-editor">
+          <div class="editor-header">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <span class="title">chi.go</span>
+          </div>
+
+          <pre class="code-block"><code>
+        <span class="cmt">// Chi — Idiomatic Go with scoped middleware</span>
+        
+        <span class="kw">package</span> main
+        
+        <span class="kw">import</span> (
+            <span class="str">"net/http"</span>
+            <span class="str">"github.com/go-chi/chi/v5"</span>
+            <span class="str">"github.com/go-chi/chi/v5/middleware"</span>
+            <span class="str">"github.com/go-chi/jwtauth/v5"</span>
+        )
+        
+        <span class="kw">func</span> <span class="fn">main</span>() {
+            r := chi.<span class="fn">NewRouter</span>()
+        
+            r.<span class="fn">Use</span>(middleware.<span class="fn">Logger</span>)
+            r.<span class="fn">Use</span>(middleware.<span class="fn">Recoverer</span>)
+            r.<span class="fn">Use</span>(middleware.<span class="fn">RealIP</span>)
+        
+            r.<span class="fn">Route</span>(<span class="str">"/api/v1"</span>, <span class="kw">func</span>(r chi.Router) {
+        
+                r.<span class="fn">Use</span>(jwtauth.<span class="fn">Verifier</span>(tokenAuth)) <span class="cmt">// Scoped JWT auth</span>
+                r.<span class="fn">Use</span>(jwtauth.<span class="fn">Authenticator</span>)
+        
+                r.<span class="fn">Get</span>(<span class="str">"/users/{userID}"</span>, <span class="fn">getUser</span>)
+                r.<span class="fn">Post</span>(<span class="str">"/users"</span>, <span class="fn">createUser</span>)
+            })
+        
+            http.<span class="fn">ListenAndServe</span>(<span class="str">":8080"</span>, r) <span class="cmt">// Pure stdlib!</span>
+        }
+        
+        <span class="kw">func</span> <span class="fn">getUser</span>(w http.ResponseWriter, r *http.Request) {
+        
+            userID := chi.<span class="fn">URLParam</span>(r, <span class="str">"userID"</span>) <span class="cmt">// Context-based URL param</span>
+        
+            <span class="cmt">// Pure http.HandlerFunc — easily unit testable</span>
+        }
+          </code></pre>
+        </div>
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ PROS</h4>
+            <ul>
+              <li>Zero external dependencies — supply chain safe</li>
+              <li>100% net/http compatible — no vendor lock-in</li>
+              <li>Most idiomatic Go code of all frameworks</li>
+              <li>Handlers are pure http.HandlerFunc — trivial to test</li>
+              <li>Elegant sub-router + scoped middleware</li>
+              <li>Works with every standard library middleware</li>
+              <li>Clean architecture naturally emerges</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ CONS</h4>
+            <ul>
+              <li>No built-in JSON binding/validation (must DIY)</li>
+              <li>More boilerplate for common patterns</li>
+              <li>Smallest community and ecosystem</li>
+              <li>No built-in auth, WebSocket, rate limiter</li>
+              <li>Slower development speed for new projects</li>
+              <li>Error handling is entirely manual</li>
+              <li>Not ideal for rapid prototyping</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERFORMANCE -->
+  <section id="performance">
+    <div class="container">
+      <div class="section-label">Section 03</div>
+      <div class="section-title">Performance Benchmarks</div>
+      <p style="color:var(--muted); margin-bottom:24px; font-size:13.5px">Based on wrk/bombardier benchmarks — single
+        route, JSON response, no database. Real-world performance varies based on I/O, DB latency, and middleware count.
+        Numbers are relative indicators.</p>
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden;">
+        <table class="perf-table">
+          <thead>
+            <tr>
+              <th>Framework</th>
+              <th>Req/s (relative)</th>
+              <th>Latency (p99)</th>
+              <th>Memory/req</th>
+              <th>Allocs/op</th>
+              <th>HTTP Engine</th>
+              <th>Rank</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:var(--fiber); font-weight:700; font-family:'Syne',sans-serif">⚡ Fiber</td>
+              <td class="bar-cell">
+                <div class="bar-wrap">
+                  <div class="bar-fill fiber" style="width:100%"></div>
+                </div>
+                <div style="font-size:11px; margin-top:4px; font-family:'Space Mono',monospace; color:var(--muted)">
+                  ~1,200,000 req/s</div>
+              </td>
+              <td>~0.4ms</td>
+              <td>~2 KB</td>
+              <td>0–3</td>
+              <td>Fasthttp</td>
+              <td><span class="rank-badge r1">#1 FASTEST</span></td>
+            </tr>
+            <tr>
+              <td style="color:var(--echo); font-weight:700; font-family:'Syne',sans-serif">🔊 Echo</td>
+              <td class="bar-cell">
+                <div class="bar-wrap">
+                  <div class="bar-fill echo" style="width:72%"></div>
+                </div>
+                <div style="font-size:11px; margin-top:4px; font-family:'Space Mono',monospace; color:var(--muted)">
+                  ~870,000 req/s</div>
+              </td>
+              <td>~0.7ms</td>
+              <td>~4 KB</td>
+              <td>5–12</td>
+              <td>net/http</td>
+              <td><span class="rank-badge r2">#2</span></td>
+            </tr>
+            <tr>
+              <td style="color:var(--gin); font-weight:700; font-family:'Syne',sans-serif">🍸 Gin</td>
+              <td class="bar-cell">
+                <div class="bar-wrap">
+                  <div class="bar-fill gin" style="width:68%"></div>
+                </div>
+                <div style="font-size:11px; margin-top:4px; font-family:'Space Mono',monospace; color:var(--muted)">
+                  ~820,000 req/s</div>
+              </td>
+              <td>~0.8ms</td>
+              <td>~5 KB</td>
+              <td>8–15</td>
+              <td>net/http</td>
+              <td><span class="rank-badge r3">#3</span></td>
+            </tr>
+            <tr>
+              <td style="color:var(--chi); font-weight:700; font-family:'Syne',sans-serif">♟ Chi</td>
+              <td class="bar-cell">
+                <div class="bar-wrap">
+                  <div class="bar-fill chi" style="width:62%"></div>
+                </div>
+                <div style="font-size:11px; margin-top:4px; font-family:'Space Mono',monospace; color:var(--muted)">
+                  ~750,000 req/s</div>
+              </td>
+              <td>~0.9ms</td>
+              <td>~4.5 KB</td>
+              <td>6–14</td>
+              <td>net/http</td>
+              <td><span class="rank-badge r4">#4</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div
+        style="margin-top:16px; padding:14px 18px; background:rgba(247,201,72,.06); border:1px solid rgba(247,201,72,.15); border-radius:8px; font-size:12.5px; color:var(--muted);">
+        <strong style="color:var(--chi)">⚠ Note:</strong> Gin, Echo, and Chi are all within ~10% of each other in
+        real-world scenarios. The 40-50% gap vs Fiber disappears when I/O, database calls, or complex middleware are
+        added. Choose based on DX and features, not pure synthetic benchmarks.
+      </div>
+    </div>
+  </section>
+
+  <!-- SECURITY -->
+  <section id="security">
+    <div class="container">
+      <div class="section-label">Section 04</div>
+      <div class="section-title">Security Capabilities</div>
+      <div class="sec-grid">
+        <div class="sec-card">
+          <h4>🍸 <span style="color:var(--gin)">Gin Security</span></h4>
+          <ul>
+            <li>gin-contrib/secure: XSS, HSTS, clickjacking headers</li>
+            <li>gin-contrib/cors: CORS policy configuration</li>
+            <li>appleboy/gin-jwt: JWT middleware (RS256/HS256)</li>
+            <li>ulule/limiter: Redis-backed rate limiting</li>
+            <li>Body size limiting via MaxMultipartMemory</li>
+            <li>Input binding validation (prevent injection)</li>
+            <li>Manual CSRF — no built-in (use gorilla/csrf)</li>
+            <li>TLS via standard ListenAndServeTLS</li>
+          </ul>
+        </div>
+        <div class="sec-card">
+          <h4>⚡ <span style="color:var(--fiber)">Fiber Security</span></h4>
+          <ul>
+            <li>Built-in CSRF middleware (fiber/csrf)</li>
+            <li>Built-in helmet middleware (security headers)</li>
+            <li>Built-in rate limiter with Redis support</li>
+            <li>gofiber/jwt: JWT auth middleware</li>
+            <li>Keyauth middleware for API keys</li>
+            <li>Built-in BasicAuth support</li>
+            <li>Body size limiting via BodyLimit config</li>
+            <li>TLS via standard Go net/tls + Fasthttp config</li>
+          </ul>
+        </div>
+        <div class="sec-card">
+          <h4>🔊 <span style="color:var(--echo)">Echo Security</span></h4>
+          <ul>
+            <li>✅ Auto-TLS (Let's Encrypt — 1 line setup)</li>
+            <li>Built-in CSRF protection middleware</li>
+            <li>Built-in secure headers (XSS, HSTS, nosniff)</li>
+            <li>echo-jwt: JWT via golang-jwt/jwt v5</li>
+            <li>Built-in rate limiter</li>
+            <li>Built-in BasicAuth middleware</li>
+            <li>HTTP/2 support (improves transport security)</li>
+            <li>Best-in-class out-of-box security config</li>
+          </ul>
+        </div>
+        <div class="sec-card">
+          <h4>♟ <span style="color:var(--chi)">Chi Security</span></h4>
+          <ul>
+            <li>chi/middleware/throttle: concurrency limiting</li>
+            <li>chi/jwtauth: JWT auth middleware</li>
+            <li>Uses gorilla/csrf directly (net/http compatible)</li>
+            <li>unrolled/secure: HTTP security headers</li>
+            <li>Zero dependency attack surface (lowest risk)</li>
+            <li>TLS via standard http.ListenAndServeTLS</li>
+            <li>Any net/http security middleware works natively</li>
+            <li>Easiest to audit — minimal codebase</li>
+          </ul>
+        </div>
+      </div>
+      <div
+        style="margin-top:16px; padding:14px 18px; background:rgba(124,106,247,.08); border:1px solid rgba(124,106,247,.2); border-radius:8px; font-size:13px; color:var(--muted);">
+        <strong style="color:var(--echo)">🏆 Security Winner: Echo</strong> — Auto-TLS + built-in CSRF + HTTP/2 + secure
+        headers out of the box makes Echo the easiest to secure correctly. Chi wins for supply-chain security (zero
+        deps). Gin is most flexible for custom security architectures.
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section id="architecture">
+    <div class="container">
+      <div class="section-label">Section 05</div>
+      <div class="section-title">Architecture Patterns</div>
+      <div class="arch-row">
+        <div class="arch-card gin">
+          <h4>🍸 Gin</h4>
+          <p>Supports all patterns. Most commonly used with:</p>
+          <span class="arch-pattern">MVC (Model-View-Controller)</span>
+          <span class="arch-pattern">Layered Architecture</span>
+          <span class="arch-pattern">Microservices (gRPC + Gin REST)</span>
+          <span class="arch-pattern">Repository Pattern</span>
+          <p style="margin-top:8px">Route groups map naturally to bounded contexts. HandlerFunc pattern encourages
+            handler → service → repository layering.</p>
+        </div>
+        <div class="arch-card fiber">
+          <h4>⚡ Fiber</h4>
+          <p>Designed for high-throughput service mesh:</p>
+          <span class="arch-pattern">Event-Driven Architecture</span>
+          <span class="arch-pattern">CQRS (Command Query Separation)</span>
+          <span class="arch-pattern">WebSocket Pub/Sub</span>
+          <span class="arch-pattern">API Gateway Pattern</span>
+          <p style="margin-top:8px">Prefork mode and WebSocket make it ideal for event-streaming and pub/sub
+            architectures. App.Use() chains are middleware-centric.</p>
+        </div>
+        <div class="arch-card echo">
+          <h4>🔊 Echo</h4>
+          <p>Leans toward clean, domain-driven design:</p>
+          <span class="arch-pattern">Clean Architecture</span>
+          <span class="arch-pattern">Domain-Driven Design (DDD)</span>
+          <span class="arch-pattern">API-First Design</span>
+          <span class="arch-pattern">Hexagonal Architecture</span>
+          <p style="margin-top:8px">Echo's elegant binding + custom validator encourages domain model validation. Group
+            + middleware scoping maps to bounded contexts cleanly.</p>
+        </div>
+        <div class="arch-card chi">
+          <h4>♟ Chi</h4>
+          <p>The most architecture-agnostic — any pattern works:</p>
+          <span class="arch-pattern">Hexagonal / Ports & Adapters</span>
+          <span class="arch-pattern">Clean Architecture (Uncle Bob)</span>
+          <span class="arch-pattern">Standard Library Go patterns</span>
+          <span class="arch-pattern">Functional Core / Imperative Shell</span>
+          <p style="margin-top:8px">Since Chi adds no abstraction, it forces good architecture by default. Handlers
+            remain pure functions — ideal for Hexagonal and Clean Architecture.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHEN TO USE -->
+  <section id="when">
+    <div class="container">
+      <div class="section-label">Section 06</div>
+      <div class="section-title">When to Use Which Framework</div>
+      <div class="when-grid">
+        <div class="when-card gin">
+          <h4>🍸 Choose Gin When...</h4>
+          <ul>
+            <li>Building enterprise ERP/CRM REST APIs</li>
+            <li>Team is new to Go (best learning resources)</li>
+            <li>Rapid API development with full ecosystem</li>
+            <li>Microservices with middleware pipelines</li>
+            <li>Need Swagger/OpenAPI documentation</li>
+            <li>Long-term project needing community support</li>
+            <li>SaaS backend with auth + RBAC</li>
+            <li>E-commerce platforms</li>
+          </ul>
+        </div>
+        <div class="when-card fiber">
+          <h4>⚡ Choose Fiber When...</h4>
+          <ul>
+            <li>Real-time stock/crypto market data APIs</li>
+            <li>WebSocket-heavy apps (chat, live tracking)</li>
+            <li>Extremely high traffic (100K+ req/s)</li>
+            <li>Migrating from Node.js/Express to Go</li>
+            <li>Game server backends</li>
+            <li>IoT data ingestion pipelines</li>
+            <li>CDN / Edge compute services</li>
+            <li>High-frequency trading backends</li>
+          </ul>
+        </div>
+        <div class="when-card echo">
+          <h4>🔊 Choose Echo When...</h4>
+          <ul>
+            <li>Security is top priority (healthcare, fintech)</li>
+            <li>Need auto-HTTPS with minimal config</li>
+            <li>Building clean, well-structured REST APIs</li>
+            <li>HTTP/2 is required</li>
+            <li>API-first SaaS products</li>
+            <li>Teams valuing elegant, readable code</li>
+            <li>WebSocket + REST hybrid services</li>
+            <li>B2B integrations requiring strict validation</li>
+          </ul>
+        </div>
+        <div class="when-card chi">
+          <h4>♟ Choose Chi When...</h4>
+          <ul>
+            <li>Government or compliance-regulated projects</li>
+            <li>Security audit requires minimal dependencies</li>
+            <li>Maximum net/http compatibility needed</li>
+            <li>Senior Go devs who prefer idiomatic code</li>
+            <li>Internal tooling / admin services</li>
+            <li>Projects with strict dependency policies</li>
+            <li>Want full control over every layer</li>
+            <li>Building a library that exposes HTTP handlers</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- USE CASES -->
+  <section id="usecases">
+    <div class="container">
+      <div class="section-label">Section 07</div>
+      <div class="section-title">Real-Life Use Cases & App Examples</div>
+
+      <div class="example-card">
+        <div class="example-icon">🍽️</div>
+        <div>
+          <div class="example-title">Restaurant Platform — Real-Time Order Tracking</div>
+          <div class="example-fw" style="color:var(--fiber)">⚡ Recommended: Fiber (WebSocket) + 🍸 Gin (Admin API)</div>
+          <div class="example-desc">A food delivery platform like Foodpanda / Uber Eats requires: real-time order
+            tracking (WebSocket), high concurrent connections from drivers + customers, a REST admin API for restaurant
+            dashboards, and a public-facing ordering API. <strong>Fiber</strong> handles the WebSocket real-time layer
+            (order status pushes, driver location updates), while <strong>Gin</strong> powers the stable admin REST API
+            with its rich middleware and Swagger docs.</div>
+          <div class="example-features">
+            <span class="tag fiber-t">WebSocket Order Tracking</span>
+            <span class="tag fiber-t">Driver Location Streaming</span>
+            <span class="tag gin-t">Menu Management API</span>
+            <span class="tag gin-t">JWT Auth</span>
+            <span class="tag green">Pub/Sub Events</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <div class="example-icon">📈</div>
+        <div>
+          <div class="example-title">Stock Market / Crypto Trading Platform</div>
+          <div class="example-fw" style="color:var(--fiber)">⚡ Recommended: Fiber (Primary)</div>
+          <div class="example-desc">Platforms like Binance, Zerodha, or Robinhood need to push thousands of price
+            updates per second to millions of connected clients. Fiber's Fasthttp engine + WebSocket support +
+            zero-alloc design makes it the only reasonable choice here. Sub-millisecond API response times are
+            achievable. Prefork mode uses all CPU cores. The built-in rate limiter prevents API abuse.</div>
+          <div class="example-features">
+            <span class="tag fiber-t">Live Price Streaming (WS)</span>
+            <span class="tag fiber-t">Sub-ms REST APIs</span>
+            <span class="tag fiber-t">Prefork Multi-core</span>
+            <span class="tag fiber-t">Rate Limiting</span>
+            <span class="tag green">Order Book API</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <div class="example-icon">🏥</div>
+        <div>
+          <div class="example-title">Healthcare Management System (EHR/EMR)</div>
+          <div class="example-fw" style="color:var(--echo)">🔊 Recommended: Echo (Security + Compliance)</div>
+          <div class="example-desc">HIPAA-compliant healthcare APIs require mandatory HTTPS, strict input validation,
+            CSRF protection, and audit logging. Echo's one-line auto-TLS, built-in secure headers, CSRF middleware, and
+            elegant request binding make it perfect. Patient records, appointment management, prescription APIs — all
+            benefit from Echo's strict validation and clean error handling. HTTP/2 improves performance over hospital
+            networks.</div>
+          <div class="example-features">
+            <span class="tag echo-t">Auto-TLS (HIPAA)</span>
+            <span class="tag echo-t">CSRF Protection</span>
+            <span class="tag echo-t">Request Validation</span>
+            <span class="tag echo-t">HTTP/2</span>
+            <span class="tag green">Audit Logging</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <div class="example-icon">🏢</div>
+        <div>
+          <div class="example-title">Enterprise ERP System (HR, Inventory, Finance)</div>
+          <div class="example-fw" style="color:var(--gin)">🍸 Recommended: Gin (Ecosystem + Team Scale)</div>
+          <div class="example-desc">ERPs like SAP, Odoo-alternatives built in Go need complex role-based access control
+            (RBAC), multi-module routing (HR, Inventory, Finance modules), Swagger API documentation for frontend teams,
+            rich middleware for logging and tracing, and GORM integration for complex data models. Gin's mature
+            ecosystem, gin-contrib packages, swaggo integration, and extensive community knowledge base make it the
+            safest choice for large teams.</div>
+          <div class="example-features">
+            <span class="tag gin-t">RBAC Middleware</span>
+            <span class="tag gin-t">Swagger Docs</span>
+            <span class="tag gin-t">Module Routing</span>
+            <span class="tag gin-t">GORM Integration</span>
+            <span class="tag green">Multi-tenant</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <div class="example-icon">🏛️</div>
+        <div>
+          <div class="example-title">Government / Public Sector Data Portal</div>
+          <div class="example-fw" style="color:var(--chi)">♟ Recommended: Chi (Zero Dependencies + Auditable)</div>
+          <div class="example-desc">Government systems require strict dependency auditing, supply-chain security,
+            long-term maintainability without framework lock-in, and compatibility with whichever net/http middleware
+            passes security review. Chi's zero external dependencies means the entire dependency tree can be audited in
+            days. Handlers are pure functions — trivially unit testable. Works with any approved authentication library
+            (LDAP, Kerberos wrappers, etc.).</div>
+          <div class="example-features">
+            <span class="tag chi-t">Zero Deps</span>
+            <span class="tag chi-t">Full Auditability</span>
+            <span class="tag chi-t">net/http Native</span>
+            <span class="tag chi-t">Any Auth Lib</span>
+            <span class="tag green">Long-term Maintainable</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <div class="example-icon">🛒</div>
+        <div>
+          <div class="example-title">High-Traffic E-Commerce / Flash Sale Platform</div>
+          <div class="example-fw" style="color:var(--gin)">🍸 Recommended: Gin + Redis Rate Limiter</div>
+          <div class="example-desc">Platforms running Black Friday or flash sales need: heavy API rate limiting, product
+            search + filtering, cart session management, payment gateway integration, and the ability to handle sudden
+            traffic spikes. Gin with Redis-backed rate limiting, gin-cache for product caching, and its stable
+            middleware ecosystem handles this well. The large community means every integration (Stripe, Razorpay,
+            Elasticsearch) has a Gin example.</div>
+          <div class="example-features">
+            <span class="tag gin-t">Redis Rate Limiting</span>
+            <span class="tag gin-t">Response Caching</span>
+            <span class="tag gin-t">Payment API Integration</span>
+            <span class="tag fiber-t">High Concurrency (Fiber opt.)</span>
+            <span class="tag green">Search Filtering</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SUMMARY TABLE -->
+  <section id="summary">
+    <div class="container">
+      <div class="section-label">Section 08 — Final Summary</div>
+      <div class="section-title">Complete Comparison Table</div>
+      <div class="table-scroll">
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>Criteria</th>
+              <th class="gin-h">🍸 Gin</th>
+              <th class="fiber-h">⚡ Fiber</th>
+              <th class="echo-h">🔊 Echo</th>
+              <th class="chi-h">♟ Chi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>GitHub Stars</td>
+              <td>⭐ 78K+</td>
+              <td>⭐ 32K+</td>
+              <td>⭐ 29K+</td>
+              <td>⭐ 18K+</td>
+            </tr>
+            <tr>
+              <td>HTTP Engine</td>
+              <td>net/http</td>
+              <td>Fasthttp ⚡</td>
+              <td>net/http</td>
+              <td>net/http</td>
+            </tr>
+            <tr>
+              <td>Raw Performance</td>
+              <td><span class="rank-badge r3">HIGH</span></td>
+              <td><span class="rank-badge r1">HIGHEST</span></td>
+              <td><span class="rank-badge r2">HIGH+</span></td>
+              <td><span class="rank-badge r3">HIGH</span></td>
+            </tr>
+            <tr>
+              <td>Learning Curve</td>
+              <td>Low 🟢</td>
+              <td>Low (Express devs) 🟢</td>
+              <td>Low-Medium 🟡</td>
+              <td>Medium (Go fluency needed) 🟡</td>
+            </tr>
+            <tr>
+              <td>net/http Compatibility</td>
+              <td><span class="check">✓</span> Partial</td>
+              <td><span class="cross">✗</span> Fasthttp only</td>
+              <td><span class="check">✓</span> Full (WrapMiddleware)</td>
+              <td><span class="check">✓✓</span> Native</td>
+            </tr>
+            <tr>
+              <td>Built-in JSON Binding</td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓</span></td>
+              <td><span class="cross">✗</span> Manual</td>
+            </tr>
+            <tr>
+              <td>Built-in Validation</td>
+              <td><span class="check">✓</span> (go-playground)</td>
+              <td><span class="partial">~</span> Pluggable</td>
+              <td><span class="check">✓</span> Custom validator</td>
+              <td><span class="cross">✗</span> Bring your own</td>
+            </tr>
+            <tr>
+              <td>WebSocket Support</td>
+              <td><span class="partial">~</span> Via contrib</td>
+              <td><span class="check">✓</span> Built-in</td>
+              <td><span class="check">✓</span> Built-in</td>
+              <td><span class="partial">~</span> Via nhooyr/websocket</td>
+            </tr>
+            <tr>
+              <td>Auto TLS (Let's Encrypt)</td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="check">✓✓</span> One-line</td>
+              <td><span class="cross">✗</span></td>
+            </tr>
+            <tr>
+              <td>CSRF Protection</td>
+              <td><span class="partial">~</span> Via gorilla</td>
+              <td><span class="check">✓</span> Built-in</td>
+              <td><span class="check">✓</span> Built-in</td>
+              <td><span class="partial">~</span> Via gorilla</td>
+            </tr>
+            <tr>
+              <td>Rate Limiting</td>
+              <td><span class="partial">~</span> Via contrib/limiter</td>
+              <td><span class="check">✓</span> Built-in</td>
+              <td><span class="check">✓</span> Built-in</td>
+              <td><span class="partial">~</span> Via middleware/throttle</td>
+            </tr>
+            <tr>
+              <td>Security Headers</td>
+              <td><span class="partial">~</span> gin-contrib/secure</td>
+              <td><span class="check">✓</span> Helmet built-in</td>
+              <td><span class="check">✓</span> middleware/secure</td>
+              <td><span class="partial">~</span> unrolled/secure</td>
+            </tr>
+            <tr>
+              <td>HTTP/2</td>
+              <td><span class="partial">~</span> Via stdlib</td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="check">✓</span> Built-in</td>
+              <td><span class="partial">~</span> Via stdlib</td>
+            </tr>
+            <tr>
+              <td>External Dependencies</td>
+              <td>~10 deps</td>
+              <td>~8 deps (Fasthttp)</td>
+              <td>~12 deps</td>
+              <td><strong style="color:var(--chi)">0 deps</strong> ✓✓</td>
+            </tr>
+            <tr>
+              <td>Middleware Ecosystem</td>
+              <td><span class="rank-badge r1">LARGEST</span></td>
+              <td><span class="rank-badge r2">LARGE</span></td>
+              <td><span class="rank-badge r3">GOOD</span></td>
+              <td><span class="rank-badge r4">SMALLEST</span></td>
+            </tr>
+            <tr>
+              <td>Swagger/OpenAPI</td>
+              <td><span class="check">✓✓</span> swaggo</td>
+              <td><span class="check">✓</span> fiber-swagger</td>
+              <td><span class="check">✓</span> echo-swagger</td>
+              <td><span class="partial">~</span> Manual</td>
+            </tr>
+            <tr>
+              <td>Goroutine Safety (Context)</td>
+              <td><span class="check">✓</span></td>
+              <td><span class="partial">~</span> Need c.Copy()</td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓✓</span> stdlib context</td>
+            </tr>
+            <tr>
+              <td>Idiomatic Go</td>
+              <td><span class="partial">~</span> Medium</td>
+              <td><span class="cross">✗</span> Express-style</td>
+              <td><span class="partial">~</span> Medium</td>
+              <td><span class="check">✓✓</span> Most idiomatic</td>
+            </tr>
+            <tr>
+              <td>Testability</td>
+              <td>Good (httptest)</td>
+              <td>Good (httptest adaptor)</td>
+              <td>Good (httptest)</td>
+              <td><strong style="color:var(--chi)">Excellent</strong> (pure handlers)</td>
+            </tr>
+            <tr>
+              <td>Architecture Pattern</td>
+              <td>MVC, Layered, Microservice</td>
+              <td>Event-driven, CQRS</td>
+              <td>Clean, DDD, Hexagonal</td>
+              <td>Any — most flexible</td>
+            </tr>
+            <tr>
+              <td>Best For</td>
+              <td>ERP, SaaS, REST APIs</td>
+              <td>Real-time, HFT, High-traffic</td>
+              <td>Security, Healthcare, Fintech</td>
+              <td>Gov't, Audit, Clean Arch</td>
+            </tr>
+            <tr>
+              <td>Not Ideal For</td>
+              <td>Ultra-low latency streaming</td>
+              <td>net/http middleware users</td>
+              <td>Ultra-high traffic scenarios</td>
+              <td>Rapid prototyping</td>
+            </tr>
+            <tr>
+              <td>Community / Docs</td>
+              <td><span class="star">★★★★★</span></td>
+              <td><span class="star">★★★★</span>☆</td>
+              <td><span class="star">★★★★</span>☆</td>
+              <td><span class="star">★★★</span>☆☆</td>
+            </tr>
+            <tr>
+              <td>Overall Score</td>
+              <td><span class="star">★★★★★</span> <span style="font-size:11px; color:var(--gin)">Best allrounder</span>
+              </td>
+              <td><span class="star">★★★★★</span> <span style="font-size:11px; color:var(--fiber)">Speed king</span>
+              </td>
+              <td><span class="star">★★★★</span>☆ <span style="font-size:11px; color:var(--echo)">Elegant+secure</span>
+              </td>
+              <td><span class="star">★★★★</span>☆ <span style="font-size:11px; color:var(--chi)">Purist's choice</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- VERDICT -->
+      <div class="verdict">
+        <h3>🎯 Final Verdict</h3>
+        <div class="verdict-grid">
+          <div class="verdict-item">
+            <strong style="color:var(--gin)">🍸 GIN → Start here</strong>
+            <span>Best all-rounder for most backend projects. Largest ecosystem, most tutorials, ideal for teams and
+              enterprises building REST APIs at any scale.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--fiber)">⚡ FIBER → Need speed/real-time</strong>
+            <span>When you need raw throughput, WebSocket, or are migrating from Node.js. Real-time tracking, stock
+              feeds, gaming backends, IoT ingestion.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--echo)">🔊 ECHO → Security & elegance</strong>
+            <span>When HTTPS, CSRF, and clean code are non-negotiable. Healthcare, fintech, SaaS APIs that need to be
+              secure by default without extra config.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--chi)">♟ CHI → Idiomatic & auditable</strong>
+            <span>When you're a Go purist, need zero dependencies for compliance, or want your handlers to be 100%
+              standard library — no framework debt.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Go Backend Frameworks — Deep Guide · Gin · Fiber · Echo · Chi<br>
+    <span style="color:rgba(255,255,255,0.2); margin-top:6px; display:block">All performance numbers are approximate
+      benchmarks for comparison purposes.</span>
+    <h3>Made by ©Showrav Kormokar</h3>
+    <a target="_blank" rel="noopener" href="https://www.github.com/showravkormokar">GitHub</a>
+  </footer>
+
+</body>
+
+</html>
