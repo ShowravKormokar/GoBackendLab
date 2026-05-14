@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GoBackendLab — Real Life Use Cases</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .usecase-page {
+            max-width: 1400px;
+            margin: auto;
+            padding: 40px 24px 80px;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: start;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 12px 18px;
+            border-radius: 12px;
+            transition: 0.3s;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--gin);
+            background: var(--surface2);
+        }
+
+        .page-heading h1 {
+            margin: 0;
+            font-size: 42px;
+            line-height: 1.2;
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            max-width: 800px;
+            margin-top: 14px;
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        .usecase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 28px;
+            margin-top: 40px;
+        }
+
+        .example-card {
+            display: flex;
+            gap: 22px;
+            background: linear-gradient(145deg, var(--surface), var(--surface2));
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 28px;
+            transition: 0.35s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .example-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right,
+                    rgba(255, 255, 255, 0.05),
+                    transparent 40%);
+            pointer-events: none;
+        }
+
+        .example-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .example-icon {
+            min-width: 72px;
+            height: 72px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
+        }
+
+        .example-content {
+            flex: 1;
+        }
+
+        .example-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .example-fw {
+            font-weight: 700;
+            margin-bottom: 16px;
+            font-size: 15px;
+        }
+
+        .example-desc {
+            color: var(--muted);
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .example-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tag {
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid transparent;
+        }
+
+        .gin-t {
+            background: var(--gin-dim);
+            color: var(--gin);
+            border-color: rgba(0, 212, 170, 0.2);
+        }
+
+        .fiber-t {
+            background: var(--fiber-dim);
+            color: var(--fiber);
+            border-color: rgba(255, 107, 53, 0.2);
+        }
+
+        .echo-t {
+            background: var(--echo-dim);
+            color: var(--echo);
+            border-color: rgba(124, 106, 247, 0.2);
+        }
+
+        .chi-t {
+            background: var(--chi-dim);
+            color: var(--chi);
+            border-color: rgba(247, 201, 72, 0.2);
+        }
+
+        .green {
+            background: rgba(74, 222, 128, 0.12);
+            color: var(--pro);
+            border-color: rgba(74, 222, 128, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .page-heading h1 {
+                font-size: 32px;
+            }
+
+            .usecase-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .example-card {
+                flex-direction: column;
+                padding: 24px;
+            }
+
+            .example-icon {
+                width: 72px;
+            }
+
+            .example-title {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="usecase-page">
+
+        <div class="top-bar">
+            <div class="page-heading">
+                <h1>Real-Life Go Backend Use Cases</h1>
+                <p>
+                    Explore real-world production scenarios where Gin, Fiber, Echo, and Chi
+                    shine based on scalability, architecture style, security, concurrency,
+                    and developer experience.
+                </p>
+            </div>
+            <a href="index.html" class="back-btn">
+                ← Back to Home
+            </a>
+        </div>
+
+        <div class="usecase-grid">
+
+            <!-- 1 -->
+            <div class="example-card">
+                <div class="example-icon">🎮</div>
+
+                <div class="example-content">
+                    <div class="example-title">Multiplayer Gaming Backend</div>
+
+                    <div class="example-fw" style="color:var(--fiber)">
+                        ⚡ Recommended: Fiber
+                    </div>
+
+                    <div class="example-desc">
+                        Online multiplayer games require ultra-low latency communication,
+                        real-time matchmaking, leaderboard APIs, and thousands of concurrent
+                        websocket connections. Fiber’s fasthttp engine and high throughput
+                        make it ideal for gaming infrastructure.
+                    </div>
+
+                    <div class="example-features">
+                        <span class="tag fiber-t">WebSocket</span>
+                        <span class="tag fiber-t">Low Latency</span>
+                        <span class="tag fiber-t">High Concurrency</span>
+                        <span class="tag green">Realtime Matchmaking</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2 -->
+            <div class="example-card">
+                <div class="example-icon">🎓</div>
+
+                <div class="example-content">
+                    <div class="example-title">University Management System</div>
+
+                    <div class="example-fw" style="color:var(--gin)">
+                        🍸 Recommended: Gin
+                    </div>
+
+                    <div class="example-desc">
+                        University portals require student management, authentication,
+                        attendance systems, exam APIs, and role-based dashboards for students,
+                        teachers, and admins. Gin’s ecosystem and middleware support simplify
+                        large modular systems.
+                    </div>
+
+                    <div class="example-features">
+                        <span class="tag gin-t">RBAC</span>
+                        <span class="tag gin-t">REST APIs</span>
+                        <span class="tag gin-t">Swagger</span>
+                        <span class="tag green">Admin Dashboard</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3 -->
+            <div class="example-card">
+                <div class="example-icon">🚕</div>
+
+                <div class="example-content">
+                    <div class="example-title">Ride Sharing Application</div>
+
+                    <div class="example-fw" style="color:var(--fiber)">
+                        ⚡ Recommended: Fiber + WebSocket
+                    </div>
+
+                    <div class="example-desc">
+                        Apps like Uber require real-time driver tracking, ride requests,
+                        payment APIs, notifications, and concurrent connections. Fiber handles
+                        streaming and low-latency communication efficiently.
+                    </div>
+
+                    <div class="example-features">
+                        <span class="tag fiber-t">Live Tracking</span>
+                        <span class="tag fiber-t">Realtime APIs</span>
+                        <span class="tag fiber-t">High Traffic</span>
+                        <span class="tag green">Geo Services</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4 -->
+            <div class="example-card">
+                <div class="example-icon">🏦</div>
+
+                <div class="example-content">
+                    <div class="example-title">Digital Banking System</div>
+
+                    <div class="example-fw" style="color:var(--echo)">
+                        🔊 Recommended: Echo
+                    </div>
+
+                    <div class="example-desc">
+                        Banking APIs require strict validation, HTTPS enforcement,
+                        transaction auditing, JWT authentication, and secure middleware.
+                        Echo’s security-first middleware system fits perfectly for fintech.
+                    </div>
+
+                    <div class="example-features">
+                        <span class="tag echo-t">JWT Auth</span>
+                        <span class="tag echo-t">Validation</span>
+                        <span class="tag echo-t">HTTPS</span>
+                        <span class="tag green">Audit Logs</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5 -->
+            <div class="example-card">
+                <div class="example-icon">📦</div>
+
+                <div class="example-content">
+                    <div class="example-title">Microservices Gateway</div>
+
+                    <div class="example-fw" style="color:var(--chi)">
+                        ♟ Recommended: Chi
+                    </div>
+
+                    <div class="example-desc">
+                        API gateway services need lightweight routing, clean middleware
+                        chaining, and full net/http compatibility. Chi is perfect for
+                        building maintainable microservices infrastructure.
+                    </div>
+
+                    <div class="example-features">
+                        <span class="tag chi-t">Lightweight</span>
+                        <span class="tag chi-t">net/http</span>
+                        <span class="tag chi-t">Middleware</span>
+                        <span class="tag green">Scalable Routing</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6 -->
+            <div class="example-card">
+                <div class="example-icon">📹</div>
+
+                <div class="example-content">
+                    <div class="example-title">Video Streaming Platform</div>
+
+                    <div class="example-fw" style="color:var(--fiber)">
+                        ⚡ Recommended: Fiber
+                    </div>
+
+                    <div class="example-desc">
+                        Streaming systems require high-performance APIs, CDN integrations,
+                        live streaming events, and concurrent traffic handling during peak
+                        hours. Fiber’s performance makes it ideal for media delivery systems.
+                    </div>
+
+                    <div class="example-features">
+                        <span class="tag fiber-t">Streaming APIs</span>
+                        <span class="tag fiber-t">CDN Ready</span>
+                        <span class="tag fiber-t">High Throughput</span>
+                        <span class="tag green">Realtime Events</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7 -->
+            <div class="example-card">
+                <div class="example-icon">🛰️</div>
+
+                <div class="example-content">
+                    <div class="example-title">IoT Device Monitoring Dashboard</div>
+
+                    <div class="example-fw" style="color:var(--gin)">
+                        🍸 Recommended: Gin
+                    </div>
+
+                    <div class="example-desc">
+                        IoT systems collect millions of sensor events from devices. Gin
+                        provides stable APIs, MQTT integrations, and middleware support for
+                        analytics dashboards and monitoring tools.
+                    </div>
+
+                    <div class="example-features">
+                        <span class="tag gin-t">MQTT</span>
+                        <span class="tag gin-t">Monitoring APIs</span>
+                        <span class="tag gin-t">Analytics</span>
+                        <span class="tag green">Device Management</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8 -->
+            <div class="example-card">
+                <div class="example-icon">💬</div>
+
+                <div class="example-content">
+                    <div class="example-title">Realtime Chat Application</div>
+
+                    <div class="example-fw" style="color:var(--fiber)">
+                        ⚡ Recommended: Fiber
+                    </div>
+
+                    <div class="example-desc">
+                        Chat applications require websocket support, instant notifications,
+                        online presence tracking, and message streaming with minimal latency.
+                        Fiber excels in realtime communication systems.
+                    </div>
+
+                    <div class="example-features">
+                        <span class="tag fiber-t">WebSocket</span>
+                        <span class="tag fiber-t">Instant Messaging</span>
+                        <span class="tag fiber-t">Presence Tracking</span>
+                        <span class="tag green">Low Latency</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9 -->
+            <div class="example-card">
+                <div class="example-icon">🧾</div>
+
+                <div class="example-content">
+                    <div class="example-title">Insurance Claim Processing System</div>
+
+                    <div class="example-fw" style="color:var(--echo)">
+                        🔊 Recommended: Echo
+                    </div>
+
+                    <div class="example-desc">
+                        Insurance platforms need secure document uploads, validation,
+                        workflow automation, compliance logging, and reliable API behavior.
+                        Echo’s structured middleware pipeline works very well here.
+                    </div>
+
+                    <div class="example-features">
+                        <span class="tag echo-t">Secure Uploads</span>
+                        <span class="tag echo-t">Validation</span>
+                        <span class="tag echo-t">Compliance</span>
+                        <span class="tag green">Workflow APIs</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10 -->
+            <div class="example-card">
+                <div class="example-icon">☁️</div>
+
+                <div class="example-content">
+                    <div class="example-title">Cloud Infrastructure API</div>
+
+                    <div class="example-fw" style="color:var(--chi)">
+                        ♟ Recommended: Chi
+                    </div>
+
+                    <div class="example-desc">
+                        Cloud infrastructure platforms require modular services,
+                        observability, logging middleware, and minimal dependencies. Chi is
+                        excellent for building maintainable DevOps and infrastructure APIs.
+                    </div>
+
+                    <div class="example-features">
+                        <span class="tag chi-t">Observability</span>
+                        <span class="tag chi-t">Minimal Dependencies</span>
+                        <span class="tag chi-t">Cloud Native</span>
+                        <span class="tag green">Infrastructure APIs</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

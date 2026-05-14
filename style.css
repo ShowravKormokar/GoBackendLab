@@ -610,6 +610,29 @@ section+section {
     border-color: rgba(247, 201, 72, .2);
 }
 
+.sho-m-btn{
+    text-align: center;
+    margin-top: 32px;
+}
+
+.sho-m-btn a{
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: all .2s;
+}
+
+.sho-m-btn a:hover {
+    color: var(--text);
+    border-color: var(--gin);
+}
+
 /* ── CODE BLOCK ── */
 /* ===== CODE EDITOR CONTAINER ===== */
 .code-editor {
