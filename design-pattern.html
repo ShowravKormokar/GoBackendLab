@@ -1,0 +1,2608 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Go Design Patterns — Deep Guide</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="design-pt.css">
+</head>
+
+<body>
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <div class="hero">
+    <div class="hero-tag">Go Design Patterns — Complete Deep Guide</div>
+    <h1>12 Essential <span>Go Design</span><br>Patterns Mastered</h1>
+    <p>Creational · Structural · Behavioral · Concurrency · Architecture — Every pattern explained with real-world Go
+      code, diagrams, use cases, and production context.</p>
+    <div class="hero-pills">
+      <div class="hpill s1">① Singleton</div>
+      <div class="hpill s2">② Builder</div>
+      <div class="hpill s3">③ Factory</div>
+      <div class="hpill s4">④ Adapter</div>
+      <div class="hpill s5">⑤ Observer</div>
+      <div class="hpill s6">⑥ Strategy</div>
+      <div class="hpill s7">⑦ Decorator</div>
+      <div class="hpill s8">⑧ Worker Pool</div>
+      <div class="hpill s9">⑨ Pipeline</div>
+      <div class="hpill s10">⑩ Fan-Out/In</div>
+      <div class="hpill s11">⑪ Repository</div>
+      <div class="hpill s12">⑫ Middleware</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ NAV ═══════════════ -->
+  <nav>
+    <a href="#overview">Overview</a>
+    <a href="#singleton">Singleton</a>
+    <a href="#builder">Builder</a>
+    <a href="#factory">Factory</a>
+    <a href="#adapter">Adapter</a>
+    <a href="#observer">Observer</a>
+    <a href="#strategy">Strategy</a>
+    <a href="#decorator">Decorator</a>
+    <a href="#workerpool">Worker Pool</a>
+    <a href="#pipeline">Pipeline</a>
+    <a href="#fanout">Fan-Out/In</a>
+    <a href="#repository">Repository</a>
+    <a href="#middleware">Middleware</a>
+    <a href="#industry">Industry</a>
+    <a href="#summary">Summary</a>
+  </nav>
+
+  <!-- ═══════════════ OVERVIEW ═══════════════ -->
+  <section id="overview">
+    <div class="container">
+      <div class="section-label">Section 01</div>
+      <div class="section-title">Pattern Categories & Overview</div>
+
+      <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:14px; margin-bottom:24px;">
+        <div
+          style="background:var(--singleton-dim); border:1px solid rgba(0,212,170,.2); border-radius:10px; padding:16px 18px; text-align:center;">
+          <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:800; color:var(--singleton);">
+            Creational</div>
+          <div style="font-size:12px; color:var(--muted); margin-top:4px;">Object creation & instantiation</div>
+          <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+            <span class="tag tc-singleton">Singleton</span>
+            <span class="tag tc-builder">Builder</span>
+            <span class="tag tc-factory">Factory</span>
+          </div>
+        </div>
+        <div
+          style="background:var(--adapter-dim); border:1px solid rgba(247,201,72,.2); border-radius:10px; padding:16px 18px; text-align:center;">
+          <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:800; color:var(--adapter);">Structural
+          </div>
+          <div style="font-size:12px; color:var(--muted); margin-top:4px;">Object composition & interfaces</div>
+          <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+            <span class="tag tc-adapter">Adapter</span>
+            <span class="tag tc-decorator">Decorator</span>
+            <span class="tag tc-repository">Repository</span>
+          </div>
+        </div>
+        <div
+          style="background:var(--strategy-dim); border:1px solid rgba(244,114,182,.2); border-radius:10px; padding:16px 18px; text-align:center;">
+          <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:800; color:var(--strategy);">Behavioral
+          </div>
+          <div style="font-size:12px; color:var(--muted); margin-top:4px;">Algorithms, communication & responsibilities
+          </div>
+          <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+            <span class="tag tc-observer">Observer</span>
+            <span class="tag tc-strategy">Strategy</span>
+            <span class="tag tc-middleware">Middleware</span>
+          </div>
+        </div>
+      </div>
+      <div
+        style="background:var(--pipeline-dim); border:1px solid rgba(52,211,153,.2); border-radius:10px; padding:16px 18px; text-align:center; margin-bottom:32px;">
+        <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:800; color:var(--pipeline);">Concurrency
+          Patterns <span style="font-size:13px; color:var(--muted); font-weight:400;">— Go-Specific 🐹</span></div>
+        <div style="font-size:12px; color:var(--muted); margin-top:4px;">Goroutines, channels & concurrent coordination
+        </div>
+        <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+          <span class="tag tc-workerpool">Worker Pool</span>
+          <span class="tag tc-pipeline">Pipeline</span>
+          <span class="tag tc-fanout">Fan-Out / Fan-In</span>
+        </div>
+      </div>
+
+      <div class="cat-grid">
+        <div class="cat-card cc-singleton"><span class="cat-icon">🔒</span>
+          <div class="cat-name">Singleton</div>
+          <div class="cat-desc">One instance, global access, thread-safe</div>
+          <div class="cat-num">01</div>
+        </div>
+        <div class="cat-card cc-builder"><span class="cat-icon">🏗️</span>
+          <div class="cat-name">Builder</div>
+          <div class="cat-desc">Step-by-step complex object construction</div>
+          <div class="cat-num">02</div>
+        </div>
+        <div class="cat-card cc-factory"><span class="cat-icon">🏭</span>
+          <div class="cat-name">Factory</div>
+          <div class="cat-desc">Object creation without specifying type</div>
+          <div class="cat-num">03</div>
+        </div>
+        <div class="cat-card cc-adapter"><span class="cat-icon">🔌</span>
+          <div class="cat-name">Adapter</div>
+          <div class="cat-desc">Interface compatibility between incompatible types</div>
+          <div class="cat-num">04</div>
+        </div>
+        <div class="cat-card cc-observer"><span class="cat-icon">👁️</span>
+          <div class="cat-name">Observer</div>
+          <div class="cat-desc">Event notification — publish &amp; subscribe</div>
+          <div class="cat-num">05</div>
+        </div>
+        <div class="cat-card cc-strategy"><span class="cat-icon">♟️</span>
+          <div class="cat-name">Strategy</div>
+          <div class="cat-desc">Swap algorithms at runtime</div>
+          <div class="cat-num">06</div>
+        </div>
+        <div class="cat-card cc-decorator"><span class="cat-icon">🎁</span>
+          <div class="cat-name">Decorator</div>
+          <div class="cat-desc">Add behavior without modifying struct</div>
+          <div class="cat-num">07</div>
+        </div>
+        <div class="cat-card cc-workerpool"><span class="cat-icon">⚙️</span>
+          <div class="cat-name">Worker Pool</div>
+          <div class="cat-desc">Bounded goroutine concurrency</div>
+          <div class="cat-num">08</div>
+        </div>
+        <div class="cat-card cc-pipeline"><span class="cat-icon">🔗</span>
+          <div class="cat-name">Pipeline</div>
+          <div class="cat-desc">Channel-chained processing stages</div>
+          <div class="cat-num">09</div>
+        </div>
+        <div class="cat-card cc-fanout"><span class="cat-icon">📡</span>
+          <div class="cat-name">Fan-Out/In</div>
+          <div class="cat-desc">Parallel work distribution &amp; result aggregation</div>
+          <div class="cat-num">10</div>
+        </div>
+        <div class="cat-card cc-repository"><span class="cat-icon">🗄️</span>
+          <div class="cat-name">Repository</div>
+          <div class="cat-desc">Data access abstraction layer</div>
+          <div class="cat-num">11</div>
+        </div>
+        <div class="cat-card cc-middleware"><span class="cat-icon">🔧</span>
+          <div class="cat-name">Middleware</div>
+          <div class="cat-desc">Chain of request/response handlers</div>
+          <div class="cat-num">12</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SINGLETON ═══════════════ -->
+  <section id="singleton">
+    <div class="container">
+      <div class="section-label">Pattern 01 · Creational</div>
+      <div class="section-title" style="margin-bottom:0">Singleton Pattern</div>
+
+      <div class="pattern-block" style="margin-top:28px">
+        <div class="pattern-header ph-singleton">
+          <div class="pattern-icon-lg">🔒</div>
+          <div>
+            <div class="pattern-name c-singleton">Singleton</div>
+            <div class="pattern-category">Creational Pattern · GoF Classic</div>
+            <div class="pattern-tagline">Ensures a type has only <strong>one instance</strong> throughout the entire
+              application lifetime, providing a global access point — implemented in Go using <code>sync.Once</code> for
+              goroutine safety.</div>
+            <div class="stat-row">
+              <span class="stat">Category: Creational</span>
+              <span class="stat">Thread-safe: sync.Once</span>
+              <span class="stat">Go idiom: ✓✓</span>
+              <span class="stat">Industry use: Very High</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--singleton)"></span> What is Singleton?</h4>
+            <p>The Singleton pattern restricts instantiation of a type to a single object. Every part of your
+              application accesses the <em>same</em> shared instance. In Go, the idiomatic implementation uses
+              <code>sync.Once</code> which guarantees the initializer runs exactly once even under concurrent goroutine
+              access — unlike many other languages that rely on double-checked locking.
+            </p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--singleton)"></span> How It Works</h4>
+            <ul>
+              <li><strong>sync.Once:</strong> A zero-value struct with a <code>Do(f func())</code> method</li>
+              <li>First call to <code>Do()</code> executes the function; subsequent calls are no-ops</li>
+              <li>Internally uses atomic operations + mutex — goroutine-safe by design</li>
+              <li>The instance is stored in a package-level variable</li>
+              <li>Exported accessor function returns the singleton</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--singleton)"></span> Rules & Requirements</h4>
+            <ul>
+              <li><strong>Never</strong> export the struct directly — force access through the function</li>
+              <li><strong>Always</strong> use <code>sync.Once</code>, not <code>init()</code> or
+                <code>var instance = &amp;T{}</code> alone
+              </li>
+              <li>The constructor function must be <strong>idempotent</strong></li>
+              <li>Avoid storing mutable state without proper internal synchronization</li>
+              <li>Consider if you truly need a singleton — DI is often better</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--singleton)"></span> Design Approach</h4>
+            <ul>
+              <li>Unexported struct type + exported interface</li>
+              <li>Package-level <code>var once sync.Once</code></li>
+              <li>Package-level <code>var instance *Type</code></li>
+              <li>Exported <code>GetInstance()</code> calls <code>once.Do()</code></li>
+              <li>Lazy initialization — created on first access, not at startup</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- STEPS -->
+        <div class="info-block" style="margin-bottom:14px">
+          <h4><span class="dot" style="background:var(--singleton)"></span> Step-by-Step Pattern</h4>
+          <div class="steps" style="margin-top:12px">
+            <div class="step">
+              <div class="step-num" style="background:var(--singleton-dim); color:var(--singleton);">01</div>
+              <div class="step-body">
+                <h5>Define unexported struct</h5>
+                <p>Create the type that should have only one instance. Keep it unexported
+                  (<code>type dbPool struct</code>) so external packages can't instantiate it directly.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--singleton-dim); color:var(--singleton);">02</div>
+              <div class="step-body">
+                <h5>Declare package-level variables</h5>
+                <p>Declare <code>var once sync.Once</code> and <code>var instance *dbPool</code> at package level — both
+                  zero values, no allocation yet.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--singleton-dim); color:var(--singleton);">03</div>
+              <div class="step-body">
+                <h5>Write GetInstance() accessor</h5>
+                <p>Exported function calls <code>once.Do(func(){ instance = newDBPool() })</code>. The <code>Do</code>
+                  call is goroutine-safe — no mutex needed in your code.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--singleton-dim); color:var(--singleton);">04</div>
+              <div class="step-body">
+                <h5>Expose behavior via methods</h5>
+                <p>Add methods to the struct. Callers use <code>GetInstance().Query()</code> — they get the singleton
+                  without knowing it's one.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--singleton-dim); color:var(--singleton);">05</div>
+              <div class="step-body">
+                <h5>Return interface, not pointer</h5>
+                <p>Return an interface from <code>GetInstance()</code> so callers can mock it in tests — critical for
+                  testability.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIAGRAM -->
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 700 160" xmlns="http://www.w3.org/2000/svg" style="font-family:'Space Mono',monospace">
+            <defs>
+              <marker id="arr-s" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#00d4aa" />
+              </marker>
+            </defs>
+            <!-- Callers -->
+            <rect x="10" y="30" width="110" height="36" rx="6" fill="rgba(0,212,170,0.1)" stroke="rgba(0,212,170,0.4)"
+              stroke-width="1.5" />
+            <text x="65" y="52" text-anchor="middle" fill="#00d4aa" font-size="11">Goroutine A</text>
+            <rect x="10" y="90" width="110" height="36" rx="6" fill="rgba(0,212,170,0.1)" stroke="rgba(0,212,170,0.4)"
+              stroke-width="1.5" />
+            <text x="65" y="112" text-anchor="middle" fill="#00d4aa" font-size="11">Goroutine B</text>
+            <!-- Arrows to Once -->
+            <line x1="120" y1="48" x2="200" y2="70" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#arr-s)" />
+            <line x1="120" y1="108" x2="200" y2="86" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#arr-s)" />
+            <!-- sync.Once box -->
+            <rect x="200" y="52" width="130" height="52" rx="8" fill="rgba(0,212,170,0.15)" stroke="#00d4aa"
+              stroke-width="2" />
+            <text x="265" y="72" text-anchor="middle" fill="#00d4aa" font-size="11" font-weight="bold">sync.Once</text>
+            <text x="265" y="90" text-anchor="middle" fill="#8892a4" font-size="9">.Do() — runs once</text>
+            <!-- Arrow to instance -->
+            <line x1="330" y1="78" x2="400" y2="78" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#arr-s)" />
+            <text x="365" y="70" text-anchor="middle" fill="#6272a4" font-size="9">creates</text>
+            <!-- Instance box -->
+            <rect x="400" y="52" width="130" height="52" rx="8" fill="rgba(0,212,170,0.2)" stroke="#00d4aa"
+              stroke-width="2.5" />
+            <text x="465" y="72" text-anchor="middle" fill="#00d4aa" font-size="11" font-weight="bold">*instance</text>
+            <text x="465" y="90" text-anchor="middle" fill="#8892a4" font-size="9">single shared object</text>
+            <!-- Arrow to return -->
+            <line x1="530" y1="78" x2="610" y2="78" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#arr-s)" />
+            <!-- Return box -->
+            <rect x="610" y="52" width="80" height="52" rx="8" fill="rgba(0,212,170,0.08)" stroke="rgba(0,212,170,0.3)"
+              stroke-width="1.5" />
+            <text x="650" y="72" text-anchor="middle" fill="#00d4aa" font-size="10">returns</text>
+            <text x="650" y="88" text-anchor="middle" fill="#8892a4" font-size="9">interface</text>
+            <!-- Labels -->
+            <text x="265" y="135" text-anchor="middle" fill="#6272a4" font-size="9">Goroutine-safe by design</text>
+            <text x="465" y="135" text-anchor="middle" fill="#6272a4" font-size="9">One allocation ever</text>
+          </svg>
+        </div>
+
+        <!-- CODE -->
+        <div class="code-bar">
+          <div class="dot-r"></div>
+          <div class="dot-y"></div>
+          <div class="dot-g"></div><span class="cb-label">singleton/db_pool.go</span>
+        </div>
+        <div class="code-block"><span class="kw">package</span> db
+
+          <span class="kw">import</span> <span class="str">"sync"</span>
+
+          <span class="cmt">// Interface — keeps it testable / mockable</span>
+          <span class="kw">type</span> <span class="pkg">Pool</span> <span class="kw">interface</span> {
+          <span class="fn">Query</span>(sql <span class="pkg">string</span>) ([]<span class="pkg">map</span>[<span
+            class="pkg">string</span>]<span class="pkg">any</span>, <span class="pkg">error</span>)
+          <span class="fn">Close</span>()
+          }
+
+          <span class="cmt">// Unexported — prevents external instantiation</span>
+          <span class="kw">type</span> <span class="pkg">dbPool</span> <span class="kw">struct</span> {
+          connStr <span class="pkg">string</span>
+          maxConn <span class="pkg">int</span>
+          }
+
+          <span class="kw">var</span> (
+          instance *<span class="pkg">dbPool</span>
+          once sync.<span class="pkg">Once</span> <span class="cmt">// zero value is ready to use</span>
+          )
+
+          <span class="cmt">// GetInstance — goroutine-safe, lazy initialization</span>
+          <span class="kw">func</span> <span class="fn">GetInstance</span>() <span class="pkg">Pool</span> {
+          once.<span class="fn">Do</span>(<span class="kw">func</span>() {
+          instance = &<span class="pkg">dbPool</span>{
+          connStr: <span class="str">"postgres://..."</span>,
+          maxConn: <span class="num">20</span>,
+          }
+          })
+          <span class="kw">return</span> instance
+          }
+
+          <span class="kw">func</span> (p *<span class="pkg">dbPool</span>) <span class="fn">Query</span>(sql <span
+            class="pkg">string</span>) ([]<span class="pkg">map</span>[<span class="pkg">string</span>]<span
+            class="pkg">any</span>, <span class="pkg">error</span>) {
+          <span class="cmt">// All goroutines share this single connection pool</span>
+          <span class="kw">return</span> nil, nil
+          }
+
+          <span class="cmt">// Usage across the entire app:</span>
+          <span class="cmt">// db.GetInstance().Query("SELECT * FROM orders")</span>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Guarantees single instance — saves memory (DB pools, config)</li>
+              <li>sync.Once is zero-overhead after first call</li>
+              <li>Lazy init — no resource waste if never accessed</li>
+              <li>Global access without passing dependencies everywhere</li>
+              <li>Thread-safe without any extra locking in caller code</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Tight coupling — hard to swap implementations</li>
+              <li>Makes unit testing harder (global state)</li>
+              <li>Violates Single Responsibility Principle</li>
+              <li>Hidden dependency — caller doesn't declare it needs this</li>
+              <li>Shared mutable state = concurrency bugs if methods not safe</li>
+            </ul>
+          </div>
+        </div>
+        <div class="example-card">
+          <div class="example-icon">🍽️</div>
+          <div>
+            <div class="example-title" style="color:var(--singleton)">Restaurant POS System — Database Connection Pool
+            </div>
+            <div class="example-desc">A restaurant Point-of-Sale system has dozens of terminals (goroutines)
+              simultaneously placing orders, updating inventory, and printing receipts. All of them use
+              <code>db.GetInstance()</code> to access the <em>same</em> PostgreSQL connection pool — never creating 50
+              separate pools. The singleton manages pool sizing, keeps connections warm, and handles reconnection —
+              transparently to every terminal handler.
+            </div>
+            <div class="tags" style="margin-top:10px">
+              <span class="tag tc-singleton">DB Connection Pool</span>
+              <span class="tag tc-singleton">Config Manager</span>
+              <span class="tag tc-singleton">Logger Instance</span>
+              <span class="tag tc-singleton">Cache Client</span>
+              <span class="tag green">Redis Client</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ BUILDER ═══════════════ -->
+  <section id="builder">
+    <div class="container">
+      <div class="section-label">Pattern 02 · Creational</div>
+      <div class="section-title" style="margin-bottom:0">Builder Pattern</div>
+      <div class="pattern-block" style="margin-top:28px">
+        <div class="pattern-header ph-builder">
+          <div class="pattern-icon-lg">🏗️</div>
+          <div>
+            <div class="pattern-name c-builder">Builder</div>
+            <div class="pattern-category">Creational Pattern · GoF Classic</div>
+            <div class="pattern-tagline">Separates the construction of a <strong>complex object</strong> from its
+              representation. Allows building objects step-by-step using method chaining, making construction readable
+              and safe — especially when objects have many optional fields.</div>
+            <div class="stat-row">
+              <span class="stat">Category: Creational</span>
+              <span class="stat">Method chaining: ✓</span>
+              <span class="stat">Replaces: Long constructors</span>
+              <span class="stat">Industry use: Very High</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--builder)"></span> What is Builder?</h4>
+            <p>When an object needs many configuration options — some required, some optional — a single constructor
+              becomes unwieldy. Builder solves this by using a separate <code>Builder</code> struct with setter methods
+              that each return the builder itself, enabling fluent method chaining:
+              <code>NewQuery().Table("orders").Where("status=?","pending").Limit(10).Build()</code>.
+            </p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--builder)"></span> How It Works</h4>
+            <ul>
+              <li>Create a <code>Builder</code> struct mirroring the target struct's fields</li>
+              <li>Each setter method modifies the builder and returns <code>*Builder</code></li>
+              <li>Terminal <code>Build()</code> method validates and constructs the final object</li>
+              <li>Validation errors bubble up only at <code>Build()</code> — not during chaining</li>
+              <li>Final object is often immutable (value, not pointer)</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--builder)"></span> Rules & Conditions</h4>
+            <ul>
+              <li>Required fields validated in <code>Build()</code> — never silently ignored</li>
+              <li>Setter methods must return <code>*Builder</code> for chaining</li>
+              <li>Builder should be a <strong>separate type</strong>, not the target itself</li>
+              <li>The target object should have no exported setters (immutability)</li>
+              <li>Consider <code>functional options</code> pattern as a Go-idiomatic alternative</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--builder)"></span> Functional Options Variant</h4>
+            <p>Go's idiomatic alternative: <code>type Option func(*Server)</code>. Functions like
+              <code>WithTimeout(t time.Duration)</code> return <code>Option</code> closures applied at construction.
+              Used extensively in the Go standard library and popular packages (gRPC, zap).
+            </p>
+            <div class="tags" style="margin-top:8px">
+              <span class="tag tc-builder">Functional Options</span>
+              <span class="tag tc-builder">Fluent API</span>
+              <span class="tag tc-builder">Method Chaining</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dot-r"></div>
+          <div class="dot-y"></div>
+          <div class="dot-g"></div><span class="cb-label">builder/query_builder.go — Restaurant Order Query</span>
+        </div>
+        <div class="code-block"><span class="kw">package</span> query
+
+          <span class="kw">import</span> (
+          <span class="str">"errors"</span>
+          <span class="str">"fmt"</span>
+          )
+
+          <span class="cmt">// Target object — immutable once built</span>
+          <span class="kw">type</span> <span class="pkg">Query</span> <span class="kw">struct</span> {
+          table <span class="pkg">string</span>
+          where <span class="pkg">string</span>
+          limit <span class="pkg">int</span>
+          offset <span class="pkg">int</span>
+          order <span class="pkg">string</span>
+          }
+          <span class="kw">func</span> (q <span class="pkg">Query</span>) <span class="fn">SQL</span>() <span
+            class="pkg">string</span> {
+          <span class="kw">return</span> fmt.<span class="fn">Sprintf</span>(<span class="str">"SELECT * FROM %s WHERE
+            %s ORDER BY %s LIMIT %d OFFSET %d"</span>,
+          q.table, q.where, q.order, q.limit, q.offset)
+          }
+
+          <span class="cmt">// Builder — accumulates config step by step</span>
+          <span class="kw">type</span> <span class="pkg">QueryBuilder</span> <span class="kw">struct</span> { q <span
+            class="pkg">Query</span>; err <span class="pkg">error</span> }
+
+          <span class="kw">func</span> <span class="fn">NewQuery</span>() *<span class="pkg">QueryBuilder</span> { <span
+            class="kw">return</span> &<span class="pkg">QueryBuilder</span>{} }
+          <span class="kw">func</span> (b *<span class="pkg">QueryBuilder</span>) <span class="fn">Table</span>(t <span
+            class="pkg">string</span>) *<span class="pkg">QueryBuilder</span> { b.q.table = t; <span
+            class="kw">return</span> b }
+          <span class="kw">func</span> (b *<span class="pkg">QueryBuilder</span>) <span class="fn">Where</span>(w <span
+            class="pkg">string</span>) *<span class="pkg">QueryBuilder</span> { b.q.where = w; <span
+            class="kw">return</span> b }
+          <span class="kw">func</span> (b *<span class="pkg">QueryBuilder</span>) <span class="fn">Limit</span>(n <span
+            class="pkg">int</span>) *<span class="pkg">QueryBuilder</span> { b.q.limit = n; <span
+            class="kw">return</span> b }
+          <span class="kw">func</span> (b *<span class="pkg">QueryBuilder</span>) <span class="fn">Offset</span>(n <span
+            class="pkg">int</span>) *<span class="pkg">QueryBuilder</span> { b.q.offset = n; <span
+            class="kw">return</span> b }
+          <span class="kw">func</span> (b *<span class="pkg">QueryBuilder</span>) <span class="fn">OrderBy</span>(o
+          <span class="pkg">string</span>) *<span class="pkg">QueryBuilder</span>{ b.q.order = o; <span
+            class="kw">return</span> b }
+
+          <span class="kw">func</span> (b *<span class="pkg">QueryBuilder</span>) <span class="fn">Build</span>() (<span
+            class="pkg">Query</span>, <span class="pkg">error</span>) {
+          <span class="kw">if</span> b.q.table == <span class="str">""</span> { <span class="kw">return</span> <span
+            class="pkg">Query</span>{}, errors.<span class="fn">New</span>(<span class="str">"table is required"</span>)
+          }
+          <span class="kw">if</span> b.q.limit == <span class="num">0</span> { b.q.limit = <span class="num">20</span> }
+          <span class="cmt">// sensible default</span>
+          <span class="kw">if</span> b.q.order == <span class="str">""</span> { b.q.order = <span
+            class="str">"id"</span> }
+          <span class="kw">return</span> b.q, nil
+          }
+
+          <span class="cmt">// Fluent usage — reads like natural language:</span>
+          <span class="cmt">// q, _ :=
+            NewQuery().Table("orders").Where("status='pending'").Limit(10).OrderBy("created_at DESC").Build()</span>
+          <span class="cmt">// fmt.Println(q.SQL())</span>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Readable, self-documenting object construction</li>
+              <li>Handles optional vs required fields cleanly</li>
+              <li>Validation in one place (Build())</li>
+              <li>Immutable final object — safer concurrency</li>
+              <li>Eliminates "telescoping constructor" anti-pattern</li>
+              <li>Easy to extend with new options</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>More boilerplate than simple structs</li>
+              <li>Two types to maintain (Builder + Target)</li>
+              <li>Method chaining errors deferred to Build()</li>
+              <li>Overkill for simple objects (3-4 fields)</li>
+              <li>Go's functional options pattern often preferred</li>
+            </ul>
+          </div>
+        </div>
+        <div class="example-card">
+          <div class="example-icon">📧</div>
+          <div>
+            <div class="example-title" style="color:var(--builder)">Food Delivery — Notification Builder</div>
+            <div class="example-desc">Building complex push notifications with optional channels (SMS/Email/WebPush),
+              localization, retry config, scheduling, and payload construction.
+              <code>NewNotification().To(userID).Via(SMS, Email).Message("Your order is ready!").Schedule(now.Add(5*time.Minute)).Build()</code>
+              — each field independent, validated at Build() time before sending to the notification microservice.
+            </div>
+            <div class="tags" style="margin-top:10px">
+              <span class="tag tc-builder">HTTP Client Config</span>
+              <span class="tag tc-builder">gRPC Server Options</span>
+              <span class="tag tc-builder">SQL Query Builder</span>
+              <span class="tag tc-builder">Email Builder</span>
+              <span class="tag green">Config Builder (zap.Logger)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ FACTORY ═══════════════ -->
+  <section id="factory">
+    <div class="container">
+      <div class="section-label">Pattern 03 · Creational</div>
+      <div class="section-title" style="margin-bottom:0">Factory Method Pattern</div>
+      <div class="pattern-block" style="margin-top:28px">
+        <div class="pattern-header ph-factory">
+          <div class="pattern-icon-lg">🏭</div>
+          <div>
+            <div class="pattern-name c-factory">Factory Method</div>
+            <div class="pattern-category">Creational Pattern · GoF Classic</div>
+            <div class="pattern-tagline">Defines an interface for creating objects but lets
+              <strong>subclasses/implementations decide</strong> which type to instantiate. In Go — a factory function
+              returns an interface, hiding the concrete type from the caller.
+            </div>
+            <div class="stat-row">
+              <span class="stat">Category: Creational</span>
+              <span class="stat">Returns: Interface</span>
+              <span class="stat">Hides: Concrete type</span>
+              <span class="stat">Industry use: Very High</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--factory)"></span> What is Factory?</h4>
+            <p>Instead of <code>&ConcreteType{}</code>, callers use a factory function like
+              <code>NewPaymentGateway("stripe")</code> which returns a <code>PaymentGateway</code> interface. The caller
+              doesn't know — or care — whether they got a Stripe, PayPal, or Razorpay implementation. Adding new
+              implementations requires no changes to caller code.
+            </p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--factory)"></span> How It Works</h4>
+            <ul>
+              <li>Define a <strong>product interface</strong> with common behavior</li>
+              <li>Create <strong>concrete types</strong> implementing the interface</li>
+              <li>Factory function takes a discriminator (string, enum, config)</li>
+              <li>Returns the interface type — caller is decoupled from concrete</li>
+              <li>New types added in factory only — Open/Closed Principle</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--factory)"></span> Characteristics</h4>
+            <ul>
+              <li><strong>Open/Closed:</strong> Open for extension, closed for modification</li>
+              <li><strong>Dependency Inversion:</strong> Depend on abstractions (interfaces)</li>
+              <li><strong>Single Responsibility:</strong> Object creation is centralized</li>
+              <li>Registry variant: map of factory functions per key</li>
+              <li>Plugin system variant: dynamic factory registration</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--factory)"></span> Best Used For</h4>
+            <ul>
+              <li>Payment gateway switching (Stripe/PayPal/Crypto)</li>
+              <li>Database driver selection (PostgreSQL/MySQL/SQLite)</li>
+              <li>Notification channels (Email/SMS/Push/Slack)</li>
+              <li>Storage backends (S3/GCS/Azure/Local)</li>
+              <li>Logger implementations (zap/logrus/slog)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dot-r"></div>
+          <div class="dot-y"></div>
+          <div class="dot-g"></div><span class="cb-label">factory/payment_gateway.go — E-Commerce Payment Factory</span>
+        </div>
+        <div class="code-block"><span class="kw">package</span> payment
+
+          <span class="kw">import</span> <span class="str">"fmt"</span>
+
+          <span class="cmt">// Product interface — the contract all gateways must fulfill</span>
+          <span class="kw">type</span> <span class="pkg">Gateway</span> <span class="kw">interface</span> {
+          <span class="fn">Charge</span>(amount <span class="pkg">float64</span>, currency, token <span
+            class="pkg">string</span>) (<span class="pkg">string</span>, <span class="pkg">error</span>)
+          <span class="fn">Refund</span>(txID <span class="pkg">string</span>, amount <span class="pkg">float64</span>)
+          <span class="pkg">error</span>
+          <span class="fn">Name</span>() <span class="pkg">string</span>
+          }
+
+          <span class="cmt">// Concrete implementations</span>
+          <span class="kw">type</span> <span class="pkg">stripeGateway</span> <span class="kw">struct</span>{ apiKey
+          <span class="pkg">string</span> }
+          <span class="kw">type</span> <span class="pkg">paypalGateway</span> <span class="kw">struct</span>{ clientID,
+          secret <span class="pkg">string</span> }
+          <span class="kw">type</span> <span class="pkg">razorpayGateway</span> <span class="kw">struct</span>{ key,
+          secret <span class="pkg">string</span> }
+
+          <span class="kw">func</span> (s *<span class="pkg">stripeGateway</span>) <span class="fn">Name</span>() <span
+            class="pkg">string</span> { <span class="kw">return</span> <span class="str">"Stripe"</span> }
+          <span class="kw">func</span> (p *<span class="pkg">paypalGateway</span>) <span class="fn">Name</span>() <span
+            class="pkg">string</span> { <span class="kw">return</span> <span class="str">"PayPal"</span> }
+          <span class="kw">func</span> (r *<span class="pkg">razorpayGateway</span>) <span class="fn">Name</span>()
+          <span class="pkg">string</span> { <span class="kw">return</span> <span class="str">"Razorpay"</span> }
+
+          <span class="cmt">// Registry pattern — map of factory functions</span>
+          <span class="kw">type</span> <span class="pkg">factoryFn</span> <span class="kw">func</span>(cfg <span
+            class="pkg">map</span>[<span class="pkg">string</span>]<span class="pkg">string</span>) <span
+            class="pkg">Gateway</span>
+
+          <span class="kw">var</span> registry = <span class="pkg">map</span>[<span class="pkg">string</span>]<span
+            class="pkg">factoryFn</span>{
+          <span class="str">"stripe"</span>: <span class="kw">func</span>(c <span class="pkg">map</span>[<span
+            class="pkg">string</span>]<span class="pkg">string</span>) <span class="pkg">Gateway</span> { <span
+            class="kw">return</span> &<span class="pkg">stripeGateway</span>{apiKey: c[<span class="str">"key"</span>]}
+          },
+          <span class="str">"paypal"</span>: <span class="kw">func</span>(c <span class="pkg">map</span>[<span
+            class="pkg">string</span>]<span class="pkg">string</span>) <span class="pkg">Gateway</span> { <span
+            class="kw">return</span> &<span class="pkg">paypalGateway</span>{clientID: c[<span class="str">"id"</span>]}
+          },
+          <span class="str">"razorpay"</span>: <span class="kw">func</span>(c <span class="pkg">map</span>[<span
+            class="pkg">string</span>]<span class="pkg">string</span>) <span class="pkg">Gateway</span> { <span
+            class="kw">return</span> &<span class="pkg">razorpayGateway</span>{key: c[<span class="str">"key"</span>]}
+          },
+          }
+
+          <span class="cmt">// Factory function — decouples caller from concrete type</span>
+          <span class="kw">func</span> <span class="fn">New</span>(provider <span class="pkg">string</span>, cfg <span
+            class="pkg">map</span>[<span class="pkg">string</span>]<span class="pkg">string</span>) (<span
+            class="pkg">Gateway</span>, <span class="pkg">error</span>) {
+          fn, ok := registry[provider]
+          <span class="kw">if</span> !ok { <span class="kw">return</span> nil, fmt.<span class="fn">Errorf</span>(<span
+            class="str">"unknown gateway: %s"</span>, provider) }
+          <span class="kw">return</span> <span class="fn">fn</span>(cfg), nil
+          }
+
+          <span class="cmt">// Caller never knows if it's Stripe or PayPal:</span>
+          <span class="cmt">// gw, _ := payment.New(cfg.PaymentProvider, cfg.Keys)</span>
+          <span class="cmt">// gw.Charge(99.99, "USD", token) ← same code, any gateway</span>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Eliminates coupling to concrete implementations</li>
+              <li>Add new types without changing caller code (OCP)</li>
+              <li>Centralized object creation logic</li>
+              <li>Easy to mock in tests (inject fake implementation)</li>
+              <li>Runtime polymorphism — swap provider via config</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Type switch in factory can become complex</li>
+              <li>Indirect creation harder to trace in debugger</li>
+              <li>Runtime errors if discriminator is invalid</li>
+              <li>Possible over-engineering for small projects</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ ADAPTER ═══════════════ -->
+  <section id="adapter">
+    <div class="container">
+      <div class="section-label">Pattern 04 · Structural</div>
+      <div class="section-title" style="margin-bottom:0">Adapter Pattern</div>
+      <div class="pattern-block" style="margin-top:28px">
+        <div class="pattern-header ph-adapter">
+          <div class="pattern-icon-lg">🔌</div>
+          <div>
+            <div class="pattern-name c-adapter">Adapter</div>
+            <div class="pattern-category">Structural Pattern · GoF Classic</div>
+            <div class="pattern-tagline">Makes <strong>incompatible interfaces work together</strong> by wrapping one
+              type inside another that translates calls. In Go — you wrap a third-party type in a struct implementing
+              your own interface, creating a bridge between your domain and external systems.</div>
+            <div class="stat-row">
+              <span class="stat">Category: Structural</span>
+              <span class="stat">Also called: Wrapper</span>
+              <span class="stat">Direction: One-way</span>
+              <span class="stat">Industry use: Very High</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--adapter)"></span> What is Adapter?</h4>
+            <p>You have a system expecting a <code>Logger</code> interface with <code>Info(msg string)</code>, but the
+              third-party library you want to use has <code>Log(level, msg string)</code>. The Adapter wraps the
+              third-party logger in a struct that implements your <code>Logger</code> interface — no changes to your
+              system, no changes to theirs. Plug and play.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--adapter)"></span> How It Works</h4>
+            <ul>
+              <li>Define your <strong>target interface</strong> (what your system expects)</li>
+              <li>You have an <strong>adaptee</strong> — the incompatible external type</li>
+              <li>Create an <strong>adapter struct</strong> that wraps the adaptee</li>
+              <li>Implement target interface methods by translating to adaptee calls</li>
+              <li>Your system uses the adapter, never the adaptee directly</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--adapter)"></span> When to Use</h4>
+            <ul>
+              <li>Integrating third-party libraries with your domain interfaces</li>
+              <li>Legacy code migration — new interface, old implementation</li>
+              <li>Testing — adapting production dependencies to mock interfaces</li>
+              <li>Payment/SMS/Email provider swapping without code changes</li>
+              <li>Converting data formats (JSON↔XML, REST↔gRPC)</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--adapter)"></span> Go's Implicit Interfaces</h4>
+            <p>Go's structural typing makes Adapter very natural. If a type has the right methods, it automatically
+              satisfies the interface — no <code>implements</code> keyword. This means many types are <em>already</em>
+              adapters. The <code>io.Reader</code>/<code>io.Writer</code> ecosystem is built entirely on this principle.
+            </p>
+          </div>
+        </div>
+
+        <!-- DIAGRAM -->
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg" style="font-family:'Space Mono',monospace">
+            <defs>
+              <marker id="arr-a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#f7c948" />
+              </marker>
+            </defs>
+            <rect x="10" y="45" width="130" height="50" rx="8" fill="rgba(247,201,72,0.1)" stroke="rgba(247,201,72,0.4)"
+              stroke-width="1.5" />
+            <text x="75" y="66" text-anchor="middle" fill="#f7c948" font-size="11" font-weight="bold">Your System</text>
+            <text x="75" y="82" text-anchor="middle" fill="#8892a4" font-size="9">calls Logger.Info()</text>
+            <line x1="140" y1="70" x2="200" y2="70" stroke="#f7c948" stroke-width="1.5" marker-end="url(#arr-a)" />
+
+            <rect x="200" y="30" width="150" height="80" rx="8" fill="rgba(247,201,72,0.2)" stroke="#f7c948"
+              stroke-width="2.5" />
+            <text x="275" y="55" text-anchor="middle" fill="#f7c948" font-size="11" font-weight="bold">Adapter</text>
+            <text x="275" y="72" text-anchor="middle" fill="#8892a4" font-size="9">implements Logger</text>
+            <text x="275" y="88" text-anchor="middle" fill="#cdd9e5" font-size="9">Info() → zap.Info()</text>
+            <line x1="350" y1="70" x2="420" y2="70" stroke="#f7c948" stroke-width="1.5" marker-end="url(#arr-a)" />
+            <text x="385" y="60" text-anchor="middle" fill="#6272a4" font-size="9">translates</text>
+
+            <rect x="420" y="30" width="150" height="80" rx="8" fill="rgba(124,106,247,0.1)"
+              stroke="rgba(124,106,247,0.4)" stroke-width="1.5" />
+            <text x="495" y="55" text-anchor="middle" fill="#7c6af7" font-size="11" font-weight="bold">Adaptee</text>
+            <text x="495" y="72" text-anchor="middle" fill="#8892a4" font-size="9">go.uber.org/zap</text>
+            <text x="495" y="88" text-anchor="middle" fill="#cdd9e5" font-size="9">zap.Logger</text>
+
+            <line x1="570" y1="70" x2="640" y2="70" stroke="rgba(247,201,72,0.4)" stroke-width="1"
+              stroke-dasharray="4,3" marker-end="url(#arr-a)" />
+            <rect x="640" y="45" width="50" height="50" rx="6" fill="rgba(74,222,128,.08)" stroke="rgba(74,222,128,.2)"
+              stroke-width="1" />
+            <text x="665" y="68" text-anchor="middle" fill="#4ade80" font-size="9">Output</text>
+            <text x="665" y="82" text-anchor="middle" fill="#6272a4" font-size="8">logs</text>
+
+            <text x="275" y="125" text-anchor="middle" fill="#6272a4" font-size="9">Your interface, unchanged. Their
+              library, unchanged.</text>
+          </svg>
+        </div>
+
+        <div class="code-bar">
+          <div class="dot-r"></div>
+          <div class="dot-y"></div>
+          <div class="dot-g"></div><span class="cb-label">adapter/logger_adapter.go — Wrapping zap.Logger</span>
+        </div>
+        <div class="code-block"><span class="kw">package</span> logger
+
+          <span class="kw">import</span> <span class="str">"go.uber.org/zap"</span>
+
+          <span class="cmt">// Target interface — YOUR system's expectation</span>
+          <span class="kw">type</span> <span class="pkg">Logger</span> <span class="kw">interface</span> {
+          <span class="fn">Info</span>(msg <span class="pkg">string</span>, fields ...<span class="pkg">any</span>)
+          <span class="fn">Error</span>(msg <span class="pkg">string</span>, err <span class="pkg">error</span>)
+          <span class="fn">With</span>(key <span class="pkg">string</span>, val <span class="pkg">any</span>) <span
+            class="pkg">Logger</span>
+          }
+
+          <span class="cmt">// Adapter — wraps *zap.Logger to satisfy Logger interface</span>
+          <span class="kw">type</span> <span class="pkg">ZapAdapter</span> <span class="kw">struct</span>{ z *zap.<span
+            class="pkg">Logger</span> }
+
+          <span class="kw">func</span> <span class="fn">NewZapAdapter</span>(z *zap.<span class="pkg">Logger</span>)
+          <span class="pkg">Logger</span> { <span class="kw">return</span> &<span class="pkg">ZapAdapter</span>{z: z} }
+
+          <span class="cmt">// Translation layer — adapt your interface to zap's API</span>
+          <span class="kw">func</span> (a *<span class="pkg">ZapAdapter</span>) <span class="fn">Info</span>(msg <span
+            class="pkg">string</span>, fields ...<span class="pkg">any</span>) {
+          a.z.<span class="fn">Sugar</span>().<span class="fn">Infow</span>(msg, fields...) <span class="cmt">//
+            translate</span>
+          }
+          <span class="kw">func</span> (a *<span class="pkg">ZapAdapter</span>) <span class="fn">Error</span>(msg <span
+            class="pkg">string</span>, err <span class="pkg">error</span>) {
+          a.z.<span class="fn">Error</span>(msg, zap.<span class="fn">Error</span>(err)) <span class="cmt">//
+            translate</span>
+          }
+          <span class="kw">func</span> (a *<span class="pkg">ZapAdapter</span>) <span class="fn">With</span>(key <span
+            class="pkg">string</span>, val <span class="pkg">any</span>) <span class="pkg">Logger</span> {
+          <span class="kw">return</span> &<span class="pkg">ZapAdapter</span>{z: a.z.<span
+            class="fn">With</span>(zap.<span class="fn">Any</span>(key, val))}
+          }
+
+          <span class="cmt">// Swap to logrus tomorrow — zero changes in business code:</span>
+          <span class="cmt">// type LogrusAdapter struct{ l *logrus.Logger }</span>
+          <span class="cmt">// func (a *LogrusAdapter) Info(msg string, fields ...any) { a.l.Info(msg) }</span>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Swap third-party dependencies without touching domain code</li>
+              <li>Makes external libraries testable via mock adapters</li>
+              <li>Preserves your domain interface purity</li>
+              <li>Open/Closed — new providers without modifying existing code</li>
+              <li>Natural in Go — no boilerplate registration needed</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Adds indirection layer — slight performance overhead</li>
+              <li>Can create an explosion of adapter types</li>
+              <li>Leaking adaptee concepts through adapter can happen</li>
+              <li>Debugging crosses adapter boundary — harder to trace</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ OBSERVER ═══════════════ -->
+  <section id="observer">
+    <div class="container">
+      <div class="section-label">Pattern 05 · Behavioral</div>
+      <div class="section-title" style="margin-bottom:0">Observer Pattern</div>
+      <div class="pattern-block" style="margin-top:28px">
+        <div class="pattern-header ph-observer">
+          <div class="pattern-icon-lg">👁️</div>
+          <div>
+            <div class="pattern-name c-observer">Observer (Event Bus)</div>
+            <div class="pattern-category">Behavioral Pattern · GoF Classic · Go: channels</div>
+            <div class="pattern-tagline">Defines a one-to-many dependency — when one object (Subject/Publisher) changes
+              state, all registered observers (Subscribers) are <strong>notified automatically</strong>. In Go this is
+              elegantly expressed using channels, goroutines, and function callbacks.</div>
+            <div class="stat-row">
+              <span class="stat">Category: Behavioral</span>
+              <span class="stat">Go idiom: channels</span>
+              <span class="stat">Also: Pub/Sub, EventBus</span>
+              <span class="stat">Industry use: Very High</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--observer)"></span> How It Works (Go Style)</h4>
+            <ul>
+              <li><strong>Publisher:</strong> holds a list of subscriber channels or callbacks</li>
+              <li><strong>Subscribe(topic):</strong> returns a channel — caller receives events on it</li>
+              <li><strong>Publish(event):</strong> sends to all subscriber channels (non-blocking)</li>
+              <li><strong>Unsubscribe:</strong> remove channel from list, close it</li>
+              <li>Each subscriber runs in its own goroutine — concurrent handling</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--observer)"></span> Conditions & Rules</h4>
+            <ul>
+              <li>Use <strong>buffered channels</strong> to avoid blocking publisher</li>
+              <li>Always handle subscriber removal — prevent memory leaks</li>
+              <li><strong>sync.RWMutex</strong> for subscriber list — concurrent read/write</li>
+              <li>Non-blocking send: <code>select { case ch &lt;- e: default: }</code></li>
+              <li>Context cancellation for graceful subscriber shutdown</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--observer)"></span> Real-World Triggers</h4>
+            <ul>
+              <li>Order placed → notify kitchen, inventory, analytics</li>
+              <li>Stock price change → notify traders, alerts, charting</li>
+              <li>User signup → send welcome email, init free trial, log</li>
+              <li>Sensor reading → trigger alarms, update dashboard, store</li>
+              <li>Payment success → fulfill order, notify user, update ledger</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--observer)"></span> Go's Advantage</h4>
+            <p>Go channels make Observer feel <em>native</em>. A channel IS a typed, buffered, goroutine-safe queue.
+              Each subscriber is just a goroutine reading from its channel. This eliminates explicit locking in many
+              patterns. The <code>select</code> statement enables non-blocking multi-topic subscription naturally.</p>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dot-r"></div>
+          <div class="dot-y"></div>
+          <div class="dot-g"></div><span class="cb-label">observer/event_bus.go — Restaurant Order Event System</span>
+        </div>
+        <div class="code-block"><span class="kw">package</span> events
+
+          <span class="kw">import</span> <span class="str">"sync"</span>
+
+          <span class="kw">type</span> <span class="pkg">OrderEvent</span> <span class="kw">struct</span> {
+          Type <span class="pkg">string</span> <span class="cmt">// "placed", "ready", "delivered"</span>
+          OrderID <span class="pkg">string</span>
+          TableNo <span class="pkg">int</span>
+          }
+
+          <span class="cmt">// EventBus — the Subject/Publisher</span>
+          <span class="kw">type</span> <span class="pkg">EventBus</span> <span class="kw">struct</span> {
+          mu sync.<span class="pkg">RWMutex</span>
+          subscribers <span class="pkg">map</span>[<span class="pkg">string</span>][]chan <span
+            class="pkg">OrderEvent</span>
+          }
+
+          <span class="kw">func</span> <span class="fn">NewEventBus</span>() *<span class="pkg">EventBus</span> {
+          <span class="kw">return</span> &<span class="pkg">EventBus</span>{subscribers: <span
+            class="fn">make</span>(<span class="pkg">map</span>[<span class="pkg">string</span>][]chan <span
+            class="pkg">OrderEvent</span>)}
+          }
+
+          <span class="cmt">// Subscribe — returns a buffered channel the caller reads from</span>
+          <span class="kw">func</span> (b *<span class="pkg">EventBus</span>) <span class="fn">Subscribe</span>(topic
+          <span class="pkg">string</span>) chan <span class="pkg">OrderEvent</span> {
+          ch := <span class="fn">make</span>(chan <span class="pkg">OrderEvent</span>, <span class="num">64</span>)
+          <span class="cmt">// buffered — publisher never blocks</span>
+          b.mu.<span class="fn">Lock</span>()
+          b.subscribers[topic] = <span class="fn">append</span>(b.subscribers[topic], ch)
+          b.mu.<span class="fn">Unlock</span>()
+          <span class="kw">return</span> ch
+          }
+
+          <span class="cmt">// Publish — fanout to all subscribers of the topic</span>
+          <span class="kw">func</span> (b *<span class="pkg">EventBus</span>) <span class="fn">Publish</span>(topic
+          <span class="pkg">string</span>, evt <span class="pkg">OrderEvent</span>) {
+          b.mu.<span class="fn">RLock</span>()
+          defer b.mu.<span class="fn">RUnlock</span>()
+          <span class="kw">for</span> _, ch := <span class="kw">range</span> b.subscribers[topic] {
+          <span class="kw">select</span> {
+          <span class="kw">case</span> ch &lt;- evt: <span class="cmt">// non-blocking send</span>
+          <span class="kw">default</span>: <span class="cmt">// slow subscriber — drop or log</span>
+          }
+          }
+          }
+
+          <span class="cmt">// Kitchen subscriber goroutine:</span>
+          <span class="cmt">// ch := bus.Subscribe("order.placed")</span>
+          <span class="cmt">// go func() { for evt := range ch { printTicket(evt) } }()</span>
+          <span class="cmt">// Analytics subscriber runs independently in parallel.</span>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Decouples event producers from consumers</li>
+              <li>Add new subscribers without touching publisher</li>
+              <li>Concurrent handling — each subscriber is independent</li>
+              <li>Go channels are naturally goroutine-safe</li>
+              <li>Easy to test — inject event channel in unit tests</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Subscriber list management — memory leak risk</li>
+              <li>Event ordering not guaranteed across goroutines</li>
+              <li>Slow subscribers can drop events (non-blocking send)</li>
+              <li>Debugging: hard to trace which subscriber caused an issue</li>
+              <li>Circular event chains can cause infinite loops</li>
+            </ul>
+          </div>
+        </div>
+        <div class="example-card">
+          <div class="example-icon">🚚</div>
+          <div>
+            <div class="example-title" style="color:var(--observer)">Food Delivery — Real-Time Order Lifecycle</div>
+            <div class="example-desc">When a customer places an order: <strong>Kitchen</strong> subscriber prints the
+              cooking ticket → <strong>Inventory</strong> subscriber decrements stock → <strong>Analytics</strong>
+              subscriber logs the sale → <strong>Notification</strong> subscriber pushes "Order confirmed!" to
+              customer's phone → <strong>Driver</strong> service subscriber queues a pickup assignment. All five run in
+              separate goroutines, simultaneously, from one <code>bus.Publish("order.placed", evt)</code> call.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ STRATEGY ═══════════════ -->
+  <section id="strategy">
+    <div class="container">
+      <div class="section-label">Pattern 06 · Behavioral</div>
+      <div class="section-title" style="margin-bottom:0">Strategy Pattern</div>
+      <div class="pattern-block" style="margin-top:28px">
+        <div class="pattern-header ph-strategy">
+          <div class="pattern-icon-lg">♟️</div>
+          <div>
+            <div class="pattern-name c-strategy">Strategy</div>
+            <div class="pattern-category">Behavioral Pattern · GoF Classic</div>
+            <div class="pattern-tagline">Defines a family of algorithms, encapsulates each one, and makes them
+              <strong>interchangeable at runtime</strong>. The client selects which strategy to use — the context
+              delegates to it. In Go, strategies are simply interfaces with a single method.
+            </div>
+            <div class="stat-row">
+              <span class="stat">Category: Behavioral</span>
+              <span class="stat">Go idiom: func type / interface</span>
+              <span class="stat">Runtime swappable: ✓</span>
+              <span class="stat">Industry use: Very High</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--strategy)"></span> What is Strategy?</h4>
+            <p>Your <code>Sorter</code> service needs to sort data — sometimes QuickSort (best average), sometimes
+              MergeSort (stable), sometimes RadixSort (integers only). Strategy wraps each algorithm behind a common
+              interface. At runtime, inject the right strategy based on data type, size, or user preference — no if/else
+              chains.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--strategy)"></span> Go Function Types</h4>
+            <p>In Go, a Strategy can be as simple as a function type:
+              <code>type PricingStrategy func(basePrice float64, quantity int) float64</code>. Functions like
+              <code>BulkDiscount</code>, <code>MemberDiscount</code>, <code>FlashSale</code> all satisfy this type. This
+              is the most idiomatic Go approach — no interface boilerplate for simple strategies.
+            </p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--strategy)"></span> When to Use</h4>
+            <ul>
+              <li>Multiple pricing/discount algorithms for e-commerce</li>
+              <li>Different sorting/searching based on data characteristics</li>
+              <li>Authentication strategies (JWT, OAuth, API Key, Session)</li>
+              <li>Routing algorithms (round-robin, least-connections, weighted)</li>
+              <li>Tax calculation strategies per country/region</li>
+              <li>Compression: gzip vs zstd vs lz4 — pick per content type</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--strategy)"></span> Design Approach</h4>
+            <ul>
+              <li>Define <strong>Strategy interface</strong> with single method (ISP)</li>
+              <li>Implement multiple concrete strategies</li>
+              <li><strong>Context struct</strong> holds current strategy as field</li>
+              <li><code>SetStrategy()</code> method allows runtime swap</li>
+              <li><code>Execute()</code> delegates to the current strategy</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dot-r"></div>
+          <div class="dot-y"></div>
+          <div class="dot-g"></div><span class="cb-label">strategy/pricing.go — E-Commerce Dynamic Pricing</span>
+        </div>
+        <div class="code-block"><span class="kw">package</span> pricing
+
+          <span class="cmt">// Strategy interface — one method, one responsibility</span>
+          <span class="kw">type</span> <span class="pkg">PricingStrategy</span> <span class="kw">interface</span> {
+          <span class="fn">Calculate</span>(basePrice <span class="pkg">float64</span>, qty <span
+            class="pkg">int</span>, user <span class="pkg">User</span>) <span class="pkg">float64</span>
+          }
+
+          <span class="cmt">// Concrete strategies</span>
+          <span class="kw">type</span> <span class="pkg">StandardPricing</span> <span class="kw">struct</span>{}
+          <span class="kw">func</span> (s <span class="pkg">StandardPricing</span>) <span
+            class="fn">Calculate</span>(base <span class="pkg">float64</span>, qty <span class="pkg">int</span>, u <span
+            class="pkg">User</span>) <span class="pkg">float64</span> {
+          <span class="kw">return</span> base * <span class="pkg">float64</span>(qty)
+          }
+
+          <span class="kw">type</span> <span class="pkg">BulkDiscount</span> <span class="kw">struct</span>{ Threshold
+          <span class="pkg">int</span>; Percent <span class="pkg">float64</span> }
+          <span class="kw">func</span> (b <span class="pkg">BulkDiscount</span>) <span class="fn">Calculate</span>(base
+          <span class="pkg">float64</span>, qty <span class="pkg">int</span>, u <span class="pkg">User</span>) <span
+            class="pkg">float64</span> {
+          price := base * <span class="pkg">float64</span>(qty)
+          <span class="kw">if</span> qty >= b.Threshold { price *= (<span class="num">1</span> - b.Percent/<span
+            class="num">100</span>) }
+          <span class="kw">return</span> price
+          }
+
+          <span class="kw">type</span> <span class="pkg">MemberPricing</span> <span class="kw">struct</span>{
+          DiscountPct <span class="pkg">float64</span> }
+          <span class="kw">func</span> (m <span class="pkg">MemberPricing</span>) <span class="fn">Calculate</span>(base
+          <span class="pkg">float64</span>, qty <span class="pkg">int</span>, u <span class="pkg">User</span>) <span
+            class="pkg">float64</span> {
+          <span class="kw">if</span> !u.IsMember { <span class="kw">return</span> base * <span
+            class="pkg">float64</span>(qty) }
+          <span class="kw">return</span> base * <span class="pkg">float64</span>(qty) * (<span class="num">1</span> -
+          m.DiscountPct/<span class="num">100</span>)
+          }
+
+          <span class="cmt">// Context — holds and delegates to strategy</span>
+          <span class="kw">type</span> <span class="pkg">PriceCalculator</span> <span class="kw">struct</span>{ strategy
+          <span class="pkg">PricingStrategy</span> }
+
+          <span class="kw">func</span> (c *<span class="pkg">PriceCalculator</span>) <span
+            class="fn">SetStrategy</span>(s <span class="pkg">PricingStrategy</span>) { c.strategy = s }
+          <span class="kw">func</span> (c *<span class="pkg">PriceCalculator</span>) <span class="fn">Price</span>(base
+          <span class="pkg">float64</span>, qty <span class="pkg">int</span>, u <span class="pkg">User</span>) <span
+            class="pkg">float64</span> {
+          <span class="kw">return</span> c.strategy.<span class="fn">Calculate</span>(base, qty, u)
+          }
+
+          <span class="cmt">// Runtime switch based on cart contents:</span>
+          <span class="cmt">// if cart.Qty > 50 { calc.SetStrategy(BulkDiscount{50, 15}) }</span>
+          <span class="cmt">// if user.IsMember { calc.SetStrategy(MemberPricing{10}) }</span>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Eliminates complex if/else or switch chains</li>
+              <li>Algorithms can change at runtime</li>
+              <li>Easy to add new strategies without modifying context</li>
+              <li>Each strategy is independently testable</li>
+              <li>Go function types make simple strategies zero-overhead</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Client must know which strategy to pick (coupling to strategy types)</li>
+              <li>Too many strategy types can overwhelm a package</li>
+              <li>Overhead if strategies are trivial (use simple if/else instead)</li>
+              <li>Can be confused with State pattern — they look similar</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ DECORATOR ═══════════════ -->
+  <section id="decorator">
+    <div class="container">
+      <div class="section-label">Pattern 07 · Structural</div>
+      <div class="section-title" style="margin-bottom:0">Decorator Pattern</div>
+      <div class="pattern-block" style="margin-top:28px">
+        <div class="pattern-header ph-decorator">
+          <div class="pattern-icon-lg">🎁</div>
+          <div>
+            <div class="pattern-name c-decorator">Decorator</div>
+            <div class="pattern-category">Structural Pattern · GoF Classic</div>
+            <div class="pattern-tagline">Attaches <strong>additional responsibilities to an object dynamically</strong>
+              without altering its structure. In Go — wrap one interface implementation inside another that adds
+              behavior before/after delegating. This is how Go's <code>io</code> package works entirely.</div>
+            <div class="stat-row">
+              <span class="stat">Category: Structural</span>
+              <span class="stat">Composable: ✓✓</span>
+              <span class="stat">Go stdlib: io.MultiWriter</span>
+              <span class="stat">Industry use: High</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--decorator)"></span> What is Decorator?</h4>
+            <p>You have a <code>DataStore</code> interface. You want to add caching to it — but only for certain
+              deployments, and you don't want to modify the core store. Wrap it:
+              <code>CachedStore{inner: realStore}</code>. The cached store checks cache first, falls through to inner on
+              miss. Stack more: <code>LoggedStore{inner: CachedStore{inner: realStore}}</code>. Infinite composability.
+            </p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--decorator)"></span> How It Works</h4>
+            <ul>
+              <li>Decorator struct implements the <strong>same interface</strong> as the wrapped type</li>
+              <li>Holds a reference to the <strong>inner/wrapped</strong> implementation</li>
+              <li>Each method: does extra work, then delegates to inner</li>
+              <li>Stack decorators freely: <code>A{B{C{core}}}</code></li>
+              <li>Order matters — outer runs first, then inner</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--decorator)"></span> Go stdlib Examples</h4>
+            <ul>
+              <li><code>bufio.NewReader(r io.Reader)</code> — buffered decorator</li>
+              <li><code>gzip.NewReader(r io.Reader)</code> — decompression decorator</li>
+              <li><code>io.LimitReader(r, n)</code> — size-limiting decorator</li>
+              <li><code>http.ResponseWriter</code> — HTTP middleware is decorator</li>
+              <li><code>tls.Client(conn)</code> — TLS wrapping decorator</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--decorator)"></span> When to Use</h4>
+            <ul>
+              <li>Adding caching layer to data store</li>
+              <li>Adding logging/metrics to service calls</li>
+              <li>Adding retry logic to HTTP clients</li>
+              <li>Adding rate limiting to any resource</li>
+              <li>Adding encryption/compression to streams</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dot-r"></div>
+          <div class="dot-y"></div>
+          <div class="dot-g"></div><span class="cb-label">decorator/cache_store.go — Layered Data Store</span>
+        </div>
+        <div class="code-block"><span class="kw">package</span> store
+
+          <span class="kw">import</span> <span class="str">"time"</span>
+
+          <span class="cmt">// Component interface</span>
+          <span class="kw">type</span> <span class="pkg">MenuStore</span> <span class="kw">interface</span> {
+          <span class="fn">GetItem</span>(id <span class="pkg">string</span>) (*<span class="pkg">MenuItem</span>, <span
+            class="pkg">error</span>)
+          <span class="fn">SaveItem</span>(item *<span class="pkg">MenuItem</span>) <span class="pkg">error</span>
+          }
+
+          <span class="cmt">// ── Concrete base ──────────────────────────────────────</span>
+          <span class="kw">type</span> <span class="pkg">PostgresMenuStore</span> <span class="kw">struct</span>{ db
+          *<span class="pkg">DB</span> }
+
+          <span class="kw">func</span> (s *<span class="pkg">PostgresMenuStore</span>) <span
+            class="fn">GetItem</span>(id <span class="pkg">string</span>) (*<span class="pkg">MenuItem</span>, <span
+            class="pkg">error</span>) {
+          <span class="kw">return</span> s.db.<span class="fn">QueryItem</span>(id) <span class="cmt">// hits
+            database</span>
+          }
+
+          <span class="cmt">// ── Caching Decorator ──────────────────────────────────</span>
+          <span class="kw">type</span> <span class="pkg">CachedMenuStore</span> <span class="kw">struct</span> {
+          inner <span class="pkg">MenuStore</span> <span class="cmt">// wraps any MenuStore</span>
+          cache <span class="pkg">map</span>[<span class="pkg">string</span>]*<span class="pkg">MenuItem</span>
+          ttl time.<span class="pkg">Duration</span>
+          }
+
+          <span class="kw">func</span> (c *<span class="pkg">CachedMenuStore</span>) <span class="fn">GetItem</span>(id
+          <span class="pkg">string</span>) (*<span class="pkg">MenuItem</span>, <span class="pkg">error</span>) {
+          <span class="kw">if</span> item, ok := c.cache[id]; ok { <span class="kw">return</span> item, nil } <span
+            class="cmt">// cache hit</span>
+          item, err := c.inner.<span class="fn">GetItem</span>(id) <span class="cmt">// delegate to inner</span>
+          <span class="kw">if</span> err == nil { c.cache[id] = item }
+          <span class="kw">return</span> item, err
+          }
+
+          <span class="cmt">// ── Logging Decorator ──────────────────────────────────</span>
+          <span class="kw">type</span> <span class="pkg">LoggedMenuStore</span> <span class="kw">struct</span> { inner
+          <span class="pkg">MenuStore</span>; log <span class="pkg">Logger</span> }
+
+          <span class="kw">func</span> (l *<span class="pkg">LoggedMenuStore</span>) <span class="fn">GetItem</span>(id
+          <span class="pkg">string</span>) (*<span class="pkg">MenuItem</span>, <span class="pkg">error</span>) {
+          l.log.<span class="fn">Info</span>(<span class="str">"GetItem"</span>, <span class="str">"id"</span>, id)
+          item, err := l.inner.<span class="fn">GetItem</span>(id)
+          l.log.<span class="fn">Info</span>(<span class="str">"GetItem result"</span>, <span class="str">"err"</span>,
+          err)
+          <span class="kw">return</span> item, err
+          }
+
+          <span class="cmt">// Stack decorators — outer to inner:</span>
+          <span class="cmt">// var store MenuStore = &PostgresMenuStore{db}</span>
+          <span class="cmt">// store = &CachedMenuStore{inner: store, ttl: 5*time.Minute}</span>
+          <span class="cmt">// store = &LoggedMenuStore{inner: store, log: logger}</span>
+          <span class="cmt">// store.GetItem("burger-001") → logs → cache → postgres</span>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Add behavior without modifying original code (OCP)</li>
+              <li>Composable — stack as many as needed</li>
+              <li>Each decorator is independently testable</li>
+              <li>Go's io package proves how powerful this is at scale</li>
+              <li>Runtime composition of behaviors</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Deep stacks make debugging harder</li>
+              <li>Many small objects — memory overhead</li>
+              <li>Order dependency is implicit and error-prone</li>
+              <li>Type identity lost — can't easily check underlying type</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ WORKER POOL ═══════════════ -->
+  <section id="workerpool">
+    <div class="container">
+      <div class="section-label">Pattern 08 · Concurrency — Go-Specific</div>
+      <div class="section-title" style="margin-bottom:0">Worker Pool Pattern</div>
+      <div class="pattern-block" style="margin-top:28px">
+        <div class="pattern-header ph-workerpool">
+          <div class="pattern-icon-lg">⚙️</div>
+          <div>
+            <div class="pattern-name c-workerpool">Worker Pool</div>
+            <div class="pattern-category">Concurrency Pattern · Go-Idiomatic</div>
+            <div class="pattern-tagline">Creates a <strong>bounded pool of goroutines</strong> (workers) that process
+              jobs from a shared channel. Prevents goroutine explosion under high load. Workers pick up jobs when idle,
+              process them, and return results — max concurrency is always N workers, regardless of job count.</div>
+            <div class="stat-row">
+              <span class="stat">Category: Concurrency</span>
+              <span class="stat">Bounded goroutines: ✓</span>
+              <span class="stat">Tools: channels + goroutines</span>
+              <span class="stat">Industry use: Very High</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--workerpool)"></span> Why Worker Pool?</h4>
+            <p>Without a pool: 10,000 incoming requests → 10,000 goroutines → OOM crash. With a pool: 10,000 requests →
+              100 workers process them sequentially via channel queue. Workers block waiting for jobs when idle — zero
+              CPU waste. Max goroutines = pool size. Memory usage is bounded and predictable.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--workerpool)"></span> How It Works</h4>
+            <ul>
+              <li>Create a <strong>jobs channel</strong> (buffered) for incoming work</li>
+              <li>Create a <strong>results channel</strong> for output collection</li>
+              <li>Spin up N goroutines (workers) — each loops on jobs channel</li>
+              <li>Workers <code>range jobs</code> — blocks when idle, wakes on new job</li>
+              <li>Close jobs channel → workers finish and exit cleanly</li>
+              <li><code>sync.WaitGroup</code> to know when all workers are done</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--workerpool)"></span> Rules & Conditions</h4>
+            <ul>
+              <li>Pool size = number of CPU cores (for CPU-bound) or tuned for I/O</li>
+              <li>Never close results channel from worker — only from collector</li>
+              <li>Use <code>sync.WaitGroup</code> — signal when all workers done</li>
+              <li>Context propagation for cancellation support</li>
+              <li>Buffered jobs channel to handle burst without blocking sender</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--workerpool)"></span> Real-World Use Cases</h4>
+            <ul>
+              <li>Image resizing: 1 goroutine per upload → pool of N resizers</li>
+              <li>Email blast: send 100K emails via 50-worker pool</li>
+              <li>Web scraping: bounded concurrent HTTP requests</li>
+              <li>Database batch inserts: bounded writer goroutines</li>
+              <li>Video transcoding pipelines</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- DIAGRAM -->
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 700 180" xmlns="http://www.w3.org/2000/svg" style="font-family:'Space Mono',monospace">
+            <defs>
+              <marker id="arr-w" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                <polygon points="0 0, 7 2.5, 0 5" fill="#fb923c" />
+              </marker>
+            </defs>
+            <!-- Dispatcher -->
+            <rect x="10" y="70" width="110" height="40" rx="7" fill="rgba(251,146,60,0.12)"
+              stroke="rgba(251,146,60,0.5)" stroke-width="1.5" />
+            <text x="65" y="86" text-anchor="middle" fill="#fb923c" font-size="11" font-weight="bold">Dispatcher</text>
+            <text x="65" y="100" text-anchor="middle" fill="#8892a4" font-size="9">sends jobs</text>
+            <line x1="120" y1="90" x2="175" y2="90" stroke="#fb923c" stroke-width="1.5" marker-end="url(#arr-w)" />
+
+            <!-- Jobs channel -->
+            <rect x="175" y="62" width="100" height="56" rx="7" fill="rgba(251,146,60,0.18)" stroke="#fb923c"
+              stroke-width="2" />
+            <text x="225" y="83" text-anchor="middle" fill="#fb923c" font-size="11" font-weight="bold">Jobs Ch</text>
+            <text x="225" y="98" text-anchor="middle" fill="#8892a4" font-size="9">buffered</text>
+            <text x="225" y="111" text-anchor="middle" fill="#cdd9e5" font-size="9">chan Job</text>
+
+            <!-- Workers -->
+            <line x1="275" y1="77" x2="340" y2="40" stroke="#fb923c" stroke-width="1.2" marker-end="url(#arr-w)" />
+            <line x1="275" y1="90" x2="340" y2="90" stroke="#fb923c" stroke-width="1.2" marker-end="url(#arr-w)" />
+            <line x1="275" y1="103" x2="340" y2="140" stroke="#fb923c" stroke-width="1.2" marker-end="url(#arr-w)" />
+
+            <rect x="340" y="20" width="90" height="36" rx="6" fill="rgba(251,146,60,0.1)" stroke="rgba(251,146,60,0.4)"
+              stroke-width="1.5" />
+            <text x="385" y="38" text-anchor="middle" fill="#fb923c" font-size="10" font-weight="bold">Worker 1</text>
+            <text x="385" y="50" text-anchor="middle" fill="#8892a4" font-size="9">goroutine</text>
+
+            <rect x="340" y="72" width="90" height="36" rx="6" fill="rgba(251,146,60,0.15)" stroke="#fb923c"
+              stroke-width="2" />
+            <text x="385" y="90" text-anchor="middle" fill="#fb923c" font-size="10" font-weight="bold">Worker 2</text>
+            <text x="385" y="102" text-anchor="middle" fill="#8892a4" font-size="9">goroutine</text>
+
+            <rect x="340" y="124" width="90" height="36" rx="6" fill="rgba(251,146,60,0.1)"
+              stroke="rgba(251,146,60,0.4)" stroke-width="1.5" />
+            <text x="385" y="142" text-anchor="middle" fill="#fb923c" font-size="10" font-weight="bold">Worker N</text>
+            <text x="385" y="154" text-anchor="middle" fill="#8892a4" font-size="9">goroutine</text>
+
+            <!-- Dots between workers -->
+            <text x="385" y="115" text-anchor="middle" fill="#6272a4" font-size="12">· · ·</text>
+
+            <!-- Results channel -->
+            <line x1="430" y1="38" x2="510" y2="75" stroke="#4ade80" stroke-width="1.2" marker-end="url(#arr-w)"
+              stroke-dasharray="3,2" />
+            <line x1="430" y1="90" x2="510" y2="90" stroke="#4ade80" stroke-width="1.2" marker-end="url(#arr-w)"
+              stroke-dasharray="3,2" />
+            <line x1="430" y1="142" x2="510" y2="105" stroke="#4ade80" stroke-width="1.2" marker-end="url(#arr-w)"
+              stroke-dasharray="3,2" />
+
+            <rect x="510" y="62" width="100" height="56" rx="7" fill="rgba(74,222,128,0.1)"
+              stroke="rgba(74,222,128,0.4)" stroke-width="1.5" />
+            <text x="560" y="83" text-anchor="middle" fill="#4ade80" font-size="11" font-weight="bold">Results</text>
+            <text x="560" y="98" text-anchor="middle" fill="#8892a4" font-size="9">channel</text>
+            <text x="560" y="111" text-anchor="middle" fill="#cdd9e5" font-size="9">chan Result</text>
+
+            <rect x="620" y="72" width="70" height="36" rx="6" fill="rgba(74,222,128,0.08)"
+              stroke="rgba(74,222,128,0.2)" stroke-width="1" />
+            <text x="655" y="88" text-anchor="middle" fill="#4ade80" font-size="10">Collector</text>
+            <text x="655" y="100" text-anchor="middle" fill="#6272a4" font-size="9">aggregates</text>
+            <line x1="610" y1="90" x2="620" y2="90" stroke="#4ade80" stroke-width="1.2" />
+
+            <text x="225" y="160" text-anchor="middle" fill="#6272a4" font-size="9">Bounded concurrency — N workers max,
+              always</text>
+          </svg>
+        </div>
+
+        <div class="code-bar">
+          <div class="dot-r"></div>
+          <div class="dot-y"></div>
+          <div class="dot-g"></div><span class="cb-label">workerpool/image_resizer.go — Restaurant Image
+            Processing</span>
+        </div>
+        <div class="code-block"><span class="kw">package</span> imgproc
+
+          <span class="kw">import</span> (
+          <span class="str">"context"</span>
+          <span class="str">"runtime"</span>
+          <span class="str">"sync"</span>
+          )
+
+          <span class="kw">type</span> <span class="pkg">Job</span> <span class="kw">struct</span>{ ImagePath <span
+            class="pkg">string</span>; Sizes []<span class="pkg">int</span> }
+          <span class="kw">type</span> <span class="pkg">Result</span> <span class="kw">struct</span>{ Path <span
+            class="pkg">string</span>; Err <span class="pkg">error</span> }
+
+          <span class="kw">func</span> <span class="fn">ProcessImages</span>(ctx context.<span
+            class="pkg">Context</span>, images []<span class="pkg">Job</span>) []<span class="pkg">Result</span> {
+          numWorkers := runtime.<span class="fn">NumCPU</span>()
+          jobs := <span class="fn">make</span>(chan <span class="pkg">Job</span>, len(images))
+          results := <span class="fn">make</span>(chan <span class="pkg">Result</span>, len(images))
+          <span class="kw">var</span> wg sync.<span class="pkg">WaitGroup</span>
+
+          <span class="cmt">// Spin up N workers — bounded goroutine count</span>
+          <span class="kw">for</span> i := <span class="num">0</span>; i < numWorkers; i++ { wg.<span class="fn">
+            Add</span>(<span class="num">1</span>)
+            <span class="kw">go func</span>() {
+            defer wg.<span class="fn">Done</span>()
+            <span class="kw">for</span> job := <span class="kw">range</span> jobs { <span class="cmt">// blocks until
+              job arrives</span>
+            <span class="kw">select</span> {
+            <span class="kw">case</span> &lt;-ctx.<span class="fn">Done</span>(): <span class="kw">return</span> <span
+              class="cmt">// context cancellation</span>
+            <span class="kw">default</span>:
+            results &lt;- <span class="fn">resize</span>(job) <span class="cmt">// CPU-bound work</span>
+            }
+            }
+            }()
+            }
+
+            <span class="cmt">// Dispatch all jobs</span>
+            <span class="kw">for</span> _, img := <span class="kw">range</span> images { jobs &lt;- img }
+            <span class="fn">close</span>(jobs) <span class="cmt">// signals workers to stop when channel empty</span>
+
+            <span class="cmt">// Collect results after all workers done</span>
+            <span class="kw">go func</span>() { wg.<span class="fn">Wait</span>(); <span
+              class="fn">close</span>(results) }()
+
+            <span class="kw">var</span> out []<span class="pkg">Result</span>
+            <span class="kw">for</span> r := <span class="kw">range</span> results { out = <span
+              class="fn">append</span>(out, r) }
+            <span class="kw">return</span> out
+            }
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Bounded goroutines — predictable memory usage</li>
+              <li>Prevents system overload under burst traffic</li>
+              <li>Worker reuse — no goroutine creation overhead per job</li>
+              <li>Context support for graceful cancellation</li>
+              <li>Results collected cleanly via output channel</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Worker count tuning required per workload type</li>
+              <li>Head-of-line blocking if one job is slow</li>
+              <li>Buffered channel sizing needs careful thought</li>
+              <li>More complex than simple goroutine spawning</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ PIPELINE ═══════════════ -->
+  <section id="pipeline">
+    <div class="container">
+      <div class="section-label">Pattern 09 · Concurrency — Go-Specific</div>
+      <div class="section-title" style="margin-bottom:0">Pipeline Pattern</div>
+      <div class="pattern-block" style="margin-top:28px">
+        <div class="pattern-header ph-pipeline">
+          <div class="pattern-icon-lg">🔗</div>
+          <div>
+            <div class="pattern-name c-pipeline">Pipeline</div>
+            <div class="pattern-category">Concurrency Pattern · Go-Idiomatic</div>
+            <div class="pattern-tagline">Chains a series of <strong>processing stages</strong> connected by Go channels.
+              Each stage consumes from an input channel, transforms data, and sends to an output channel — creating a
+              concurrent data processing pipeline where stages run in parallel.</div>
+            <div class="stat-row">
+              <span class="stat">Category: Concurrency</span>
+              <span class="stat">Stages: parallel</span>
+              <span class="stat">Backpressure: channels</span>
+              <span class="stat">Industry use: High</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--pipeline)"></span> How It Works</h4>
+            <ul>
+              <li>Each stage is a function: <code>func stage(in &lt;-chan T) &lt;-chan U</code></li>
+              <li>Stage receives, transforms, sends — runs in its own goroutine</li>
+              <li>Connect stages by passing output channel of one as input to next</li>
+              <li>Stages run concurrently — stage 2 starts processing while stage 1 continues</li>
+              <li>Cancel via context — upstream close propagates downstream</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--pipeline)"></span> Backpressure</h4>
+            <p>Channels provide natural backpressure. If stage 3 is slow, stage 2's output channel fills up, blocking
+              stage 2, which signals stage 1 to slow down. The pipeline self-regulates — fast producers don't overwhelm
+              slow consumers. This is a critical property for production data systems.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--pipeline)"></span> Real-World Use Cases</h4>
+            <ul>
+              <li>ETL pipelines: Extract → Transform → Load</li>
+              <li>Order processing: validate → price → reserve stock → charge</li>
+              <li>Log processing: parse → filter → enrich → index</li>
+              <li>Video: decode → transcode → thumbnail → upload</li>
+              <li>IoT: receive → calibrate → aggregate → alert</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--pipeline)"></span> Rules</h4>
+            <ul>
+              <li>Each stage function owns its goroutine and closes its output channel</li>
+              <li>Never close an input channel from a stage — only the producer closes</li>
+              <li>Context cancellation: every stage checks <code>ctx.Done()</code></li>
+              <li>Use <code>defer close(out)</code> at the start of each stage goroutine</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dot-r"></div>
+          <div class="dot-y"></div>
+          <div class="dot-g"></div><span class="cb-label">pipeline/order_processing.go — E-Commerce Order
+            Pipeline</span>
+        </div>
+        <div class="code-block"><span class="kw">package</span> pipeline
+
+          <span class="kw">import</span> <span class="str">"context"</span>
+
+          <span class="cmt">// Each stage: takes input channel, returns output channel</span>
+
+          <span class="kw">func</span> <span class="fn">Validate</span>(ctx context.<span class="pkg">Context</span>, in
+          &lt;-chan <span class="pkg">Order</span>) &lt;-chan <span class="pkg">Order</span> {
+          out := <span class="fn">make</span>(chan <span class="pkg">Order</span>, <span class="num">100</span>)
+          <span class="kw">go func</span>() {
+          defer <span class="fn">close</span>(out)
+          <span class="kw">for</span> order := <span class="kw">range</span> in {
+          <span class="kw">select</span> {
+          <span class="kw">case</span> &lt;-ctx.<span class="fn">Done</span>(): <span class="kw">return</span>
+          <span class="kw">default</span>:
+          <span class="kw">if</span> <span class="fn">isValid</span>(order) { out &lt;- order }
+          }
+          }
+          }()
+          <span class="kw">return</span> out
+          }
+
+          <span class="kw">func</span> <span class="fn">ApplyPricing</span>(ctx context.<span
+            class="pkg">Context</span>, in &lt;-chan <span class="pkg">Order</span>) &lt;-chan <span
+            class="pkg">Order</span> {
+          out := <span class="fn">make</span>(chan <span class="pkg">Order</span>, <span class="num">100</span>)
+          <span class="kw">go func</span>() {
+          defer <span class="fn">close</span>(out)
+          <span class="kw">for</span> order := <span class="kw">range</span> in {
+          order.Total = <span class="fn">calculateTotal</span>(order)
+          out &lt;- order
+          }
+          }()
+          <span class="kw">return</span> out
+          }
+
+          <span class="kw">func</span> <span class="fn">ChargePayment</span>(ctx context.<span
+            class="pkg">Context</span>, in &lt;-chan <span class="pkg">Order</span>) &lt;-chan <span
+            class="pkg">Order</span> {
+          out := <span class="fn">make</span>(chan <span class="pkg">Order</span>, <span class="num">100</span>)
+          <span class="kw">go func</span>() {
+          defer <span class="fn">close</span>(out)
+          <span class="kw">for</span> order := <span class="kw">range</span> in {
+          <span class="kw">if</span> err := <span class="fn">chargeCard</span>(order); err == nil {
+          out &lt;- order
+          }
+          }
+          }()
+          <span class="kw">return</span> out
+          }
+
+          <span class="cmt">// Wire the pipeline — stages run CONCURRENTLY:</span>
+          <span class="kw">func</span> <span class="fn">RunOrderPipeline</span>(ctx context.<span
+            class="pkg">Context</span>, orders &lt;-chan <span class="pkg">Order</span>) &lt;-chan <span
+            class="pkg">Order</span> {
+          validated := <span class="fn">Validate</span>(ctx, orders)
+          priced := <span class="fn">ApplyPricing</span>(ctx, validated)
+          charged := <span class="fn">ChargePayment</span>(ctx, priced)
+          <span class="kw">return</span> charged <span class="cmt">// caller ranges over final channel</span>
+          }
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Stages run concurrently — max throughput</li>
+              <li>Natural backpressure — channel blocking</li>
+              <li>Each stage independently testable</li>
+              <li>Clean data flow — easy to reason about</li>
+              <li>Context cancellation propagates cleanly</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Complex error handling across stages</li>
+              <li>Channel size tuning affects throughput</li>
+              <li>Goroutine leak risk if stages aren't properly closed</li>
+              <li>Debugging concurrent stages is non-trivial</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ FAN-OUT / FAN-IN ═══════════════ -->
+  <section id="fanout">
+    <div class="container">
+      <div class="section-label">Pattern 10 · Concurrency — Go-Specific</div>
+      <div class="section-title" style="margin-bottom:0">Fan-Out / Fan-In Pattern</div>
+      <div class="pattern-block" style="margin-top:28px">
+        <div class="pattern-header ph-fanout">
+          <div class="pattern-icon-lg">📡</div>
+          <div>
+            <div class="pattern-name c-fanout">Fan-Out / Fan-In</div>
+            <div class="pattern-category">Concurrency Pattern · Go-Idiomatic</div>
+            <div class="pattern-tagline"><strong>Fan-Out:</strong> distribute work to multiple goroutines processing in
+              parallel. <strong>Fan-In:</strong> merge results from multiple goroutines back into a single channel.
+              Together they implement parallel scatter-gather — the backbone of high-throughput search, aggregation, and
+              multi-source data fetching.</div>
+            <div class="stat-row">
+              <span class="stat">Category: Concurrency</span>
+              <span class="stat">Pattern: Scatter-Gather</span>
+              <span class="stat">Key: reflect.Select / goroutines</span>
+              <span class="stat">Industry use: High</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--fanout)"></span> Fan-Out: How It Works</h4>
+            <ul>
+              <li>One source of work (channel or slice)</li>
+              <li>Spawn N goroutines, each reading from the same input channel</li>
+              <li>Each goroutine processes independently and concurrently</li>
+              <li>Like having N workers at N parallel checkout lanes</li>
+              <li>Useful when processing is CPU-bound or I/O-bound and slow</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--fanout)"></span> Fan-In: How It Works</h4>
+            <ul>
+              <li>Multiple goroutines producing results on their own channels</li>
+              <li>Merge function collects all into one unified output channel</li>
+              <li>Uses <code>sync.WaitGroup</code> to close merged channel when all done</li>
+              <li>Caller reads from single channel — unaware of N sources</li>
+              <li>First result wins variant: use <code>select</code> to get fastest</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--fanout)"></span> Real-World: Search Aggregation</h4>
+            <p>A hotel booking app queries Booking.com, Expedia, and Airbnb simultaneously (fan-out → 3 goroutines, 3
+              HTTP calls). Results fan-in to a merged channel. First response shows immediately, others fill in — total
+              latency = slowest source, not sum of all sources. This can cut latency by 3x.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--fanout)"></span> When to Use</h4>
+            <ul>
+              <li>Querying multiple APIs/databases simultaneously</li>
+              <li>Parallelizing slow I/O operations (HTTP, disk, DB)</li>
+              <li>Search across multiple indexes concurrently</li>
+              <li>Replicating writes to multiple stores</li>
+              <li>First-response-wins (cache + DB race)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dot-r"></div>
+          <div class="dot-y"></div>
+          <div class="dot-g"></div><span class="cb-label">fanout/price_aggregator.go — Travel Booking Price
+            Comparison</span>
+        </div>
+        <div class="code-block"><span class="kw">package</span> aggregator
+
+          <span class="kw">import</span> (
+          <span class="str">"context"</span>
+          <span class="str">"sync"</span>
+          )
+
+          <span class="kw">type</span> <span class="pkg">PriceResult</span> <span class="kw">struct</span>{ Source <span
+            class="pkg">string</span>; Price <span class="pkg">float64</span>; Err <span class="pkg">error</span> }
+
+          <span class="cmt">// Fan-Out: call multiple price APIs concurrently</span>
+          <span class="kw">func</span> <span class="fn">fetchFrom</span>(ctx context.<span class="pkg">Context</span>,
+          source <span class="pkg">string</span>, query <span class="pkg">string</span>) &lt;-chan <span
+            class="pkg">PriceResult</span> {
+          ch := <span class="fn">make</span>(chan <span class="pkg">PriceResult</span>, <span class="num">1</span>)
+          <span class="kw">go func</span>() {
+          defer <span class="fn">close</span>(ch)
+          price, err := <span class="fn">httpFetch</span>(ctx, source, query) <span class="cmt">// slow I/O</span>
+          ch &lt;- <span class="pkg">PriceResult</span>{Source: source, Price: price, Err: err}
+          }()
+          <span class="kw">return</span> ch
+          }
+
+          <span class="cmt">// Fan-In: merge N result channels into one</span>
+          <span class="kw">func</span> <span class="fn">merge</span>(ctx context.<span class="pkg">Context</span>,
+          channels ...&lt;-chan <span class="pkg">PriceResult</span>) &lt;-chan <span class="pkg">PriceResult</span> {
+          merged := <span class="fn">make</span>(chan <span class="pkg">PriceResult</span>, len(channels))
+          <span class="kw">var</span> wg sync.<span class="pkg">WaitGroup</span>
+
+          <span class="fn">forward</span> := <span class="kw">func</span>(c &lt;-chan <span
+            class="pkg">PriceResult</span>) {
+          defer wg.<span class="fn">Done</span>()
+          <span class="kw">for</span> r := <span class="kw">range</span> c {
+          <span class="kw">select</span> {
+          <span class="kw">case</span> merged &lt;- r:
+          <span class="kw">case</span> &lt;-ctx.<span class="fn">Done</span>(): <span class="kw">return</span>
+          }
+          }
+          }
+          <span class="kw">for</span> _, c := <span class="kw">range</span> channels { wg.<span
+            class="fn">Add</span>(<span class="num">1</span>); <span class="kw">go</span> <span
+            class="fn">forward</span>(c) }
+          <span class="kw">go func</span>() { wg.<span class="fn">Wait</span>(); <span class="fn">close</span>(merged)
+          }()
+          <span class="kw">return</span> merged
+          }
+
+          <span class="cmt">// Search all providers SIMULTANEOUSLY — latency = max(sources), not sum!</span>
+          <span class="kw">func</span> <span class="fn">GetBestPrice</span>(ctx context.<span
+            class="pkg">Context</span>, query <span class="pkg">string</span>) []<span class="pkg">PriceResult</span> {
+          <span class="cmt">// Fan-Out: 3 concurrent HTTP calls</span>
+          booking := <span class="fn">fetchFrom</span>(ctx, <span class="str">"booking.com"</span>, query)
+          expedia := <span class="fn">fetchFrom</span>(ctx, <span class="str">"expedia.com"</span>, query)
+          airbnb := <span class="fn">fetchFrom</span>(ctx, <span class="str">"airbnb.com"</span>, query)
+
+          <span class="cmt">// Fan-In: collect all results from merged channel</span>
+          <span class="kw">var</span> results []<span class="pkg">PriceResult</span>
+          <span class="kw">for</span> r := <span class="kw">range</span> <span class="fn">merge</span>(ctx, booking,
+          expedia, airbnb) {
+          results = <span class="fn">append</span>(results, r)
+          }
+          <span class="kw">return</span> results <span class="cmt">// All 3 results collected concurrently</span>
+          }
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Latency = max(sources) not sum — massive speedup</li>
+              <li>Efficient resource use — I/O waits in parallel</li>
+              <li>Elegant with Go channels — minimal boilerplate</li>
+              <li>First-result-wins pattern for cache-DB race</li>
+              <li>Context cancellation works across all goroutines</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Goroutine count grows with fan-out — limit it</li>
+              <li>Partial failure handling is complex</li>
+              <li>Merge logic needs careful channel closing</li>
+              <li>Race conditions in fan-in if not using WaitGroup correctly</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ REPOSITORY ═══════════════ -->
+  <section id="repository">
+    <div class="container">
+      <div class="section-label">Pattern 11 · Architectural / Structural</div>
+      <div class="section-title" style="margin-bottom:0">Repository Pattern</div>
+      <div class="pattern-block" style="margin-top:28px">
+        <div class="pattern-header ph-repository">
+          <div class="pattern-icon-lg">🗄️</div>
+          <div>
+            <div class="pattern-name c-repository">Repository</div>
+            <div class="pattern-category">Architectural Pattern · Domain-Driven Design</div>
+            <div class="pattern-tagline">Mediates between the <strong>domain/business layer and data mapping
+                layer</strong> using a collection-like interface for accessing domain objects. The service layer never
+              knows if it's talking to PostgreSQL, Redis, or a mock — just calls <code>repo.FindByID()</code>.</div>
+            <div class="stat-row">
+              <span class="stat">Category: Architectural</span>
+              <span class="stat">Layer: Data Access</span>
+              <span class="stat">Pairs with: Clean Arch</span>
+              <span class="stat">Industry use: Very High</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--repository)"></span> What is Repository?</h4>
+            <p>Instead of scattering SQL queries across your codebase, all data access for a domain entity is
+              centralized in a Repository. The service layer depends on a <code>UserRepository</code> <em>interface</em>
+              — not on PostgreSQL. Swap PostgreSQL for MongoDB? Write a new implementation, inject it. Service code
+              unchanged.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--repository)"></span> Layers</h4>
+            <ul>
+              <li><strong>Interface:</strong> <code>UserRepository</code> — domain methods (Find, Save, Delete)</li>
+              <li><strong>PostgresRepo:</strong> implements interface using SQL</li>
+              <li><strong>InMemoryRepo:</strong> implements interface using map (for tests)</li>
+              <li><strong>CachedRepo:</strong> decorator adding Redis cache</li>
+              <li><strong>Service:</strong> receives interface — knows nothing of SQL</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--repository)"></span> Rules & Requirements</h4>
+            <ul>
+              <li>Repository interface defined in <strong>domain layer</strong>, not infrastructure</li>
+              <li>Methods use domain objects — never expose ORM types to service</li>
+              <li>One repository per aggregate root (DDD)</li>
+              <li>Transactions: accept <code>*sql.Tx</code> or use Unit of Work pattern</li>
+              <li>Interface in same package as domain types</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--repository)"></span> Testability</h4>
+            <p>The killer feature: your service tests use an <code>InMemoryUserRepository</code> — no database required.
+              Tests run in milliseconds, not seconds. CI/CD pipelines need no database container. Integration tests run
+              only for the repository implementation itself.</p>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dot-r"></div>
+          <div class="dot-y"></div>
+          <div class="dot-g"></div><span class="cb-label">repository/user_repo.go — Multi-layer Repository</span>
+        </div>
+        <div class="code-block"><span class="kw">package</span> domain
+
+          <span class="cmt">// ── Domain Layer: interface lives here ─────────────────</span>
+          <span class="kw">type</span> <span class="pkg">User</span> <span class="kw">struct</span> { ID, Name, Email
+          <span class="pkg">string</span> }
+
+          <span class="kw">type</span> <span class="pkg">UserRepository</span> <span class="kw">interface</span> {
+          <span class="fn">FindByID</span>(ctx context.<span class="pkg">Context</span>, id <span
+            class="pkg">string</span>) (*<span class="pkg">User</span>, <span class="pkg">error</span>)
+          <span class="fn">FindByEmail</span>(ctx context.<span class="pkg">Context</span>, email <span
+            class="pkg">string</span>) (*<span class="pkg">User</span>, <span class="pkg">error</span>)
+          <span class="fn">Save</span>(ctx context.<span class="pkg">Context</span>, user *<span
+            class="pkg">User</span>) <span class="pkg">error</span>
+          <span class="fn">Delete</span>(ctx context.<span class="pkg">Context</span>, id <span
+            class="pkg">string</span>) <span class="pkg">error</span>
+          }
+
+          <span class="cmt">// ── Infra Layer: PostgreSQL implementation ─────────────</span>
+          <span class="kw">type</span> <span class="pkg">PostgresUserRepo</span> <span class="kw">struct</span>{ db
+          *sql.<span class="pkg">DB</span> }
+
+          <span class="kw">func</span> (r *<span class="pkg">PostgresUserRepo</span>) <span
+            class="fn">FindByID</span>(ctx context.<span class="pkg">Context</span>, id <span class="pkg">string</span>)
+          (*<span class="pkg">User</span>, <span class="pkg">error</span>) {
+          <span class="kw">var</span> u <span class="pkg">User</span>
+          err := r.db.<span class="fn">QueryRowContext</span>(ctx,
+          <span class="str">"SELECT id, name, email FROM users WHERE id=$1"</span>, id,
+          ).<span class="fn">Scan</span>(&u.ID, &u.Name, &u.Email)
+          <span class="kw">return</span> &u, err
+          }
+
+          <span class="cmt">// ── Test Layer: in-memory implementation ───────────────</span>
+          <span class="kw">type</span> <span class="pkg">InMemoryUserRepo</span> <span class="kw">struct</span>{ users
+          <span class="pkg">map</span>[<span class="pkg">string</span>]*<span class="pkg">User</span> }
+
+          <span class="kw">func</span> (r *<span class="pkg">InMemoryUserRepo</span>) <span
+            class="fn">FindByID</span>(ctx context.<span class="pkg">Context</span>, id <span class="pkg">string</span>)
+          (*<span class="pkg">User</span>, <span class="pkg">error</span>) {
+          u, ok := r.users[id]
+          <span class="kw">if</span> !ok { <span class="kw">return</span> nil, errors.<span class="fn">New</span>(<span
+            class="str">"not found"</span>) }
+          <span class="kw">return</span> u, nil
+          }
+
+          <span class="cmt">// Service depends ONLY on interface — works with any impl:</span>
+          <span class="kw">type</span> <span class="pkg">UserService</span> <span class="kw">struct</span>{ repo <span
+            class="pkg">UserRepository</span> }
+          <span class="kw">func</span> (s *<span class="pkg">UserService</span>) <span class="fn">GetProfile</span>(ctx
+          context.<span class="pkg">Context</span>, id <span class="pkg">string</span>) (*<span class="pkg">User</span>,
+          <span class="pkg">error</span>) {
+          <span class="kw">return</span> s.repo.<span class="fn">FindByID</span>(ctx, id) <span class="cmt">//
+            PostgreSQL? MongoDB? Doesn't care.</span>
+          }
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Services are testable without a database</li>
+              <li>Swap data stores without touching business logic</li>
+              <li>Centralizes all data access — easy to audit</li>
+              <li>Pairs perfectly with Clean/Hexagonal Architecture</li>
+              <li>Add caching as decorator without changing service</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Boilerplate — interface + multiple implementations</li>
+              <li>Complex queries can be awkward to express as domain methods</li>
+              <li>ORM features (eager loading) harder to expose cleanly</li>
+              <li>For simple CRUD apps, may be over-engineering</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ MIDDLEWARE ═══════════════ -->
+  <section id="middleware">
+    <div class="container">
+      <div class="section-label">Pattern 12 · Behavioral / Chain of Responsibility</div>
+      <div class="section-title" style="margin-bottom:0">Middleware / Chain of Responsibility</div>
+      <div class="pattern-block" style="margin-top:28px">
+        <div class="pattern-header ph-middleware">
+          <div class="pattern-icon-lg">🔧</div>
+          <div>
+            <div class="pattern-name c-middleware">Middleware Chain</div>
+            <div class="pattern-category">Behavioral Pattern · Chain of Responsibility · HTTP-native</div>
+            <div class="pattern-tagline">Wraps an <code>http.Handler</code> with pre/post processing logic in a
+              chainable, composable way. Each middleware is a function that takes the next handler and returns a new
+              handler — creating an <strong>onion-layered request processing pipeline</strong>.</div>
+            <div class="stat-row">
+              <span class="stat">Category: Behavioral</span>
+              <span class="stat">Go native: http.Handler</span>
+              <span class="stat">Used in: Every Go web framework</span>
+              <span class="stat">Industry use: Ubiquitous</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--middleware)"></span> What is Middleware?</h4>
+            <p>In Go, a middleware is simply a function: <code>func(http.Handler) http.Handler</code>. It wraps any
+              handler, adding behavior before and/or after the inner handler runs. Chain them together:
+              <code>Logger(Auth(RateLimit(actualHandler)))</code>. The request passes through each layer, response
+              travels back through them in reverse order.
+            </p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--middleware)"></span> How It Works (Onion Model)</h4>
+            <ul>
+              <li>Outer middleware runs its <strong>pre-logic</strong></li>
+              <li>Calls <code>next.ServeHTTP(w, r)</code> — passes to inner handler</li>
+              <li>Inner handler executes</li>
+              <li>Control returns to outer — runs <strong>post-logic</strong></li>
+              <li>Response flows back through layers in reverse</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--middleware)"></span> Common Middleware Types</h4>
+            <ul>
+              <li><strong>Auth:</strong> verify JWT/session, attach user to context</li>
+              <li><strong>Logger:</strong> log method, path, status, duration</li>
+              <li><strong>Recovery:</strong> catch panics, return 500</li>
+              <li><strong>CORS:</strong> set cross-origin headers</li>
+              <li><strong>RateLimiter:</strong> throttle requests per IP/token</li>
+              <li><strong>Timeout:</strong> cancel slow requests via context</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--middleware)"></span> Design Rules</h4>
+            <ul>
+              <li>Middleware must call <code>next.ServeHTTP()</code> or terminate</li>
+              <li>Pass data between middleware using <code>context.WithValue()</code></li>
+              <li>Don't write to <code>ResponseWriter</code> after calling next</li>
+              <li>Use <code>http.ResponseWriter</code> wrappers to capture status codes</li>
+              <li>Order matters — apply outer-most last in chain</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dot-r"></div>
+          <div class="dot-y"></div>
+          <div class="dot-g"></div><span class="cb-label">middleware/chain.go — Custom Middleware Stack</span>
+        </div>
+        <div class="code-block"><span class="kw">package</span> middleware
+
+          <span class="kw">import</span> (
+          <span class="str">"context"</span>
+          <span class="str">"log"</span>
+          <span class="str">"net/http"</span>
+          <span class="str">"time"</span>
+          )
+
+          <span class="cmt">// Middleware type — the fundamental building block</span>
+          <span class="kw">type</span> <span class="pkg">Middleware</span> <span class="kw">func</span>(http.<span
+            class="pkg">Handler</span>) http.<span class="pkg">Handler</span>
+
+          <span class="cmt">// ── Logger Middleware ──────────────────────────────────</span>
+          <span class="kw">func</span> <span class="fn">Logger</span>(next http.<span class="pkg">Handler</span>)
+          http.<span class="pkg">Handler</span> {
+          <span class="kw">return</span> http.<span class="fn">HandlerFunc</span>(<span class="kw">func</span>(w
+          http.<span class="pkg">ResponseWriter</span>, r *http.<span class="pkg">Request</span>) {
+          start := time.<span class="fn">Now</span>()
+          next.<span class="fn">ServeHTTP</span>(w, r) <span class="cmt">// call next in chain</span>
+          log.<span class="fn">Printf</span>(<span class="str">"%s %s %v"</span>, r.Method, r.URL.Path, time.<span
+            class="fn">Since</span>(start))
+          })
+          }
+
+          <span class="cmt">// ── Auth Middleware — attaches user to context ─────────</span>
+          <span class="kw">type</span> <span class="pkg">ctxKey</span> <span class="pkg">string</span>
+          <span class="kw">const</span> UserKey <span class="pkg">ctxKey</span> = <span class="str">"user"</span>
+
+          <span class="kw">func</span> <span class="fn">Auth</span>(next http.<span class="pkg">Handler</span>)
+          http.<span class="pkg">Handler</span> {
+          <span class="kw">return</span> http.<span class="fn">HandlerFunc</span>(<span class="kw">func</span>(w
+          http.<span class="pkg">ResponseWriter</span>, r *http.<span class="pkg">Request</span>) {
+          token := r.Header.<span class="fn">Get</span>(<span class="str">"Authorization"</span>)
+          user, err := <span class="fn">verifyJWT</span>(token)
+          <span class="kw">if</span> err != nil {
+          http.<span class="fn">Error</span>(w, <span class="str">"Unauthorized"</span>, <span class="num">401</span>)
+          <span class="kw">return</span> <span class="cmt">// terminates chain — next not called</span>
+          }
+          ctx := context.<span class="fn">WithValue</span>(r.Context(), UserKey, user)
+          next.<span class="fn">ServeHTTP</span>(w, r.<span class="fn">WithContext</span>(ctx))
+          })
+          }
+
+          <span class="cmt">// ── Chain helper — compose middleware left-to-right ───</span>
+          <span class="kw">func</span> <span class="fn">Chain</span>(h http.<span class="pkg">Handler</span>, mw
+          ...<span class="pkg">Middleware</span>) http.<span class="pkg">Handler</span> {
+          <span class="kw">for</span> i := len(mw) - <span class="num">1</span>; i >= <span class="num">0</span>; i-- {
+          h = mw[i](h) }
+          <span class="kw">return</span> h
+          }
+
+          <span class="cmt">// Wiring: requests flow Logger → Auth → Handler</span>
+          <span class="cmt">// http.Handle("/api/orders", Chain(ordersHandler, Logger, Auth, RateLimit))</span>
+          <span class="cmt">// Onion: Logger wraps (Auth wraps (RateLimit wraps ordersHandler))</span>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Cross-cutting concerns separated from business logic</li>
+              <li>Fully composable — mix and match per route</li>
+              <li>Standard http.Handler signature — works with any framework</li>
+              <li>Each middleware independently testable</li>
+              <li>Add/remove features without touching handlers</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Order dependency is implicit — easy to get wrong</li>
+              <li>Deeply chained middlewares can hide performance problems</li>
+              <li>Context value passing is untyped — runtime errors</li>
+              <li>Panic recovery middleware must be first — easy to forget</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="example-card">
+          <div class="example-icon">🏨</div>
+          <div>
+            <div class="example-title" style="color:var(--middleware)">Hotel Booking API — Request Middleware Chain
+            </div>
+            <div class="example-desc">Every API request flows through: <strong>RequestID</strong> (attach unique trace
+              ID) → <strong>Logger</strong> (log start) → <strong>Recovery</strong> (catch panics) →
+              <strong>Timeout</strong> (cancel after 30s) → <strong>RateLimit</strong> (100 req/min per IP) →
+              <strong>CORS</strong> (allow frontend origin) → <strong>Auth</strong> (verify JWT, inject user) →
+              <strong>Handler</strong> (business logic). Each middleware is one concern, one function, independently
+              replaceable.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ INDUSTRY USE ═══════════════ -->
+  <section id="industry">
+    <div class="container">
+      <div class="section-label">Section 13</div>
+      <div class="section-title">Which Patterns Are Used In Industry</div>
+      <div class="industry-grid">
+        <div class="ind-card">
+          <h4>🏦 Fintech / Banking</h4>
+          <ul>
+            <li><span class="tag tc-factory" style="font-size:9px">Factory</span> Payment gateway switching</li>
+            <li><span class="tag tc-strategy" style="font-size:9px">Strategy</span> Fee/tax calculation</li>
+            <li><span class="tag tc-observer" style="font-size:9px">Observer</span> Transaction event alerts</li>
+            <li><span class="tag tc-repository" style="font-size:9px">Repository</span> Ledger data access</li>
+            <li><span class="tag tc-singleton" style="font-size:9px">Singleton</span> DB connection pool</li>
+          </ul>
+        </div>
+        <div class="ind-card">
+          <h4>🛒 E-Commerce</h4>
+          <ul>
+            <li><span class="tag tc-builder" style="font-size:9px">Builder</span> Order/cart construction</li>
+            <li><span class="tag tc-decorator" style="font-size:9px">Decorator</span> Caching product store</li>
+            <li><span class="tag tc-strategy" style="font-size:9px">Strategy</span> Pricing/discount rules</li>
+            <li><span class="tag tc-workerpool" style="font-size:9px">Worker Pool</span> Bulk email campaigns</li>
+            <li><span class="tag tc-pipeline" style="font-size:9px">Pipeline</span> Order fulfillment flow</li>
+          </ul>
+        </div>
+        <div class="ind-card">
+          <h4>📈 Real-Time / Stock Market</h4>
+          <ul>
+            <li><span class="tag tc-observer" style="font-size:9px">Observer</span> Price change subscriptions</li>
+            <li><span class="tag tc-pipeline" style="font-size:9px">Pipeline</span> Tick data processing</li>
+            <li><span class="tag tc-fanout" style="font-size:9px">Fan-Out</span> Multi-exchange queries</li>
+            <li><span class="tag tc-strategy" style="font-size:9px">Strategy</span> Matching algorithms</li>
+            <li><span class="tag tc-singleton" style="font-size:9px">Singleton</span> Market data cache</li>
+          </ul>
+        </div>
+        <div class="ind-card">
+          <h4>🍽️ Restaurant / Delivery</h4>
+          <ul>
+            <li><span class="tag tc-observer" style="font-size:9px">Observer</span> Order status events</li>
+            <li><span class="tag tc-middleware" style="font-size:9px">Middleware</span> Auth + logging chain</li>
+            <li><span class="tag tc-workerpool" style="font-size:9px">Worker Pool</span> Image processing</li>
+            <li><span class="tag tc-factory" style="font-size:9px">Factory</span> Notification channels</li>
+            <li><span class="tag tc-repository" style="font-size:9px">Repository</span> Menu/order data layer</li>
+          </ul>
+        </div>
+        <div class="ind-card">
+          <h4>☁️ Cloud / Infrastructure</h4>
+          <ul>
+            <li><span class="tag tc-adapter" style="font-size:9px">Adapter</span> Multi-cloud storage</li>
+            <li><span class="tag tc-decorator" style="font-size:9px">Decorator</span> Retry + circuit breaker</li>
+            <li><span class="tag tc-factory" style="font-size:9px">Factory</span> Provider selection</li>
+            <li><span class="tag tc-pipeline" style="font-size:9px">Pipeline</span> Data processing streams</li>
+            <li><span class="tag tc-fanout" style="font-size:9px">Fan-Out</span> Multi-region replication</li>
+          </ul>
+        </div>
+        <div class="ind-card">
+          <h4>🏥 Healthcare / SaaS</h4>
+          <ul>
+            <li><span class="tag tc-repository" style="font-size:9px">Repository</span> Patient data access</li>
+            <li><span class="tag tc-middleware" style="font-size:9px">Middleware</span> HIPAA audit logging</li>
+            <li><span class="tag tc-adapter" style="font-size:9px">Adapter</span> HL7/FHIR wrapping</li>
+            <li><span class="tag tc-singleton" style="font-size:9px">Singleton</span> Config/secrets manager</li>
+            <li><span class="tag tc-builder" style="font-size:9px">Builder</span> Report generation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SUMMARY TABLE ═══════════════ -->
+  <section id="summary">
+    <div class="container">
+      <div class="section-label">Section 14 — Final Summary</div>
+      <div class="section-title">Complete Comparison Table</div>
+      <div class="table-scroll">
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>Criteria</th>
+              <th class="pattern-th" style="color:var(--singleton)">🔒 Singleton</th>
+              <th class="pattern-th" style="color:var(--builder)">🏗️ Builder</th>
+              <th class="pattern-th" style="color:var(--factory)">🏭 Factory</th>
+              <th class="pattern-th" style="color:var(--adapter)">🔌 Adapter</th>
+              <th class="pattern-th" style="color:var(--observer)">👁️ Observer</th>
+              <th class="pattern-th" style="color:var(--strategy)">♟️ Strategy</th>
+              <th class="pattern-th" style="color:var(--decorator)">🎁 Decorator</th>
+              <th class="pattern-th" style="color:var(--workerpool)">⚙️ Worker Pool</th>
+              <th class="pattern-th" style="color:var(--pipeline)">🔗 Pipeline</th>
+              <th class="pattern-th" style="color:var(--fanout)">📡 Fan-Out/In</th>
+              <th class="pattern-th" style="color:var(--repository)">🗄️ Repository</th>
+              <th class="pattern-th" style="color:var(--middleware)">🔧 Middleware</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Category</td>
+              <td><span class="badge b-creational">Creational</span></td>
+              <td><span class="badge b-creational">Creational</span></td>
+              <td><span class="badge b-creational">Creational</span></td>
+              <td><span class="badge b-structural">Structural</span></td>
+              <td><span class="badge b-behavioral">Behavioral</span></td>
+              <td><span class="badge b-behavioral">Behavioral</span></td>
+              <td><span class="badge b-structural">Structural</span></td>
+              <td><span class="badge b-concurrency">Concurrency</span></td>
+              <td><span class="badge b-concurrency">Concurrency</span></td>
+              <td><span class="badge b-concurrency">Concurrency</span></td>
+              <td><span class="badge b-arch">Architectural</span></td>
+              <td><span class="badge b-behavioral">Behavioral</span></td>
+            </tr>
+            <tr>
+              <td>Go-Specific</td>
+              <td><span class="partial">~</span> (sync.Once)</td>
+              <td><span class="cross">✗</span> GoF classic</td>
+              <td><span class="cross">✗</span> GoF classic</td>
+              <td><span class="check">✓</span> implicit iface</td>
+              <td><span class="check">✓</span> channels</td>
+              <td><span class="check">✓</span> func types</td>
+              <td><span class="cross">✗</span> GoF classic</td>
+              <td><span class="check">✓✓</span> goroutines</td>
+              <td><span class="check">✓✓</span> goroutines</td>
+              <td><span class="check">✓✓</span> goroutines</td>
+              <td><span class="cross">✗</span> DDD classic</td>
+              <td><span class="check">✓✓</span> http.Handler</td>
+            </tr>
+            <tr>
+              <td>Complexity</td>
+              <td>Low</td>
+              <td>Medium</td>
+              <td>Low-Medium</td>
+              <td>Low</td>
+              <td>Medium</td>
+              <td>Low</td>
+              <td>Low</td>
+              <td>Medium</td>
+              <td>Medium-High</td>
+              <td>Medium-High</td>
+              <td>Medium</td>
+              <td>Low</td>
+            </tr>
+            <tr>
+              <td>Boilerplate</td>
+              <td>Very Low</td>
+              <td>High</td>
+              <td>Medium</td>
+              <td>Low</td>
+              <td>Medium</td>
+              <td>Low</td>
+              <td>Low</td>
+              <td>Medium</td>
+              <td>Medium</td>
+              <td>Medium</td>
+              <td>High</td>
+              <td>Very Low</td>
+            </tr>
+            <tr>
+              <td>Testability</td>
+              <td><span class="cross">✗</span> Global state</td>
+              <td><span class="check">✓✓</span> Immutable obj</td>
+              <td><span class="check">✓✓</span> Mock impl</td>
+              <td><span class="check">✓✓</span> Mock adapter</td>
+              <td><span class="check">✓</span> Test channels</td>
+              <td><span class="check">✓✓</span> Inject strategy</td>
+              <td><span class="check">✓✓</span> Stack mock</td>
+              <td><span class="check">✓</span> Channel test</td>
+              <td><span class="check">✓</span> Channel test</td>
+              <td><span class="check">✓</span> Channel test</td>
+              <td><span class="check">✓✓</span> InMemory impl</td>
+              <td><span class="check">✓✓</span> Wrap test handler</td>
+            </tr>
+            <tr>
+              <td>Performance Impact</td>
+              <td>Near-zero (after once)</td>
+              <td>None (object creation)</td>
+              <td>None (interface call)</td>
+              <td>One indirection</td>
+              <td>Channel overhead</td>
+              <td>None (interface call)</td>
+              <td>One indirection/layer</td>
+              <td>High gain (bounded)</td>
+              <td>High gain (parallel)</td>
+              <td>High gain (parallel)</td>
+              <td>Negligible</td>
+              <td>Negligible per middleware</td>
+            </tr>
+            <tr>
+              <td>Goroutine-safe</td>
+              <td><span class="check">✓</span> sync.Once</td>
+              <td><span class="check">✓</span> immutable result</td>
+              <td><span class="check">✓</span> if impl is safe</td>
+              <td><span class="check">✓</span> if inner safe</td>
+              <td><span class="check">✓</span> RWMutex</td>
+              <td><span class="check">✓</span> stateless</td>
+              <td><span class="partial">~</span> if inner safe</td>
+              <td><span class="check">✓✓</span> channels</td>
+              <td><span class="check">✓✓</span> channels</td>
+              <td><span class="check">✓✓</span> channels</td>
+              <td><span class="partial">~</span> tx handling</td>
+              <td><span class="check">✓</span> per-request</td>
+            </tr>
+            <tr>
+              <td>Open/Closed Principle</td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓✓</span></td>
+              <td><span class="check">✓✓</span></td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓✓</span></td>
+              <td><span class="check">✓✓</span></td>
+              <td><span class="partial">~</span></td>
+              <td><span class="partial">~</span></td>
+              <td><span class="partial">~</span></td>
+              <td><span class="check">✓✓</span></td>
+              <td><span class="check">✓✓</span></td>
+            </tr>
+            <tr>
+              <td>Decoupling Level</td>
+              <td>Low (global)</td>
+              <td>High (immutable obj)</td>
+              <td>Very High</td>
+              <td>Very High</td>
+              <td>High</td>
+              <td>Very High</td>
+              <td>High</td>
+              <td>High</td>
+              <td>High</td>
+              <td>High</td>
+              <td>Very High</td>
+              <td>High</td>
+            </tr>
+            <tr>
+              <td>When to Avoid</td>
+              <td>If DI is possible</td>
+              <td>Simple &lt;4 fields</td>
+              <td>Single impl only</td>
+              <td>Same interface already</td>
+              <td>Simple callbacks ok</td>
+              <td>Only 1 algorithm</td>
+              <td>No extra behavior</td>
+              <td>Few goroutines ok</td>
+              <td>Single-threaded ok</td>
+              <td>Sequential is fine</td>
+              <td>Simple CRUD apps</td>
+              <td>Single handler apps</td>
+            </tr>
+            <tr>
+              <td>Industry Usage</td>
+              <td><span class="star">★★★★★</span></td>
+              <td><span class="star">★★★★</span>☆</td>
+              <td><span class="star">★★★★★</span></td>
+              <td><span class="star">★★★★★</span></td>
+              <td><span class="star">★★★★</span>☆</td>
+              <td><span class="star">★★★★</span>☆</td>
+              <td><span class="star">★★★★</span>☆</td>
+              <td><span class="star">★★★★★</span></td>
+              <td><span class="star">★★★★</span>☆</td>
+              <td><span class="star">★★★</span>☆☆</td>
+              <td><span class="star">★★★★★</span></td>
+              <td><span class="star">★★★★★</span></td>
+            </tr>
+            <tr>
+              <td>Best Project Type</td>
+              <td>Any — shared resources</td>
+              <td>Complex configs</td>
+              <td>Multi-provider systems</td>
+              <td>3rd party integration</td>
+              <td>Event-driven systems</td>
+              <td>Multi-algorithm contexts</td>
+              <td>Cross-cutting behavior</td>
+              <td>Bulk/async processing</td>
+              <td>ETL, data streams</td>
+              <td>Parallel API calls</td>
+              <td>Any multi-DB system</td>
+              <td>Any HTTP API</td>
+            </tr>
+            <tr>
+              <td>Go Stdlib Example</td>
+              <td>sync.Once</td>
+              <td>strings.Builder</td>
+              <td>http.NewRequest</td>
+              <td>io.Writer wrappers</td>
+              <td>signal.Notify chan</td>
+              <td>sort.Interface</td>
+              <td>bufio, gzip readers</td>
+              <td>sync.WaitGroup</td>
+              <td>io.Pipe</td>
+              <td>reflect.Select</td>
+              <td>database/sql</td>
+              <td>net/http Handler</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- VERDICT -->
+      <div class="verdict">
+        <h3>🎯 Decision Guide — Which Pattern When?</h3>
+        <div class="verdict-grid">
+          <div class="verdict-item">
+            <strong style="color:var(--singleton)">🔒 SINGLETON → Shared resources</strong>
+            <span>DB pool, config, logger, Redis client — anything expensive to create, safe to share.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--builder)">🏗️ BUILDER → Complex construction</strong>
+            <span>Object needs 5+ configuration fields, some optional. Query builders, config structs, HTTP
+              requests.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--factory)">🏭 FACTORY → Multiple implementations</strong>
+            <span>Payment gateways, storage backends, notification channels — caller shouldn't know which concrete
+              type.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--adapter)">🔌 ADAPTER → Third-party integration</strong>
+            <span>Wrapping external libraries to match your domain interface. Essential for testability and vendor
+              lock-in prevention.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--observer)">👁️ OBSERVER → Reactive events</strong>
+            <span>One action triggers many independent reactions. Order placed → kitchen, inventory, analytics,
+              notifications all react.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--strategy)">♟️ STRATEGY → Runtime algorithm swap</strong>
+            <span>Pricing, sorting, routing, auth methods that change per user/config/context. Eliminates if/else
+              chains.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--decorator)">🎁 DECORATOR → Composable behavior</strong>
+            <span>Add caching, logging, retry, metrics to any service without modifying it. Stack like Go's io
+              package.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--workerpool)">⚙️ WORKER POOL → Bounded concurrency</strong>
+            <span>Process 100K jobs without 100K goroutines. Essential whenever goroutine count must be
+              controlled.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--pipeline)">🔗 PIPELINE → Sequential stream processing</strong>
+            <span>ETL, order processing, log enrichment — multi-stage data transformation where stages run
+              concurrently.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--fanout)">📡 FAN-OUT/IN → Parallel API calls</strong>
+            <span>Query 3 APIs simultaneously, collect results. Latency = max(sources) not sum. Scatter-gather
+              pattern.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--repository)">🗄️ REPOSITORY → Data access abstraction</strong>
+            <span>Any project needing testable services, swappable databases, or clean architecture boundaries.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--middleware)">🔧 MIDDLEWARE → HTTP cross-cutting</strong>
+            <span>Auth, logging, CORS, rate limiting, recovery — every HTTP API. The single most-used Go pattern in web
+              development.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Go Design Patterns — Deep Guide · 12 Patterns · Creational · Structural · Behavioral · Concurrency ·
+    Architectural<br>
+    <span style="color:rgba(255,255,255,0.18); margin-top:6px; display:block">Companion to the Go Backend Frameworks
+      Deep Guide</span>
+    <h3>Made by ©Showrav Kormokar</h3>
+    <a target="_blank" rel="noopener" href="https://www.github.com/showravkormokar">GitHub</a>
+  </footer>
+
+</body>
+
+</html>
