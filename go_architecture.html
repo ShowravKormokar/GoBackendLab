@@ -1,0 +1,2858 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Go Software Architecture — Deep Guide</title>
+  <link rel="stylesheet" href="go-arch.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- ═══ HERO ═══ -->
+  <div class="hero">
+    <div class="hero-tag">Go Software Architecture — Complete Deep Guide</div>
+    <h1>10 Production-Grade <span>Go Architectures</span><br>Fully Mastered</h1>
+    <p>From a tiny blog to a billion-user fintech platform — every major software architecture pattern used in the Go
+      industry explained with code, diagrams, bottlenecks, real-world use cases, and decision frameworks.</p>
+    <div class="hero-pills">
+      <div class="hpill hp1">① Monolithic</div>
+      <div class="hpill hp2">② Microservices</div>
+      <div class="hpill hp3">③ Event-Driven</div>
+      <div class="hpill hp4">④ Clean Arch</div>
+      <div class="hpill hp5">⑤ Layered (N-Tier)</div>
+      <div class="hpill hp6">⑥ Hexagonal</div>
+      <div class="hpill hp7">⑦ CQRS</div>
+      <div class="hpill hp8">⑧ Serverless</div>
+      <div class="hpill hp9">⑨ SOA</div>
+      <div class="hpill hp10">⑩ DDD</div>
+    </div>
+  </div>
+
+  <!-- ═══ NAV ═══ -->
+  <nav>
+    <a href="#overview">Overview</a>
+    <a href="#monolithic">Monolithic</a>
+    <a href="#microservices">Microservices</a>
+    <a href="#event">Event-Driven</a>
+    <a href="#clean">Clean Arch</a>
+    <a href="#layered">Layered</a>
+    <a href="#hexagonal">Hexagonal</a>
+    <a href="#cqrs">CQRS</a>
+    <a href="#serverless">Serverless</a>
+    <a href="#soa">SOA</a>
+    <a href="#ddd">DDD</a>
+    <a href="#decision">Decision Guide</a>
+    <a href="#summary">Summary Table</a>
+  </nav>
+
+  <!-- ═══ OVERVIEW ═══ -->
+  <section id="overview">
+    <div class="container">
+      <div class="section-label">Section 01</div>
+      <div class="section-title">Architecture Categories & Landscape</div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:28px;">
+        <div
+          style="background:var(--mono-dim);border:1px solid rgba(0,212,170,.2);border-radius:10px;padding:16px 18px;text-align:center;">
+          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--mono);">Structural
+            Patterns</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;">How the codebase is organized</div>
+          <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;justify-content:center;">
+            <span class="tag t-mono">Monolithic</span><span class="tag t-layer">Layered</span><span
+              class="tag t-clean">Clean</span><span class="tag t-hexa">Hexagonal</span><span
+              class="tag t-ddd">DDD</span>
+          </div>
+        </div>
+        <div
+          style="background:var(--micro-dim);border:1px solid rgba(255,107,53,.2);border-radius:10px;padding:16px 18px;text-align:center;">
+          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--micro);">Deployment
+            Patterns</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;">How services are deployed & scaled</div>
+          <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;justify-content:center;">
+            <span class="tag t-micro">Microservices</span><span class="tag t-soa">SOA</span><span
+              class="tag t-server">Serverless</span>
+          </div>
+        </div>
+        <div
+          style="background:var(--event-dim);border:1px solid rgba(124,106,247,.2);border-radius:10px;padding:16px 18px;text-align:center;">
+          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--event);">Communication
+            Patterns</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;">How components communicate & coordinate</div>
+          <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;justify-content:center;">
+            <span class="tag t-event">Event-Driven</span><span class="tag t-cqrs">CQRS</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="arch-overview-grid">
+        <div class="ao-card ac-mono"><span class="ao-icon">🏛️</span>
+          <div class="ao-name">Monolithic</div>
+          <div class="ao-cat">Structural</div>
+          <div class="ao-desc">Single deployable unit. All modules in one process.</div>
+          <div class="ao-num">01</div>
+        </div>
+        <div class="ao-card ac-micro"><span class="ao-icon">🔬</span>
+          <div class="ao-name">Microservices</div>
+          <div class="ao-cat">Deployment</div>
+          <div class="ao-desc">Independent services, each owning its domain & data.</div>
+          <div class="ao-num">02</div>
+        </div>
+        <div class="ao-card ac-event"><span class="ao-icon">⚡</span>
+          <div class="ao-name">Event-Driven</div>
+          <div class="ao-cat">Communication</div>
+          <div class="ao-desc">Async event streams decouple producers from consumers.</div>
+          <div class="ao-num">03</div>
+        </div>
+        <div class="ao-card ac-clean"><span class="ao-icon">🎯</span>
+          <div class="ao-name">Clean Arch</div>
+          <div class="ao-cat">Structural</div>
+          <div class="ao-desc">Dependency inversion: domain at center, infra at edge.</div>
+          <div class="ao-num">04</div>
+        </div>
+        <div class="ao-card ac-layer"><span class="ao-icon">🥞</span>
+          <div class="ao-name">Layered (N-Tier)</div>
+          <div class="ao-cat">Structural</div>
+          <div class="ao-desc">Strict horizontal layers: Presentation → Business → Data.</div>
+          <div class="ao-num">05</div>
+        </div>
+        <div class="ao-card ac-hexa"><span class="ao-icon">⬡</span>
+          <div class="ao-name">Hexagonal</div>
+          <div class="ao-cat">Structural</div>
+          <div class="ao-desc">Ports & Adapters. Application core with plug-in interfaces.</div>
+          <div class="ao-num">06</div>
+        </div>
+        <div class="ao-card ac-cqrs"><span class="ao-icon">⚖️</span>
+          <div class="ao-name">CQRS</div>
+          <div class="ao-cat">Communication</div>
+          <div class="ao-desc">Commands (write) and Queries (read) on separate models.</div>
+          <div class="ao-num">07</div>
+        </div>
+        <div class="ao-card ac-server"><span class="ao-icon">☁️</span>
+          <div class="ao-name">Serverless</div>
+          <div class="ao-cat">Deployment</div>
+          <div class="ao-desc">Functions-as-a-Service. No server management.</div>
+          <div class="ao-num">08</div>
+        </div>
+        <div class="ao-card ac-soa"><span class="ao-icon">🕸️</span>
+          <div class="ao-name">SOA</div>
+          <div class="ao-cat">Deployment</div>
+          <div class="ao-desc">Enterprise services over a shared ESB/message bus.</div>
+          <div class="ao-num">09</div>
+        </div>
+        <div class="ao-card ac-ddd"><span class="ao-icon">🌐</span>
+          <div class="ao-name">DDD</div>
+          <div class="ao-cat">Structural</div>
+          <div class="ao-desc">Domain model drives architecture. Bounded contexts.</div>
+          <div class="ao-num">10</div>
+        </div>
+      </div>
+
+      <!-- Scale-Complexity Grid -->
+      <div
+        style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:8px;">
+        <div
+          style="font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:16px;">
+          Architecture Selection by Project Scale & Complexity</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;text-align:center;">
+          <div
+            style="border:1px solid rgba(163,230,53,.2);border-radius:8px;padding:14px;background:rgba(163,230,53,.05);">
+            <div
+              style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--cqrs);margin-bottom:8px;">
+              Small Project</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">1-5 devs · MVP · Startup</div>
+            <div class="tag t-mono" style="display:inline-block;margin:2px;">Monolithic</div>
+            <div class="tag t-layer" style="display:inline-block;margin:2px;">Layered</div>
+          </div>
+          <div
+            style="border:1px solid rgba(247,201,72,.2);border-radius:8px;padding:14px;background:rgba(247,201,72,.05);">
+            <div
+              style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--clean);margin-bottom:8px;">
+              Medium Project</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">5-20 devs · Growing SaaS</div>
+            <div class="tag t-clean" style="display:inline-block;margin:2px;">Clean Arch</div>
+            <div class="tag t-hexa" style="display:inline-block;margin:2px;">Hexagonal</div>
+            <div class="tag t-ddd" style="display:inline-block;margin:2px;">DDD</div>
+          </div>
+          <div
+            style="border:1px solid rgba(255,107,53,.2);border-radius:8px;padding:14px;background:rgba(255,107,53,.05);">
+            <div
+              style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--micro);margin-bottom:8px;">
+              Large Project</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">20-100+ devs · Enterprise</div>
+            <div class="tag t-micro" style="display:inline-block;margin:2px;">Microservices</div>
+            <div class="tag t-event" style="display:inline-block;margin:2px;">Event-Driven</div>
+            <div class="tag t-cqrs" style="display:inline-block;margin:2px;">CQRS</div>
+          </div>
+          <div
+            style="border:1px solid rgba(52,211,153,.2);border-radius:8px;padding:14px;background:rgba(52,211,153,.05);">
+            <div
+              style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--soa);margin-bottom:8px;">
+              Hyper-Scale</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">100+ devs · Platform</div>
+            <div class="tag t-soa" style="display:inline-block;margin:2px;">SOA</div>
+            <div class="tag t-server" style="display:inline-block;margin:2px;">Serverless</div>
+            <div class="tag t-micro" style="display:inline-block;margin:2px;">Microservices</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ MONOLITHIC ═══ -->
+  <section id="monolithic" class="ac-mono">
+    <div class="container">
+      <div class="section-label">Architecture 01 · Structural</div>
+      <div class="section-title" style="margin-bottom:0">Monolithic Architecture</div>
+      <div class="arch-block" style="margin-top:28px">
+        <div class="arch-header ac-mono">
+          <div class="arch-icon-lg">🏛️</div>
+          <div>
+            <div class="arch-name">Monolithic Architecture</div>
+            <div class="arch-cat">Structural · Single Deployable Unit · GoF Foundation</div>
+            <div class="arch-tagline">An application where <strong>all functionality is bundled into a single deployable
+                binary</strong>. All modules — HTTP handlers, business logic, database access, authentication — exist in
+              one Go binary, run in one process, and are deployed together. The default starting architecture for most
+              projects.</div>
+            <div class="stat-row">
+              <span class="stat">Deployment: Single binary</span>
+              <span class="stat">Process: One</span>
+              <span class="stat">DB: Typically one shared</span>
+              <span class="stat">Best team size: 1–15</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Characteristics -->
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--mono)"></span> What Is It?</h4>
+            <p>Everything lives in one codebase, one binary, one process. A Go monolith might have packages like
+              <code>/handlers</code>, <code>/services</code>, <code>/repository</code>, <code>/models</code> — all
+              compiled into a single <code>go build</code> output. No network calls between components; they call each
+              other as regular Go function calls.
+            </p>
+            <p>A well-structured monolith uses internal package boundaries to enforce modularity — the "modular
+              monolith" variant is the best starting point for most production Go systems.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--mono)"></span> Characteristics</h4>
+            <ul>
+              <li><strong>Single process:</strong> all goroutines share the same memory</li>
+              <li><strong>In-process calls:</strong> function calls, not HTTP/gRPC — zero latency</li>
+              <li><strong>Shared database:</strong> one schema, one connection pool</li>
+              <li><strong>Unified deployment:</strong> one <code>go build</code>, one Docker image</li>
+              <li><strong>Vertical scaling:</strong> bigger machine → bigger monolith</li>
+              <li><strong>Simple debugging:</strong> one stack trace, one log stream</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--mono)"></span> How It Works (Go)</h4>
+            <div class="steps" style="margin-top:8px">
+              <div class="step">
+                <div class="step-num" style="background:var(--mono-dim);color:var(--mono);">01</div>
+                <div class="step-body">
+                  <h5>HTTP Request enters</h5>
+                  <p>Gin/Echo/Chi router in <code>main.go</code> receives the request.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-num" style="background:var(--mono-dim);color:var(--mono);">02</div>
+                <div class="step-body">
+                  <h5>Handler layer</h5>
+                  <p><code>/handlers/order.go</code> parses, validates request, calls service.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-num" style="background:var(--mono-dim);color:var(--mono);">03</div>
+                <div class="step-body">
+                  <h5>Service / Business layer</h5>
+                  <p><code>/services/order.go</code> applies business rules — direct function call, zero overhead.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-num" style="background:var(--mono-dim);color:var(--mono);">04</div>
+                <div class="step-body">
+                  <h5>Repository / Data layer</h5>
+                  <p><code>/repository/order.go</code> queries PostgreSQL. Returns to handler. HTTP response.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--mono)"></span> Complexity & Scale Metrics</h4>
+            <div class="meter-row"><span class="meter-label">Setup complexity</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:15%;background:var(--mono)"></div>
+              </div><span class="meter-val">Very Low</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Dev velocity</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:90%;background:var(--pro)"></div>
+              </div><span class="meter-val">Very High</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Operational cost</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:10%;background:var(--mono)"></div>
+              </div><span class="meter-val">Very Low</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Horizontal scale</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:30%;background:var(--con)"></div>
+              </div><span class="meter-val">Limited</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Team scalability</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:25%;background:var(--con)"></div>
+              </div><span class="meter-val">Limited</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Debugging ease</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:95%;background:var(--pro)"></div>
+              </div><span class="meter-val">Excellent</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Suitability -->
+        <div class="info-block" style="margin-bottom:14px">
+          <h4><span class="dot" style="background:var(--mono)"></span> Project Suitability</h4>
+          <div class="suit-grid">
+            <span class="suit-badge sb-best">✓ Startup MVP</span>
+            <span class="suit-badge sb-best">✓ Small SaaS</span>
+            <span class="suit-badge sb-best">✓ Internal Tools</span>
+            <span class="suit-badge sb-best">✓ Blog / CMS</span>
+            <span class="suit-badge sb-best">✓ Small E-commerce</span>
+            <span class="suit-badge sb-good">~ Medium REST API</span>
+            <span class="suit-badge sb-good">~ ERP (early stage)</span>
+            <span class="suit-badge sb-avoid">✗ Multi-team Platform</span>
+            <span class="suit-badge sb-avoid">✗ High-scale Real-time</span>
+            <span class="suit-badge sb-avoid">✗ Independent deploy cycles</span>
+            <span class="suit-badge sb-size-sm">Small ✓</span>
+            <span class="suit-badge sb-size-md">Medium ✓</span>
+            <span class="suit-badge sb-size-lg">Large ✗</span>
+          </div>
+        </div>
+
+        <!-- Diagram -->
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg" style="font-family:'Space Mono',monospace">
+            <defs>
+              <marker id="am" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                <polygon points="0 0,7 2.5,0 5" fill="#00d4aa" />
+              </marker>
+            </defs>
+            <!-- Client -->
+            <rect x="10" y="80" width="80" height="60" rx="8" fill="rgba(0,212,170,.08)" stroke="rgba(0,212,170,.3)"
+              stroke-width="1.5" />
+            <text x="50" y="107" text-anchor="middle" fill="#00d4aa" font-size="11" font-weight="bold">Client</text>
+            <text x="50" y="122" text-anchor="middle" fill="#8892a4" font-size="9">Browser/App</text>
+            <line x1="90" y1="110" x2="130" y2="110" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#am)" />
+
+            <!-- Monolith big box -->
+            <rect x="130" y="20" width="440" height="180" rx="12" fill="rgba(0,212,170,.06)" stroke="#00d4aa"
+              stroke-width="2" stroke-dasharray="6,3" />
+            <text x="350" y="42" text-anchor="middle" fill="#00d4aa" font-size="10" font-weight="bold"
+              letter-spacing="2">SINGLE GO BINARY — ONE PROCESS</text>
+
+            <!-- Layers inside -->
+            <rect x="150" y="52" width="100" height="40" rx="6" fill="rgba(0,212,170,.15)" stroke="#00d4aa"
+              stroke-width="1.5" />
+            <text x="200" y="68" text-anchor="middle" fill="#00d4aa" font-size="10" font-weight="bold">Handlers</text>
+            <text x="200" y="82" text-anchor="middle" fill="#8892a4" font-size="8">Gin/Echo/Chi</text>
+
+            <rect x="270" y="52" width="100" height="40" rx="6" fill="rgba(0,212,170,.15)" stroke="#00d4aa"
+              stroke-width="1.5" />
+            <text x="320" y="68" text-anchor="middle" fill="#00d4aa" font-size="10" font-weight="bold">Services</text>
+            <text x="320" y="82" text-anchor="middle" fill="#8892a4" font-size="8">Business Logic</text>
+
+            <rect x="390" y="52" width="100" height="40" rx="6" fill="rgba(0,212,170,.15)" stroke="#00d4aa"
+              stroke-width="1.5" />
+            <text x="440" y="68" text-anchor="middle" fill="#00d4aa" font-size="10" font-weight="bold">Repository</text>
+            <text x="440" y="82" text-anchor="middle" fill="#8892a4" font-size="8">Data Access</text>
+
+            <!-- Function call arrows (inside same process) -->
+            <line x1="250" y1="72" x2="270" y2="72" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#am)" />
+            <line x1="370" y1="72" x2="390" y2="72" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#am)" />
+            <text x="260" y="65" text-anchor="middle" fill="#6272a4" font-size="8">func()</text>
+            <text x="380" y="65" text-anchor="middle" fill="#6272a4" font-size="8">func()</text>
+
+            <!-- Sub-modules row -->
+            <rect x="150" y="110" width="90" height="32" rx="5" fill="rgba(0,212,170,.08)" stroke="rgba(0,212,170,.25)"
+              stroke-width="1" />
+            <text x="195" y="126" text-anchor="middle" fill="#8892a4" font-size="9">Auth Module</text>
+            <rect x="250" y="110" width="90" height="32" rx="5" fill="rgba(0,212,170,.08)" stroke="rgba(0,212,170,.25)"
+              stroke-width="1" />
+            <text x="295" y="126" text-anchor="middle" fill="#8892a4" font-size="9">Order Module</text>
+            <rect x="350" y="110" width="90" height="32" rx="5" fill="rgba(0,212,170,.08)" stroke="rgba(0,212,170,.25)"
+              stroke-width="1" />
+            <text x="395" y="126" text-anchor="middle" fill="#8892a4" font-size="9">Menu Module</text>
+            <rect x="450" y="110" width="100" height="32" rx="5" fill="rgba(0,212,170,.08)" stroke="rgba(0,212,170,.25)"
+              stroke-width="1" />
+            <text x="500" y="126" text-anchor="middle" fill="#8892a4" font-size="9">Payment Module</text>
+
+            <!-- Shared Memory label -->
+            <rect x="150" y="155" width="400" height="28" rx="5" fill="rgba(0,212,170,.05)" stroke="rgba(0,212,170,.15)"
+              stroke-width="1" />
+            <text x="350" y="173" text-anchor="middle" fill="#6272a4" font-size="9">Shared Memory — Shared Types —
+              In-Process Communication (zero network latency)</text>
+
+            <!-- DB -->
+            <rect x="590" y="80" width="100" height="60" rx="8" fill="rgba(74,222,128,.08)" stroke="rgba(74,222,128,.3)"
+              stroke-width="1.5" />
+            <text x="640" y="105" text-anchor="middle" fill="#4ade80" font-size="11"
+              font-weight="bold">PostgreSQL</text>
+            <text x="640" y="120" text-anchor="middle" fill="#8892a4" font-size="9">Shared DB</text>
+            <line x1="570" y1="110" x2="590" y2="110" stroke="#4ade80" stroke-width="1.5" marker-end="url(#am)" />
+          </svg>
+        </div>
+
+        <!-- Code -->
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-label">monolith/main.go — Modular Monolith Structure</span>
+        </div>
+        <div class="code-block"><span class="cmt">// Recommended Go Modular Monolith project structure:</span>
+          <span class="cmt">// myapp/</span>
+          <span class="cmt">// ├── cmd/server/main.go ← Entry point — wires everything</span>
+          <span class="cmt">// ├── internal/</span>
+          <span class="cmt">// │ ├── handlers/ ← HTTP layer (Gin/Echo)</span>
+          <span class="cmt">// │ │ ├── order.go</span>
+          <span class="cmt">// │ │ └── menu.go</span>
+          <span class="cmt">// │ ├── services/ ← Business logic (pure Go, no HTTP deps)</span>
+          <span class="cmt">// │ │ ├── order.go</span>
+          <span class="cmt">// │ │ └── menu.go</span>
+          <span class="cmt">// │ ├── repository/ ← Data access (SQL, Redis)</span>
+          <span class="cmt">// │ │ ├── postgres/</span>
+          <span class="cmt">// │ │ └── redis/</span>
+          <span class="cmt">// │ ├── domain/ ← Types, interfaces, business entities</span>
+          <span class="cmt">// │ └── config/ ← App config loading</span>
+          <span class="cmt">// └── pkg/ ← Shared utilities (logging, errors)</span>
+
+          <span class="kw">package</span> main
+
+          <span class="kw">import</span> (
+          <span class="str">"github.com/gin-gonic/gin"</span>
+          <span class="str">"myapp/internal/handlers"</span>
+          <span class="str">"myapp/internal/repository/postgres"</span>
+          <span class="str">"myapp/internal/services"</span>
+          )
+
+          <span class="kw">func</span> <span class="fn">main</span>() {
+          <span class="cmt">// Manual Dependency Injection — wired at startup</span>
+          db := postgres.<span class="fn">New</span>(cfg.DatabaseURL)
+          repo := postgres.<span class="fn">NewOrderRepo</span>(db)
+          svc := services.<span class="fn">NewOrderService</span>(repo)
+          hdlr := handlers.<span class="fn">NewOrderHandler</span>(svc)
+
+          r := gin.<span class="fn">Default</span>()
+          r.<span class="fn">POST</span>(<span class="str">"/orders"</span>, hdlr.<span class="fn">Create</span>)
+          r.<span class="fn">GET</span>(<span class="str">"/orders/:id"</span>, hdlr.<span class="fn">Get</span>)
+          r.<span class="fn">Run</span>(<span class="str">":8080"</span>)
+          <span class="cmt">// No service discovery. No network calls between modules.</span>
+          <span class="cmt">// Everything: one process, one binary, one deploy.</span>
+          }
+        </div>
+
+        <div class="bottleneck">
+          <h4>⚠ BOTTLENECKS & KNOWN ISSUES</h4>
+          <ul>
+            <li><strong>Scaling bottleneck:</strong> Must scale the entire app even if only one module is under load
+            </li>
+            <li><strong>Deployment bottleneck:</strong> One bug in any module can take down the entire system</li>
+            <li><strong>Team bottleneck:</strong> Merge conflicts increase as team size grows past ~15 developers</li>
+            <li><strong>Technology bottleneck:</strong> Entire app must use same Go version, same dependencies</li>
+            <li><strong>Memory:</strong> Single process means one large heap — high-frequency GC pauses at scale</li>
+          </ul>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Simplest possible architecture — YAGNI-compliant</li>
+              <li>Zero network latency between modules (in-process calls)</li>
+              <li>One log stream, one debugger, one deployment unit</li>
+              <li>Trivial local development — one <code>go run</code> command</li>
+              <li>ACID transactions across entire system trivially</li>
+              <li>No service discovery, no distributed tracing overhead</li>
+              <li>Best for early-stage products where speed matters most</li>
+              <li>Easy to refactor — compiler catches all breakage</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>One module failure can crash entire application</li>
+              <li>Cannot scale individual modules independently</li>
+              <li>Merge conflicts and coordination overhead at large team sizes</li>
+              <li>Tech stack locked — no module-level polyglot</li>
+              <li>Long build/test times as codebase grows</li>
+              <li>Deploy all-or-nothing — risky for large releases</li>
+              <li>Tight coupling risk: modules can call each other freely</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="example-card">
+          <div class="example-icon">🍕</div>
+          <div>
+            <div class="example-title" style="color:var(--mono)">Domino's-style Restaurant Ordering Platform (Early
+              Stage)</div>
+            <div class="example-desc">A single Go binary handles: online menu browsing, cart management, order
+              placement, payment processing (Stripe), kitchen notification, driver dispatch, and admin dashboard. All
+              modules share a PostgreSQL connection pool and Redis cache. One deploy, one server, one codebase. Team of
+              5 ships features daily without coordination overhead. When order volumes hit 10K/day, deploy on a bigger
+              VM — no architectural change needed until that VM is maxed out.</div>
+            <div class="tags">
+              <span class="tag t-mono">Online Ordering</span>
+              <span class="tag t-mono">Menu Management</span>
+              <span class="tag t-mono">Payment (Stripe)</span>
+              <span class="tag t-mono">Kitchen Dashboard</span>
+              <span class="tag green">Single Deploy</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ MICROSERVICES ═══ -->
+  <section id="microservices" class="ac-micro">
+    <div class="container">
+      <div class="section-label">Architecture 02 · Deployment</div>
+      <div class="section-title" style="margin-bottom:0">Microservices Architecture</div>
+      <div class="arch-block" style="margin-top:28px">
+        <div class="arch-header ac-micro">
+          <div class="arch-icon-lg">🔬</div>
+          <div>
+            <div class="arch-name">Microservices Architecture</div>
+            <div class="arch-cat">Deployment Pattern · Independent Services · Cloud-Native</div>
+            <div class="arch-tagline">An application structured as a collection of <strong>small, autonomous
+                services</strong> — each owning its own data, deployed independently, communicating over the network
+              (HTTP/gRPC/message queues). Each service is a separate Go binary. The gold standard for large-scale,
+              multi-team systems.</div>
+            <div class="stat-row">
+              <span class="stat">Deployment: Independent binaries</span>
+              <span class="stat">Communication: gRPC / HTTP / Events</span>
+              <span class="stat">DB: One DB per service</span>
+              <span class="stat">Best team: 2-pizza rule per service</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--micro)"></span> What Is It?</h4>
+            <p>Instead of one big Go binary, you have 10-50+ small Go binaries: <code>order-service</code>,
+              <code>menu-service</code>, <code>payment-service</code>, <code>notification-service</code>, each in its
+              own repo. They communicate via gRPC (internal) or REST (external). Each owns its own PostgreSQL
+              schema/database. Each can be deployed, scaled, and failed independently.
+            </p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--micro)"></span> Core Principles</h4>
+            <ul>
+              <li><strong>Single Responsibility:</strong> each service does ONE thing well</li>
+              <li><strong>Data isolation:</strong> no shared databases — each service owns its data</li>
+              <li><strong>Deploy independence:</strong> update order-service without touching menu-service</li>
+              <li><strong>Failure isolation:</strong> payment-service failure doesn't crash menu browsing</li>
+              <li><strong>Technology freedom:</strong> one service can be Go, another Python (rarely needed)</li>
+              <li><strong>Owned by one team:</strong> Amazon "two-pizza" rule</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--micro)"></span> Key Requirements</h4>
+            <ul>
+              <li><strong>Service Discovery:</strong> Consul, etcd, or Kubernetes DNS</li>
+              <li><strong>API Gateway:</strong> Kong, Traefik, or custom Go gateway</li>
+              <li><strong>Distributed Tracing:</strong> OpenTelemetry + Jaeger / Zipkin</li>
+              <li><strong>Centralized Logging:</strong> ELK / Loki / Datadog</li>
+              <li><strong>Circuit Breakers:</strong> Sony gobreaker / Hystrix-go</li>
+              <li><strong>Health checks + readiness probes</strong> on every service</li>
+              <li><strong>Container orchestration:</strong> Kubernetes (standard)</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--micro)"></span> Complexity Metrics</h4>
+            <div class="meter-row"><span class="meter-label">Setup complexity</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:90%;background:var(--micro)"></div>
+              </div><span class="meter-val">Very High</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Dev velocity</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:50%;background:var(--clean)"></div>
+              </div><span class="meter-val">Medium</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Operational cost</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:88%;background:var(--micro)"></div>
+              </div><span class="meter-val">Very High</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Horizontal scale</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:98%;background:var(--pro)"></div>
+              </div><span class="meter-val">Excellent</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Team scalability</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:95%;background:var(--pro)"></div>
+              </div><span class="meter-val">Excellent</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Debugging ease</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:20%;background:var(--con)"></div>
+              </div><span class="meter-val">Hard</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-block" style="margin-bottom:14px">
+          <h4><span class="dot" style="background:var(--micro)"></span> Project Suitability</h4>
+          <div class="suit-grid">
+            <span class="suit-badge sb-best">✓ Large E-Commerce (Amazon)</span>
+            <span class="suit-badge sb-best">✓ Fintech Platform</span>
+            <span class="suit-badge sb-best">✓ Multi-team SaaS</span>
+            <span class="suit-badge sb-best">✓ High-scale API Platform</span>
+            <span class="suit-badge sb-best">✓ Netflix/Uber-style apps</span>
+            <span class="suit-badge sb-good">~ Growing startup with product-market fit</span>
+            <span class="suit-badge sb-avoid">✗ Solo developer / Small team</span>
+            <span class="suit-badge sb-avoid">✗ MVP / Prototype</span>
+            <span class="suit-badge sb-avoid">✗ Simple CRUD app</span>
+            <span class="suit-badge sb-size-lg">Large ✓</span>
+            <span class="suit-badge sb-size-xl"
+              style="background:rgba(248,113,113,.1);color:var(--con);border-color:rgba(248,113,113,.2);">Enterprise
+              ✓</span>
+          </div>
+        </div>
+
+        <!-- Architecture Diagram -->
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="font-family:'Space Mono',monospace">
+            <defs>
+              <marker id="amicro" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                <polygon points="0 0,7 2.5,0 5" fill="#ff6b35" />
+              </marker>
+              <marker id="agrpc" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                <polygon points="0 0,7 2.5,0 5" fill="#7c6af7" />
+              </marker>
+            </defs>
+
+            <!-- Client -->
+            <rect x="10" y="130" width="70" height="40" rx="7" fill="rgba(255,107,53,.08)" stroke="rgba(255,107,53,.35)"
+              stroke-width="1.5" />
+            <text x="45" y="147" text-anchor="middle" fill="#ff6b35" font-size="10" font-weight="bold">Client</text>
+            <text x="45" y="160" text-anchor="middle" fill="#8892a4" font-size="8">App/Web</text>
+            <line x1="80" y1="150" x2="110" y2="150" stroke="#ff6b35" stroke-width="1.5" marker-end="url(#amicro)" />
+
+            <!-- API Gateway -->
+            <rect x="110" y="115" width="110" height="70" rx="8" fill="rgba(255,107,53,.2)" stroke="#ff6b35"
+              stroke-width="2.5" />
+            <text x="165" y="143" text-anchor="middle" fill="#ff6b35" font-size="11" font-weight="bold">API
+              Gateway</text>
+            <text x="165" y="158" text-anchor="middle" fill="#8892a4" font-size="9">Rate Limit</text>
+            <text x="165" y="170" text-anchor="middle" fill="#8892a4" font-size="9">Auth · Routing</text>
+
+            <!-- Services column -->
+            <line x1="220" y1="135" x2="255" y2="80" stroke="#ff6b35" stroke-width="1.3" marker-end="url(#amicro)" />
+            <line x1="220" y1="148" x2="255" y2="148" stroke="#ff6b35" stroke-width="1.3" marker-end="url(#amicro)" />
+            <line x1="220" y1="162" x2="255" y2="220" stroke="#ff6b35" stroke-width="1.3" marker-end="url(#amicro)" />
+
+            <!-- Order Service -->
+            <rect x="255" y="55" width="110" height="50" rx="7" fill="rgba(255,107,53,.12)" stroke="rgba(255,107,53,.4)"
+              stroke-width="1.5" />
+            <text x="310" y="76" text-anchor="middle" fill="#ff6b35" font-size="10" font-weight="bold">Order
+              Service</text>
+            <text x="310" y="89" text-anchor="middle" fill="#8892a4" font-size="8">:8081 · own DB</text>
+            <!-- Own DB -->
+            <rect x="370" y="60" width="60" height="40" rx="5" fill="rgba(74,222,128,.08)" stroke="rgba(74,222,128,.3)"
+              stroke-width="1" />
+            <text x="400" y="78" text-anchor="middle" fill="#4ade80" font-size="8">Orders DB</text>
+            <text x="400" y="90" text-anchor="middle" fill="#6272a4" font-size="7">Postgres</text>
+            <line x1="365" y1="80" x2="370" y2="80" stroke="#4ade80" stroke-width="1" />
+
+            <!-- Menu Service -->
+            <rect x="255" y="123" width="110" height="50" rx="7" fill="rgba(255,107,53,.18)" stroke="#ff6b35"
+              stroke-width="2" />
+            <text x="310" y="144" text-anchor="middle" fill="#ff6b35" font-size="10" font-weight="bold">Menu
+              Service</text>
+            <text x="310" y="157" text-anchor="middle" fill="#8892a4" font-size="8">:8082 · own DB</text>
+            <rect x="370" y="128" width="60" height="40" rx="5" fill="rgba(74,222,128,.08)" stroke="rgba(74,222,128,.3)"
+              stroke-width="1" />
+            <text x="400" y="146" text-anchor="middle" fill="#4ade80" font-size="8">Menu DB</text>
+            <text x="400" y="158" text-anchor="middle" fill="#6272a4" font-size="7">Postgres</text>
+            <line x1="365" y1="148" x2="370" y2="148" stroke="#4ade80" stroke-width="1" />
+
+            <!-- Payment Service -->
+            <rect x="255" y="197" width="110" height="50" rx="7" fill="rgba(255,107,53,.12)"
+              stroke="rgba(255,107,53,.4)" stroke-width="1.5" />
+            <text x="310" y="218" text-anchor="middle" fill="#ff6b35" font-size="10" font-weight="bold">Payment
+              Svc</text>
+            <text x="310" y="231" text-anchor="middle" fill="#8892a4" font-size="8">:8083 · own DB</text>
+            <rect x="370" y="202" width="60" height="40" rx="5" fill="rgba(74,222,128,.08)" stroke="rgba(74,222,128,.3)"
+              stroke-width="1" />
+            <text x="400" y="220" text-anchor="middle" fill="#4ade80" font-size="8">Payment DB</text>
+            <text x="400" y="232" text-anchor="middle" fill="#6272a4" font-size="7">Postgres</text>
+            <line x1="365" y1="222" x2="370" y2="222" stroke="#4ade80" stroke-width="1" />
+
+            <!-- gRPC between services -->
+            <line x1="365" y1="88" x2="440" y2="130" stroke="#7c6af7" stroke-width="1.2" stroke-dasharray="4,2"
+              marker-end="url(#agrpc)" />
+            <line x1="365" y1="160" x2="440" y2="210" stroke="#7c6af7" stroke-width="1.2" stroke-dasharray="4,2"
+              marker-end="url(#agrpc)" />
+            <text x="420" y="112" fill="#7c6af7" font-size="8">gRPC</text>
+            <text x="425" y="192" fill="#7c6af7" font-size="8">gRPC</text>
+
+            <!-- Notification Service -->
+            <rect x="440" y="110" width="110" height="50" rx="7" fill="rgba(255,107,53,.12)"
+              stroke="rgba(255,107,53,.4)" stroke-width="1.5" />
+            <text x="495" y="131" text-anchor="middle" fill="#ff6b35" font-size="10"
+              font-weight="bold">Notification</text>
+            <text x="495" y="144" text-anchor="middle" fill="#8892a4" font-size="8">:8084 · email/SMS</text>
+
+            <!-- Driver Service -->
+            <rect x="440" y="195" width="110" height="50" rx="7" fill="rgba(255,107,53,.12)"
+              stroke="rgba(255,107,53,.4)" stroke-width="1.5" />
+            <text x="495" y="216" text-anchor="middle" fill="#ff6b35" font-size="10" font-weight="bold">Driver
+              Service</text>
+            <text x="495" y="229" text-anchor="middle" fill="#8892a4" font-size="8">:8085 · GPS</text>
+
+            <!-- Message Broker -->
+            <rect x="570" y="130" width="120" height="50" rx="7" fill="rgba(124,106,247,.12)"
+              stroke="rgba(124,106,247,.4)" stroke-width="1.5" />
+            <text x="630" y="151" text-anchor="middle" fill="#7c6af7" font-size="10" font-weight="bold">Kafka /
+              NATS</text>
+            <text x="630" y="164" text-anchor="middle" fill="#8892a4" font-size="8">Event Bus</text>
+            <line x1="550" y1="135" x2="570" y2="148" stroke="#7c6af7" stroke-width="1" stroke-dasharray="3,2" />
+            <line x1="550" y1="215" x2="570" y2="162" stroke="#7c6af7" stroke-width="1" stroke-dasharray="3,2" />
+
+            <!-- K8s label -->
+            <rect x="10" y="265" width="680" height="20" rx="4" fill="rgba(255,107,53,.04)"
+              stroke="rgba(255,107,53,.15)" stroke-width="1" />
+            <text x="350" y="279" text-anchor="middle" fill="#6272a4" font-size="9">Kubernetes — Service Discovery —
+              Distributed Tracing (OpenTelemetry) — Centralized Logging</text>
+          </svg>
+        </div>
+
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-label">microservices/order-service/main.go — gRPC Server</span>
+        </div>
+        <div class="code-block"><span class="cmt">// Each microservice is a standalone Go binary</span>
+          <span class="cmt">// order-service/</span>
+          <span class="cmt">// ├── cmd/main.go ← gRPC + HTTP server startup</span>
+          <span class="cmt">// ├── internal/</span>
+          <span class="cmt">// │ ├── handler/ ← gRPC handlers</span>
+          <span class="cmt">// │ ├── service/ ← Business logic</span>
+          <span class="cmt">// │ └── repository/ ← This service's OWN database</span>
+          <span class="cmt">// ├── proto/ ← Protobuf definitions</span>
+          <span class="cmt">// └── go.mod ← INDEPENDENT module — own dependencies!</span>
+
+          <span class="kw">package</span> main
+
+          <span class="kw">import</span> (
+          <span class="str">"google.golang.org/grpc"</span>
+          <span class="str">"go.opentelemetry.io/otel"</span> <span class="cmt">// Distributed tracing</span>
+          orderpb <span class="str">"order-service/proto/order"</span>
+          )
+
+          <span class="kw">func</span> <span class="fn">main</span>() {
+          <span class="cmt">// Each service: its own config, its own DB, its own port</span>
+          db := <span class="fn">connectOwnDatabase</span>(cfg.DatabaseURL)
+          svc := service.<span class="fn">New</span>(db)
+
+          <span class="cmt">// gRPC server with interceptors (tracing, logging, recovery)</span>
+          grpcServer := grpc.<span class="fn">NewServer</span>(
+          grpc.<span class="fn">UnaryInterceptor</span>(<span class="fn">otelgrpc.UnaryServerInterceptor</span>()),
+          grpc.<span class="fn">UnaryInterceptor</span>(<span class="fn">loggingInterceptor</span>),
+          )
+          orderpb.<span class="fn">RegisterOrderServiceServer</span>(grpcServer, svc)
+
+          <span class="cmt">// Health check for Kubernetes probes</span>
+          <span class="kw">go</span> <span class="fn">serveHealthCheck</span>(<span class="str">":8090"</span>)
+
+          grpcServer.<span class="fn">Serve</span>(lis)
+
+          <span class="cmt">// To call another service (e.g. payment-service):</span>
+          <span class="cmt">// conn, _ := grpc.Dial("payment-service:9090", grpc.WithInsecure())</span>
+          <span class="cmt">// paymentClient := paymentpb.NewPaymentServiceClient(conn)</span>
+          }
+        </div>
+
+        <div class="bottleneck">
+          <h4>⚠ BOTTLENECKS & DISTRIBUTED SYSTEM CHALLENGES</h4>
+          <ul>
+            <li><strong>Network latency:</strong> What was a function call is now an RPC — adds 1-10ms per hop</li>
+            <li><strong>Distributed transactions:</strong> No ACID across services — must use Saga Pattern or 2PC</li>
+            <li><strong>Service mesh complexity:</strong> Istio/Linkerd adds operational overhead</li>
+            <li><strong>Data consistency:</strong> Eventual consistency is the norm — harder to reason about</li>
+            <li><strong>Debugging:</strong> A single request spans 5+ services — requires distributed tracing</li>
+            <li><strong>Test environment:</strong> Running full system locally requires Docker Compose or Minikube</li>
+          </ul>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Independent scaling per service (scale only what's under load)</li>
+              <li>Independent deployments — one team doesn't block another</li>
+              <li>Fault isolation — one service failure doesn't cascade</li>
+              <li>Teams own their service end-to-end (full autonomy)</li>
+              <li>Technology choice per service (rarely needed, but possible)</li>
+              <li>Smaller codebases per service — easier to understand</li>
+              <li>Industry standard for large cloud-native platforms</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Massive operational complexity (K8s, service mesh, observability)</li>
+              <li>Distributed system fallacies — network is NOT reliable</li>
+              <li>Inter-service testing and integration test complexity</li>
+              <li>Data consistency and distributed transactions are hard</li>
+              <li>Latency overhead from network calls</li>
+              <li>Significant infrastructure cost vs monolith</li>
+              <li>Requires mature DevOps/platform engineering team</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="example-card">
+          <div class="example-icon">🚀</div>
+          <div>
+            <div class="example-title" style="color:var(--micro)">Uber Eats / Large Food Platform (Scale)</div>
+            <div class="example-desc">At Uber-scale: <strong>restaurant-service</strong> (menu, hours, onboarding) →
+              <strong>search-service</strong> (Elasticsearch, geo-search) → <strong>order-service</strong> (placement,
+              lifecycle) → <strong>pricing-service</strong> (surge, discounts) → <strong>payment-service</strong>
+              (Stripe, wallets) → <strong>dispatch-service</strong> (driver matching, routing) →
+              <strong>notification-service</strong> (push, SMS, email) → <strong>analytics-service</strong> (Kafka
+              consumer, data warehouse). Each team deploys 10x/day independently. Each service scales to handle its own
+              peak load.
+            </div>
+            <div class="tags">
+              <span class="tag t-micro">Independent Deploy</span>
+              <span class="tag t-micro">Per-Service Scaling</span>
+              <span class="tag t-micro">gRPC Internal</span>
+              <span class="tag t-micro">Kubernetes</span>
+              <span class="tag green">Fault Isolation</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ EVENT-DRIVEN ═══ -->
+  <section id="event" class="ac-event">
+    <div class="container">
+      <div class="section-label">Architecture 03 · Communication</div>
+      <div class="section-title" style="margin-bottom:0">Event-Driven Architecture</div>
+      <div class="arch-block" style="margin-top:28px">
+        <div class="arch-header ac-event">
+          <div class="arch-icon-lg">⚡</div>
+          <div>
+            <div class="arch-name">Event-Driven Architecture (EDA)</div>
+            <div class="arch-cat">Communication Pattern · Asynchronous · Reactive</div>
+            <div class="arch-tagline">Components communicate by <strong>producing and consuming events</strong>
+              asynchronously via a message broker (Kafka, NATS, RabbitMQ). Producers don't know who consumes their
+              events. Consumers don't know who produced. Maximum decoupling — perfect for systems where actions trigger
+              cascading reactions across many services.</div>
+            <div class="stat-row">
+              <span class="stat">Communication: Async events</span>
+              <span class="stat">Broker: Kafka / NATS / RabbitMQ</span>
+              <span class="stat">Coupling: Very Low</span>
+              <span class="stat">Consistency: Eventual</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--event)"></span> Core Concepts</h4>
+            <ul>
+              <li><strong>Event:</strong> Immutable fact — "OrderPlaced", "PaymentFailed", "UserSignedUp"</li>
+              <li><strong>Producer:</strong> Service that emits events (doesn't know consumers)</li>
+              <li><strong>Consumer:</strong> Service that subscribes to topics (doesn't know producer)</li>
+              <li><strong>Topic/Channel:</strong> Named stream — "orders.placed", "payments.completed"</li>
+              <li><strong>Event Store:</strong> Append-only log (Kafka topic = ordered, replayed)</li>
+              <li><strong>Dead Letter Queue:</strong> Failed events routed for retry/inspection</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--event)"></span> How It Works</h4>
+            <div class="steps" style="margin-top:8px">
+              <div class="step">
+                <div class="step-num" style="background:var(--event-dim);color:var(--event);">01</div>
+                <div class="step-body">
+                  <h5>Action triggers event</h5>
+                  <p>Order service places order → publishes <code>OrderPlaced</code> event to Kafka topic
+                    <code>orders.placed</code>.
+                  </p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-num" style="background:var(--event-dim);color:var(--event);">02</div>
+                <div class="step-body">
+                  <h5>Broker persists event</h5>
+                  <p>Kafka durably stores the event in ordered partition. Consumers can replay from any offset.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-num" style="background:var(--event-dim);color:var(--event);">03</div>
+                <div class="step-body">
+                  <h5>Consumers react independently</h5>
+                  <p>Kitchen, inventory, analytics, notification services each consume in parallel — at their own pace.
+                  </p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-num" style="background:var(--event-dim);color:var(--event);">04</div>
+                <div class="step-body">
+                  <h5>Each consumer may produce</h5>
+                  <p>Kitchen service consumes <code>OrderPlaced</code>, produces <code>CookingStarted</code>.
+                    Notification consumes that, pushes to customer.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--event)"></span> EDA Styles in Go</h4>
+            <ul>
+              <li><strong>Simple Pub/Sub:</strong> NATS JetStream — fastest, zero persistence, ideal for real-time</li>
+              <li><strong>Event Streaming:</strong> Kafka — durable, ordered, replayable — fintech/audit logs</li>
+              <li><strong>Message Queuing:</strong> RabbitMQ — work queues, routing, dead-letter</li>
+              <li><strong>In-process channels:</strong> Go channels for single-service event bus</li>
+              <li><strong>Event Sourcing:</strong> Events ARE the source of truth — replay to rebuild state</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--event)"></span> Complexity Metrics</h4>
+            <div class="meter-row"><span class="meter-label">Setup complexity</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:72%;background:var(--event)"></div>
+              </div><span class="meter-val">High</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Coupling level</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:5%;background:var(--pro)"></div>
+              </div><span class="meter-val">Very Low</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Throughput</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:95%;background:var(--pro)"></div>
+              </div><span class="meter-val">Excellent</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Consistency</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:30%;background:var(--con)"></div>
+              </div><span class="meter-val">Eventual</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Debugging</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:22%;background:var(--con)"></div>
+              </div><span class="meter-val">Hard</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Resilience</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:92%;background:var(--pro)"></div>
+              </div><span class="meter-val">Very High</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" style="font-family:'Space Mono',monospace">
+            <defs>
+              <marker id="aev" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                <polygon points="0 0,7 2.5,0 5" fill="#7c6af7" />
+              </marker>
+            </defs>
+            <!-- Producers -->
+            <rect x="10" y="30" width="110" height="40" rx="7" fill="rgba(124,106,247,.1)" stroke="rgba(124,106,247,.4)"
+              stroke-width="1.5" />
+            <text x="65" y="47" text-anchor="middle" fill="#7c6af7" font-size="10" font-weight="bold">Order
+              Service</text>
+            <text x="65" y="62" text-anchor="middle" fill="#8892a4" font-size="8">PRODUCER</text>
+            <rect x="10" y="85" width="110" height="40" rx="7" fill="rgba(124,106,247,.1)" stroke="rgba(124,106,247,.4)"
+              stroke-width="1.5" />
+            <text x="65" y="102" text-anchor="middle" fill="#7c6af7" font-size="10" font-weight="bold">Payment
+              Svc</text>
+            <text x="65" y="117" text-anchor="middle" fill="#8892a4" font-size="8">PRODUCER</text>
+            <rect x="10" y="140" width="110" height="40" rx="7" fill="rgba(124,106,247,.1)"
+              stroke="rgba(124,106,247,.4)" stroke-width="1.5" />
+            <text x="65" y="157" text-anchor="middle" fill="#7c6af7" font-size="10" font-weight="bold">Driver
+              Service</text>
+            <text x="65" y="172" text-anchor="middle" fill="#8892a4" font-size="8">PRODUCER</text>
+
+            <!-- Arrows to broker -->
+            <line x1="120" y1="50" x2="195" y2="95" stroke="#7c6af7" stroke-width="1.5" marker-end="url(#aev)" />
+            <line x1="120" y1="105" x2="195" y2="100" stroke="#7c6af7" stroke-width="1.5" marker-end="url(#aev)" />
+            <line x1="120" y1="160" x2="195" y2="108" stroke="#7c6af7" stroke-width="1.5" marker-end="url(#aev)" />
+            <text x="155" y="68" fill="#6272a4" font-size="8" transform="rotate(-15,155,68)">Publish</text>
+
+            <!-- Kafka Broker -->
+            <rect x="195" y="55" width="170" height="100" rx="10" fill="rgba(124,106,247,.2)" stroke="#7c6af7"
+              stroke-width="2.5" />
+            <text x="280" y="80" text-anchor="middle" fill="#7c6af7" font-size="12" font-weight="bold">Kafka
+              Broker</text>
+            <text x="280" y="96" text-anchor="middle" fill="#8892a4" font-size="9">orders.placed</text>
+            <text x="280" y="110" text-anchor="middle" fill="#8892a4" font-size="9">payments.completed</text>
+            <text x="280" y="124" text-anchor="middle" fill="#8892a4" font-size="9">drivers.assigned</text>
+            <text x="280" y="140" text-anchor="middle" fill="#6272a4" font-size="8">Durable · Ordered ·
+              Replayable</text>
+
+            <!-- Arrows to consumers -->
+            <line x1="365" y1="90" x2="420" y2="55" stroke="#7c6af7" stroke-width="1.5" marker-end="url(#aev)" />
+            <line x1="365" y1="100" x2="420" y2="100" stroke="#7c6af7" stroke-width="1.5" marker-end="url(#aev)" />
+            <line x1="365" y1="110" x2="420" y2="148" stroke="#7c6af7" stroke-width="1.5" marker-end="url(#aev)" />
+            <text x="400" y="72" fill="#6272a4" font-size="8" transform="rotate(15,400,72)">Subscribe</text>
+
+            <!-- Consumers -->
+            <rect x="420" y="30" width="110" height="40" rx="7" fill="rgba(74,222,128,.08)" stroke="rgba(74,222,128,.3)"
+              stroke-width="1.5" />
+            <text x="475" y="47" text-anchor="middle" fill="#4ade80" font-size="10" font-weight="bold">Kitchen
+              Svc</text>
+            <text x="475" y="62" text-anchor="middle" fill="#8892a4" font-size="8">CONSUMER</text>
+            <rect x="420" y="82" width="110" height="40" rx="7" fill="rgba(74,222,128,.08)" stroke="rgba(74,222,128,.3)"
+              stroke-width="1.5" />
+            <text x="475" y="99" text-anchor="middle" fill="#4ade80" font-size="10"
+              font-weight="bold">Notification</text>
+            <text x="475" y="114" text-anchor="middle" fill="#8892a4" font-size="8">CONSUMER</text>
+            <rect x="420" y="133" width="110" height="40" rx="7" fill="rgba(74,222,128,.08)"
+              stroke="rgba(74,222,128,.3)" stroke-width="1.5" />
+            <text x="475" y="150" text-anchor="middle" fill="#4ade80" font-size="10" font-weight="bold">Analytics</text>
+            <text x="475" y="165" text-anchor="middle" fill="#8892a4" font-size="8">CONSUMER</text>
+
+            <!-- Dead letter -->
+            <rect x="560" y="75" width="130" height="50" rx="7" fill="rgba(248,113,113,.08)"
+              stroke="rgba(248,113,113,.3)" stroke-width="1.5" />
+            <text x="625" y="97" text-anchor="middle" fill="#f87171" font-size="10" font-weight="bold">Dead Letter
+              Q</text>
+            <text x="625" y="112" text-anchor="middle" fill="#8892a4" font-size="8">Failed event retry</text>
+            <line x1="530" y1="102" x2="560" y2="102" stroke="#f87171" stroke-width="1" stroke-dasharray="3,2" />
+
+            <text x="280" y="185" text-anchor="middle" fill="#6272a4" font-size="9">Producers & Consumers fully
+              decoupled — add consumers without touching producers</text>
+          </svg>
+        </div>
+
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-label">event-driven/kafka_consumer.go — Go Kafka Consumer</span>
+        </div>
+        <div class="code-block"><span class="kw">package</span> consumer
+
+          <span class="kw">import</span> (
+          <span class="str">"context"</span>
+          <span class="str">"encoding/json"</span>
+          <span class="str">"github.com/segmentio/kafka-go"</span>
+          )
+
+          <span class="kw">type</span> <span class="pkg">OrderPlacedEvent</span> <span class="kw">struct</span> {
+          OrderID <span class="pkg">string</span> <span class="str">`json:"order_id"`</span>
+          CustomerID <span class="pkg">string</span> <span class="str">`json:"customer_id"`</span>
+          Items []<span class="pkg">Item</span> <span class="str">`json:"items"`</span>
+          Total <span class="pkg">float64</span> <span class="str">`json:"total"`</span>
+          }
+
+          <span class="cmt">// KitchenConsumer — reacts to order.placed events</span>
+          <span class="kw">type</span> <span class="pkg">KitchenConsumer</span> <span class="kw">struct</span> {
+          reader *kafka.<span class="pkg">Reader</span>
+          printer <span class="pkg">TicketPrinter</span>
+          }
+
+          <span class="kw">func</span> <span class="fn">NewKitchenConsumer</span>(brokers []<span
+            class="pkg">string</span>) *<span class="pkg">KitchenConsumer</span> {
+          <span class="kw">return</span> &<span class="pkg">KitchenConsumer</span>{
+          reader: kafka.<span class="fn">NewReader</span>(kafka.ReaderConfig{
+          Brokers: brokers,
+          Topic: <span class="str">"orders.placed"</span>,
+          GroupID: <span class="str">"kitchen-service"</span>, <span class="cmt">// consumer group</span>
+          MinBytes: <span class="num">10e3</span>,
+          MaxBytes: <span class="num">10e6</span>,
+          }),
+          }
+          }
+
+          <span class="kw">func</span> (c *<span class="pkg">KitchenConsumer</span>) <span class="fn">Run</span>(ctx
+          context.<span class="pkg">Context</span>) {
+          <span class="kw">for</span> {
+          msg, err := c.reader.<span class="fn">ReadMessage</span>(ctx) <span class="cmt">// blocks until event
+            arrives</span>
+          <span class="kw">if</span> err != nil { <span class="kw">break</span> }
+
+          <span class="kw">var</span> evt <span class="pkg">OrderPlacedEvent</span>
+          json.<span class="fn">Unmarshal</span>(msg.Value, &evt)
+
+          <span class="cmt">// React to the event — no knowledge of who produced it</span>
+          c.printer.<span class="fn">PrintKitchenTicket</span>(evt)
+          <span class="cmt">// This consumer can be added/removed without changing Order Service</span>
+          }
+          }
+
+          <span class="cmt">// Producer side — Order Service publishes event:</span>
+          <span class="cmt">// kafka.NewWriter → writer.WriteMessages(ctx, kafka.Message{</span>
+          <span class="cmt">// Topic: "orders.placed",</span>
+          <span class="cmt">// Value: json.Marshal(OrderPlacedEvent{...}),</span>
+          <span class="cmt">// })</span>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Maximum decoupling — producers/consumers unaware of each other</li>
+              <li>Extreme throughput — Kafka handles millions of events/sec</li>
+              <li>Event replay — rebuild state, replay for new consumers</li>
+              <li>Resilience — consumers process events when ready</li>
+              <li>Audit trail — every event is an immutable log entry</li>
+              <li>Natural fit for real-time analytics, IoT, finance</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Eventual consistency — system state may be temporarily inconsistent</li>
+              <li>Complex debugging — event chains are hard to trace</li>
+              <li>Message ordering guarantees can be tricky</li>
+              <li>Schema evolution requires care (Protobuf/Avro helps)</li>
+              <li>Broker adds operational complexity</li>
+              <li>Testing event flows requires more setup</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="example-card">
+          <div class="example-icon">💳</div>
+          <div>
+            <div class="example-title" style="color:var(--event)">Fintech Payment Platform — Real-Time Transaction
+              Processing</div>
+            <div class="example-desc">Every payment triggers an event chain: <code>PaymentInitiated</code> →
+              fraud-detection-service consumes → <code>FraudCheckPassed</code> → payment-processor-service charges card
+              → <code>PaymentCompleted</code> → ledger-service records → notification-service alerts → analytics-service
+              aggregates → compliance-service logs for regulators. All async, all parallel, all independently scalable.
+              Kafka retains 30 days of events for replay and audit.</div>
+            <div class="tags"><span class="tag t-event">Kafka</span><span class="tag t-event">Event Sourcing</span><span
+                class="tag t-event">Audit Trail</span><span class="tag t-event">Real-time Alerts</span><span
+                class="tag green">NATS for low-latency</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CLEAN ARCHITECTURE ═══ -->
+  <section id="clean" class="ac-clean">
+    <div class="container">
+      <div class="section-label">Architecture 04 · Structural</div>
+      <div class="section-title" style="margin-bottom:0">Clean Architecture (Go-style)</div>
+      <div class="arch-block" style="margin-top:28px">
+        <div class="arch-header ac-clean">
+          <div class="arch-icon-lg">🎯</div>
+          <div>
+            <div class="arch-name">Clean Architecture</div>
+            <div class="arch-cat">Structural Pattern · Robert C. Martin (Uncle Bob) · Go-Idiomatic</div>
+            <div class="arch-tagline">Organizes code into <strong>concentric layers with a strict dependency rule:
+                dependencies only point inward</strong>. The domain/business logic at the center knows nothing of HTTP,
+              SQL, or frameworks. The outermost layers handle I/O. Go's interfaces make this architecture natural and
+              testable.</div>
+            <div class="stat-row">
+              <span class="stat">Core Rule: Dependencies → inward only</span>
+              <span class="stat">Domain: framework-free</span>
+              <span class="stat">Testability: Maximum</span>
+              <span class="stat">Best for: Long-lived systems</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--clean)"></span> The 4 Layers (Go)</h4>
+            <ul>
+              <li><strong>Domain / Entities:</strong> Pure Go structs and interfaces. <em>Zero</em> imports from outer
+                layers. Business rules live here.</li>
+              <li><strong>Use Cases / Interactors:</strong> Application-specific business logic. Calls domain
+                interfaces. Knows nothing of HTTP or SQL.</li>
+              <li><strong>Interface Adapters:</strong> Controllers (HTTP handlers), Presenters, Gateways. Converts
+                between use case format and outer world format.</li>
+              <li><strong>Frameworks & Drivers:</strong> Gin, GORM, Redis, Kafka. The outermost ring — details that can
+                be swapped.</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--clean)"></span> The Dependency Rule</h4>
+            <p>Source code dependencies must always point <strong>inward</strong> toward higher-level policy. Nothing in
+              an inner circle can know about something in an outer circle. The domain never imports Gin. The use case
+              never imports GORM. Outer layers implement interfaces defined by inner layers.</p>
+            <div
+              style="margin-top:10px;padding:10px 14px;background:var(--surface2);border-radius:6px;font-family:'Space Mono',monospace;font-size:11px;color:var(--clean);">
+              Frameworks → Adapters → Use Cases → Domain
+            </div>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--clean)"></span> Go Folder Structure</h4>
+            <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);line-height:1.9;">
+              <div style="color:var(--clean)">myapp/</div>
+              <div style="padding-left:16px;">├── <span style="color:var(--clean)">domain/</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← Entities, interfaces</div>
+              <div style="padding-left:16px;">├── <span style="color:var(--clean)">usecase/</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← Application logic</div>
+              <div style="padding-left:16px;">├── <span style="color:var(--clean)">adapter/</span></div>
+              <div style="padding-left:32px;">├── handler/ &nbsp;&nbsp;← HTTP (Gin)</div>
+              <div style="padding-left:32px;">└── repo/ &nbsp;&nbsp;&nbsp;&nbsp;← DB impl</div>
+              <div style="padding-left:16px;">└── <span style="color:var(--clean)">infrastructure/</span></div>
+              <div style="padding-left:32px;">├── postgres/</div>
+              <div style="padding-left:32px;">└── redis/</div>
+            </div>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--clean)"></span> Complexity Metrics</h4>
+            <div class="meter-row"><span class="meter-label">Initial setup</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:55%;background:var(--clean)"></div>
+              </div><span class="meter-val">Medium</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Testability</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:98%;background:var(--pro)"></div>
+              </div><span class="meter-val">Maximum</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Boilerplate</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:65%;background:var(--clean)"></div>
+              </div><span class="meter-val">Medium-High</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Maintainability</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:95%;background:var(--pro)"></div>
+              </div><span class="meter-val">Very High</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">New dev onboard</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:60%;background:var(--clean)"></div>
+              </div><span class="meter-val">Moderate</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Concentric diagram -->
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" style="font-family:'Space Mono',monospace">
+            <!-- Outermost ring -->
+            <circle cx="300" cy="140" r="260" fill="rgba(247,201,72,.04)" stroke="rgba(247,201,72,.3)"
+              stroke-width="1.5" />
+            <text x="520" y="40" fill="#f7c948" font-size="9" font-weight="bold">FRAMEWORKS &amp;</text>
+            <text x="520" y="52" fill="#f7c948" font-size="9" font-weight="bold">DRIVERS</text>
+            <text x="520" y="64" fill="#8892a4" font-size="8">Gin · GORM · Redis</text>
+            <text x="520" y="76" fill="#8892a4" font-size="8">Kafka · Docker</text>
+
+            <!-- Interface adapters ring -->
+            <circle cx="300" cy="140" r="195" fill="rgba(247,201,72,.06)" stroke="rgba(247,201,72,.45)"
+              stroke-width="1.5" />
+            <text x="455" y="100" fill="#f7c948" font-size="9" font-weight="bold">INTERFACE</text>
+            <text x="455" y="113" fill="#f7c948" font-size="9" font-weight="bold">ADAPTERS</text>
+            <text x="455" y="126" fill="#8892a4" font-size="8">HTTP Handlers</text>
+            <text x="455" y="138" fill="#8892a4" font-size="8">Repo Impls</text>
+            <text x="455" y="150" fill="#8892a4" font-size="8">Presenters</text>
+
+            <!-- Use cases ring -->
+            <circle cx="300" cy="140" r="130" fill="rgba(247,201,72,.09)" stroke="#f7c948" stroke-width="2" />
+            <text x="178" y="52" fill="#f7c948" font-size="9" font-weight="bold">USE CASES</text>
+            <text x="178" y="65" fill="#8892a4" font-size="8">Application Logic</text>
+            <text x="178" y="77" fill="#8892a4" font-size="8">Orchestration</text>
+
+            <!-- Domain core -->
+            <circle cx="300" cy="140" r="65" fill="rgba(247,201,72,.2)" stroke="#f7c948" stroke-width="3" />
+            <text x="300" y="130" text-anchor="middle" fill="#f7c948" font-size="12" font-weight="bold">DOMAIN</text>
+            <text x="300" y="147" text-anchor="middle" fill="#cdd9e5" font-size="9">Entities</text>
+            <text x="300" y="162" text-anchor="middle" fill="#cdd9e5" font-size="9">Business Rules</text>
+
+            <!-- Dependency arrows (all pointing inward) -->
+            <line x1="490" y1="140" x2="435" y2="140" stroke="#f7c948" stroke-width="1.5" marker-end="url(#am)" />
+            <line x1="430" y1="140" x2="370" y2="140" stroke="#f7c948" stroke-width="1.5" marker-end="url(#am)" />
+            <line x1="365" y1="140" x2="300" y2="140" stroke="#f7c948" stroke-width="1.5" marker-end="url(#am)" />
+            <text x="400" y="132" text-anchor="middle" fill="#6272a4" font-size="8">depends on →</text>
+            <text x="300" y="220" text-anchor="middle" fill="#6272a4" font-size="9">ALL dependencies point INWARD —
+              Domain imports nothing</text>
+          </svg>
+        </div>
+
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-label">clean/domain/order.go + usecase/place_order.go</span>
+        </div>
+        <div class="code-block"><span class="cmt">// ── Domain Layer: zero framework imports
+            ───────────────────────</span>
+          <span class="kw">package</span> domain
+
+          <span class="kw">type</span> <span class="pkg">Order</span> <span class="kw">struct</span> {
+          ID <span class="pkg">string</span>
+          Items []<span class="pkg">OrderItem</span>
+          Total <span class="pkg">float64</span>
+          Status <span class="pkg">OrderStatus</span>
+          }
+
+          <span class="cmt">// Interface defined in domain — implemented in infrastructure layer</span>
+          <span class="kw">type</span> <span class="pkg">OrderRepository</span> <span class="kw">interface</span> {
+          <span class="fn">Save</span>(ctx context.<span class="pkg">Context</span>, o *<span class="pkg">Order</span>)
+          <span class="pkg">error</span>
+          <span class="fn">FindByID</span>(ctx context.<span class="pkg">Context</span>, id <span
+            class="pkg">string</span>) (*<span class="pkg">Order</span>, <span class="pkg">error</span>)
+          }
+
+          <span class="cmt">// ── Use Case Layer: orchestrates domain, no HTTP/DB knowledge ──</span>
+          <span class="kw">package</span> usecase
+
+          <span class="kw">type</span> <span class="pkg">PlaceOrderUseCase</span> <span class="kw">struct</span> {
+          orders domain.<span class="pkg">OrderRepository</span> <span class="cmt">// interface, not
+            implementation</span>
+          payment domain.<span class="pkg">PaymentGateway</span> <span class="cmt">// interface, not Stripe</span>
+          events domain.<span class="pkg">EventPublisher</span> <span class="cmt">// interface, not Kafka</span>
+          }
+
+          <span class="kw">func</span> (uc *<span class="pkg">PlaceOrderUseCase</span>) <span
+            class="fn">Execute</span>(ctx context.<span class="pkg">Context</span>, req <span
+            class="pkg">PlaceOrderRequest</span>) (*<span class="pkg">PlaceOrderResponse</span>, <span
+            class="pkg">error</span>) {
+          order := domain.<span class="fn">NewOrder</span>(req.Items) <span class="cmt">// pure domain logic</span>
+          <span class="kw">if</span> err := order.<span class="fn">Validate</span>(); err != nil { <span
+            class="kw">return</span> nil, err }
+          <span class="kw">if</span> err := uc.payment.<span class="fn">Charge</span>(ctx, order.Total); err != nil {
+          <span class="kw">return</span> nil, err }
+          uc.orders.<span class="fn">Save</span>(ctx, order)
+          uc.events.<span class="fn">Publish</span>(<span class="str">"orders.placed"</span>, order)
+          <span class="kw">return</span> &<span class="pkg">PlaceOrderResponse</span>{OrderID: order.ID}, nil
+          }
+          <span class="cmt">// ← This use case is 100% testable with mocks — no DB, no HTTP, no Kafka</span>
+
+          <span class="cmt">// ── Adapter Layer: HTTP handler wires use case ─────────────────</span>
+          <span class="kw">package</span> handler
+
+          <span class="kw">func</span> (h *<span class="pkg">OrderHandler</span>) <span class="fn">PlaceOrder</span>(c
+          *gin.<span class="pkg">Context</span>) {
+          <span class="kw">var</span> req usecase.<span class="pkg">PlaceOrderRequest</span>
+          c.<span class="fn">ShouldBindJSON</span>(&req)
+          resp, err := h.useCase.<span class="fn">Execute</span>(c.Request.<span class="fn">Context</span>(), req)
+          <span class="kw">if</span> err != nil { c.<span class="fn">JSON</span>(<span class="num">500</span>, gin.<span
+            class="fn">H</span>{<span class="str">"error"</span>: err}); <span class="kw">return</span> }
+          c.<span class="fn">JSON</span>(<span class="num">201</span>, resp)
+          }
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Maximum testability — use cases testable without any framework</li>
+              <li>Framework-agnostic — swap Gin for Echo with zero domain changes</li>
+              <li>DB-agnostic — swap PostgreSQL for MongoDB at infra layer</li>
+              <li>Clear architectural boundaries — easy to onboard new devs</li>
+              <li>Business logic protected from external changes</li>
+              <li>Industry standard for long-lived enterprise Go systems</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>More boilerplate than simple layered architecture</li>
+              <li>Interfaces for everything — can feel over-engineered for simple apps</li>
+              <li>Data mapping between layers adds code</li>
+              <li>Learning curve — new devs may be confused by layer boundaries</li>
+              <li>Overkill for small/short-lived projects</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ LAYERED ═══ -->
+  <section id="layered" class="ac-layer">
+    <div class="container">
+      <div class="section-label">Architecture 05 · Structural</div>
+      <div class="section-title" style="margin-bottom:0">Layered Architecture (N-Tier)</div>
+      <div class="arch-block" style="margin-top:28px">
+        <div class="arch-header ac-layer">
+          <div class="arch-icon-lg">🥞</div>
+          <div>
+            <div class="arch-name">Layered Architecture (N-Tier)</div>
+            <div class="arch-cat">Structural Pattern · Traditional · Most Common in Go Industry</div>
+            <div class="arch-tagline">Organizes code into <strong>horizontal layers</strong> where each layer has a
+              specific role and only communicates with the layer directly below it. Handler → Service → Repository →
+              Database. The most widely adopted pattern in Go REST APIs — the pragmatic default for most backend
+              systems.</div>
+            <div class="stat-row">
+              <span class="stat">Layers: 3-5 horizontal tiers</span>
+              <span class="stat">Rule: Each layer calls layer below</span>
+              <span class="stat">Adoption: Most common Go pattern</span>
+              <span class="stat">Learning curve: Very low</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--layer)"></span> The 4-Layer Go Stack</h4>
+            <ul>
+              <li><strong>Presentation Layer</strong> (<code>handler/</code>): HTTP handlers, request parsing, response
+                formatting. Uses Gin/Echo.</li>
+              <li><strong>Business / Service Layer</strong> (<code>service/</code>): Business rules, orchestration,
+                validation. Pure Go, no HTTP.</li>
+              <li><strong>Repository / Data Layer</strong> (<code>repository/</code>): Database access, queries, CRUD.
+                Hides SQL from services.</li>
+              <li><strong>Domain / Model Layer</strong> (<code>domain/</code>): Shared structs, interfaces, constants.
+                Used by all layers.</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--layer)"></span> Rules</h4>
+            <ul>
+              <li>Layer N can only call layer N-1 (strict downward dependency)</li>
+              <li>No skipping layers — handler must never query DB directly</li>
+              <li>Each layer is replaceable independently</li>
+              <li>Business logic must NOT live in handlers or repositories</li>
+              <li>HTTP concepts (request/response) must NOT leak into services</li>
+              <li>Database concerns must NOT leak into business layer</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--layer)"></span> vs. Clean Architecture</h4>
+            <p>Layered architecture allows <em>any</em> inner layer to depend on a lower one — including service knowing
+              about database types. Clean Architecture enforces that domain never depends on anything. Layered is
+              pragmatic and easier; Clean is stricter and more testable. Most Go teams start with Layered and migrate to
+              Clean when needed.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--layer)"></span> Suitability</h4>
+            <div class="suit-grid">
+              <span class="suit-badge sb-best">✓ REST APIs (any size)</span>
+              <span class="suit-badge sb-best">✓ ERP/CRM systems</span>
+              <span class="suit-badge sb-best">✓ SaaS backends</span>
+              <span class="suit-badge sb-best">✓ Admin panels</span>
+              <span class="suit-badge sb-best">✓ Team default architecture</span>
+              <span class="suit-badge sb-good">~ Microservice internals</span>
+              <span class="suit-badge sb-size-sm">Small ✓</span>
+              <span class="suit-badge sb-size-md">Medium ✓</span>
+              <span class="suit-badge sb-size-lg">Large ✓ (with discipline)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg" style="font-family:'Space Mono',monospace">
+            <defs>
+              <marker id="al" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                <polygon points="0 0,7 2.5,0 5" fill="#38bdf8" />
+              </marker>
+            </defs>
+
+            <!-- HTTP Request -->
+            <text x="30" y="50" fill="#8892a4" font-size="9">HTTP Request</text>
+            <line x1="30" y1="55" x2="30" y2="75" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#al)" />
+
+            <!-- Layer 1: Presentation -->
+            <rect x="10" y="75" width="580" height="48" rx="8" fill="rgba(56,189,248,.15)" stroke="#38bdf8"
+              stroke-width="2" />
+            <text x="300" y="96" text-anchor="middle" fill="#38bdf8" font-size="12" font-weight="bold">PRESENTATION
+              LAYER — HTTP Handlers (Gin/Echo)</text>
+            <text x="300" y="112" text-anchor="middle" fill="#8892a4" font-size="9">Parse request · Validate input ·
+              Call service · Format response · Authentication middleware</text>
+
+            <line x1="300" y1="123" x2="300" y2="138" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#al)" />
+            <text x="315" y="133" fill="#6272a4" font-size="8">func(req)</text>
+
+            <!-- Layer 2: Business -->
+            <rect x="10" y="138" width="580" height="48" rx="8" fill="rgba(56,189,248,.10)" stroke="rgba(56,189,248,.6)"
+              stroke-width="1.5" />
+            <text x="300" y="159" text-anchor="middle" fill="#38bdf8" font-size="12" font-weight="bold">BUSINESS /
+              SERVICE LAYER — Application Logic</text>
+            <text x="300" y="175" text-anchor="middle" fill="#8892a4" font-size="9">Orchestrate · Apply business rules ·
+              Validate · Call multiple repos · Emit events</text>
+
+            <line x1="300" y1="186" x2="300" y2="201" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#al)" />
+            <text x="315" y="196" fill="#6272a4" font-size="8">repo.Find()</text>
+
+            <!-- Layer 3: Repository -->
+            <rect x="10" y="201" width="580" height="25" rx="7" fill="rgba(56,189,248,.07)" stroke="rgba(56,189,248,.4)"
+              stroke-width="1.5" />
+            <text x="300" y="218" text-anchor="middle" fill="#38bdf8" font-size="10" font-weight="bold">DATA /
+              REPOSITORY LAYER — PostgreSQL · Redis · External APIs</text>
+
+            <!-- Response arrows -->
+            <text x="570" y="50" fill="#8892a4" font-size="9" text-anchor="end">HTTP Response</text>
+            <line x1="570" y1="75" x2="570" y2="55" stroke="#4ade80" stroke-width="1.5" marker-end="url(#al)" />
+            <text x="556" y="133" fill="#6272a4" font-size="8" text-anchor="end">return result</text>
+            <text x="556" y="196" fill="#6272a4" font-size="8" text-anchor="end">return rows</text>
+
+            <!-- No-skip rule -->
+            <line x1="540" y1="100" x2="540" y2="215" stroke="rgba(248,113,113,.3)" stroke-width="1.5"
+              stroke-dasharray="4,3" />
+            <text x="542" y="160" fill="#f87171" font-size="8" writing-mode="vertical-rl">NO SKIPPING LAYERS</text>
+          </svg>
+        </div>
+
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-label">layered/service/order_service.go — Business Layer</span>
+        </div>
+        <div class="code-block"><span class="cmt">// ── Handler Layer (Presentation)
+            ───────────────────────────────</span>
+          <span class="kw">func</span> (h *<span class="pkg">OrderHandler</span>) <span class="fn">CreateOrder</span>(c
+          *gin.<span class="pkg">Context</span>) {
+          <span class="kw">var</span> req <span class="pkg">CreateOrderRequest</span>
+          <span class="kw">if</span> err := c.<span class="fn">ShouldBindJSON</span>(&req); err != nil { c.<span
+            class="fn">JSON</span>(<span class="num">400</span>, err); <span class="kw">return</span> }
+          order, err := h.service.<span class="fn">CreateOrder</span>(c, req) <span class="cmt">// ← calls service, not
+            repo</span>
+          <span class="kw">if</span> err != nil { c.<span class="fn">JSON</span>(<span class="num">500</span>, err);
+          <span class="kw">return</span> }
+          c.<span class="fn">JSON</span>(<span class="num">201</span>, order)
+          }
+
+          <span class="cmt">// ── Service Layer (Business Logic) ─────────────────────────────</span>
+          <span class="kw">type</span> <span class="pkg">OrderService</span> <span class="kw">struct</span> {
+          repo <span class="pkg">OrderRepository</span> <span class="cmt">// interface</span>
+          menu <span class="pkg">MenuRepository</span>
+          payment <span class="pkg">PaymentGateway</span>
+          }
+
+          <span class="kw">func</span> (s *<span class="pkg">OrderService</span>) <span
+            class="fn">CreateOrder</span>(ctx context.<span class="pkg">Context</span>, req <span
+            class="pkg">CreateOrderRequest</span>) (*<span class="pkg">Order</span>, <span class="pkg">error</span>) {
+          <span class="cmt">// Business rules: check stock, apply pricing, validate items</span>
+          items, err := s.menu.<span class="fn">GetItems</span>(ctx, req.ItemIDs)
+          <span class="kw">if</span> err != nil { <span class="kw">return</span> nil, <span
+            class="fn">ErrMenuItemsNotFound</span> }
+
+          order := <span class="fn">buildOrder</span>(items, req) <span class="cmt">// business logic</span>
+          <span class="kw">if</span> err := s.payment.<span class="fn">Charge</span>(ctx, order.Total); err != nil {
+          <span class="kw">return</span> nil, err }
+
+          <span class="kw">return</span> s.repo.<span class="fn">Create</span>(ctx, order) <span class="cmt">// ← calls
+            repo, not DB directly</span>
+          }
+
+          <span class="cmt">// ── Repository Layer (Data Access) ─────────────────────────────</span>
+          <span class="kw">func</span> (r *<span class="pkg">PostgresOrderRepo</span>) <span
+            class="fn">Create</span>(ctx context.<span class="pkg">Context</span>, o *<span class="pkg">Order</span>)
+          (*<span class="pkg">Order</span>, <span class="pkg">error</span>) {
+          <span class="cmt">// Only layer that knows SQL — completely hidden from service</span>
+          <span class="kw">var</span> id <span class="pkg">string</span>
+          err := r.db.<span class="fn">QueryRowContext</span>(ctx,
+          <span class="str">"INSERT INTO orders (total, status) VALUES ($1, $2) RETURNING id"</span>,
+          o.Total, o.Status,
+          ).<span class="fn">Scan</span>(&id)
+          o.ID = id
+          <span class="kw">return</span> o, err
+          }
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Most familiar pattern — every Go dev knows it instantly</li>
+              <li>Clear separation of concerns by layer</li>
+              <li>Easy to onboard new developers</li>
+              <li>Works for any project size with proper discipline</li>
+              <li>Good IDE navigation — layers map to packages</li>
+              <li>Pragmatic — less boilerplate than Clean Architecture</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Risk of "sinkhole" anti-pattern — layers just pass data through</li>
+              <li>Domain can become dependent on infrastructure types</li>
+              <li>Business logic can leak into handlers or repos</li>
+              <li>Less strict than Clean Architecture — discipline required</li>
+              <li>Can become "Big Ball of Mud" without code reviews</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ HEXAGONAL ═══ -->
+  <section id="hexagonal" class="ac-hexa">
+    <div class="container">
+      <div class="section-label">Architecture 06 · Structural</div>
+      <div class="section-title" style="margin-bottom:0">Hexagonal Architecture (Ports & Adapters)</div>
+      <div class="arch-block" style="margin-top:28px">
+        <div class="arch-header ac-hexa">
+          <div class="arch-icon-lg">⬡</div>
+          <div>
+            <div class="arch-name">Hexagonal Architecture</div>
+            <div class="arch-cat">Structural Pattern · Alistair Cockburn · Ports & Adapters</div>
+            <div class="arch-tagline">Places the <strong>application core at the center</strong> with defined
+              <em>ports</em> (interfaces) on each side. <em>Adapters</em> plug into these ports to connect the core to
+              the outside world — HTTP, CLI, gRPC, Kafka, PostgreSQL. The application core never changes regardless of
+              what drives or is driven by it.
+            </div>
+            <div class="stat-row">
+              <span class="stat">Core: Application logic</span>
+              <span class="stat">Ports: Go interfaces</span>
+              <span class="stat">Adapters: Implementations</span>
+              <span class="stat">Testability: Maximum</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--hexa)"></span> Ports vs Adapters</h4>
+            <ul>
+              <li><strong>Driving Ports (Primary):</strong> Interfaces the app <em>exposes</em> — HTTP REST, gRPC, CLI,
+                GraphQL all plug in here without changing core</li>
+              <li><strong>Driven Ports (Secondary):</strong> Interfaces the app <em>uses</em> — OrderRepository,
+                PaymentGateway, EmailSender — implemented by adapters</li>
+              <li><strong>Adapters:</strong> Concrete implementations of ports — <code>GinHTTPAdapter</code>,
+                <code>PostgresOrderRepo</code>, <code>StripeAdapter</code>
+              </li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--hexa)"></span> vs Clean Architecture</h4>
+            <p>Hexagonal and Clean Architecture express the same dependency rule but with different metaphors. Hexagonal
+              uses the hexagon shape to show that there are <em>many</em> equivalent sides (ports) — there's no "top" or
+              "bottom", just inside and outside. Go's implicit interface satisfaction makes Hexagonal effortless to
+              implement.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--hexa)"></span> Key Benefits</h4>
+            <ul>
+              <li>Same app can be driven by HTTP, CLI, or message queue — just swap adapter</li>
+              <li>Tests drive the app via <code>InMemoryAdapter</code> — no DB, no HTTP</li>
+              <li>Add new delivery mechanisms (gRPC, WebSocket) without touching core</li>
+              <li>Swap PostgreSQL for MongoDB — swap adapter only</li>
+              <li>Core is <strong>framework-free</strong> — pure Go business logic</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--hexa)"></span> Suitability</h4>
+            <div class="suit-grid">
+              <span class="suit-badge sb-best">✓ Multi-protocol services</span>
+              <span class="suit-badge sb-best">✓ Long-lived domain systems</span>
+              <span class="suit-badge sb-best">✓ DDD projects</span>
+              <span class="suit-badge sb-best">✓ Healthcare / Fintech</span>
+              <span class="suit-badge sb-good">~ Medium SaaS backends</span>
+              <span class="suit-badge sb-avoid">✗ Simple CRUD API</span>
+              <span class="suit-badge sb-size-md">Medium ✓</span>
+              <span class="suit-badge sb-size-lg">Large ✓</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 660 280" xmlns="http://www.w3.org/2000/svg" style="font-family:'Space Mono',monospace">
+            <!-- Hexagon core -->
+            <polygon points="330,60 410,100 410,180 330,220 250,180 250,100" fill="rgba(244,114,182,.2)"
+              stroke="#f472b6" stroke-width="3" />
+            <text x="330" y="130" text-anchor="middle" fill="#f472b6" font-size="12"
+              font-weight="bold">Application</text>
+            <text x="330" y="147" text-anchor="middle" fill="#f472b6" font-size="12" font-weight="bold">Core</text>
+            <text x="330" y="164" text-anchor="middle" fill="#8892a4" font-size="9">Pure Go Business</text>
+            <text x="330" y="178" text-anchor="middle" fill="#8892a4" font-size="9">Logic · No imports</text>
+
+            <!-- Driving adapters (left side) -->
+            <rect x="20" y="40" width="100" height="36" rx="6" fill="rgba(56,189,248,.1)" stroke="rgba(56,189,248,.4)"
+              stroke-width="1.5" />
+            <text x="70" y="54" text-anchor="middle" fill="#38bdf8" font-size="10" font-weight="bold">HTTP REST</text>
+            <text x="70" y="68" text-anchor="middle" fill="#8892a4" font-size="8">Gin Adapter</text>
+            <rect x="20" y="92" width="100" height="36" rx="6" fill="rgba(56,189,248,.1)" stroke="rgba(56,189,248,.4)"
+              stroke-width="1.5" />
+            <text x="70" y="106" text-anchor="middle" fill="#38bdf8" font-size="10" font-weight="bold">gRPC</text>
+            <text x="70" y="120" text-anchor="middle" fill="#8892a4" font-size="8">gRPC Adapter</text>
+            <rect x="20" y="144" width="100" height="36" rx="6" fill="rgba(56,189,248,.1)" stroke="rgba(56,189,248,.4)"
+              stroke-width="1.5" />
+            <text x="70" y="158" text-anchor="middle" fill="#38bdf8" font-size="10" font-weight="bold">Kafka
+              Event</text>
+            <text x="70" y="172" text-anchor="middle" fill="#8892a4" font-size="8">Kafka Adapter</text>
+            <rect x="20" y="196" width="100" height="36" rx="6" fill="rgba(56,189,248,.1)" stroke="rgba(56,189,248,.4)"
+              stroke-width="1.5" />
+            <text x="70" y="210" text-anchor="middle" fill="#38bdf8" font-size="10" font-weight="bold">CLI</text>
+            <text x="70" y="224" text-anchor="middle" fill="#8892a4" font-size="8">CLI Adapter</text>
+
+            <!-- Port arrows left (DRIVING) -->
+            <defs>
+              <marker id="ahex" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                <polygon points="0 0,7 2.5,0 5" fill="#f472b6" />
+              </marker>
+            </defs>
+            <line x1="120" y1="58" x2="248" y2="120" stroke="#f472b6" stroke-width="1.3" marker-end="url(#ahex)" />
+            <line x1="120" y1="110" x2="248" y2="130" stroke="#f472b6" stroke-width="1.3" marker-end="url(#ahex)" />
+            <line x1="120" y1="162" x2="248" y2="152" stroke="#f472b6" stroke-width="1.3" marker-end="url(#ahex)" />
+            <line x1="120" y1="214" x2="248" y2="165" stroke="#f472b6" stroke-width="1.3" marker-end="url(#ahex)" />
+
+            <text x="185" y="118" fill="#6272a4" font-size="8" transform="rotate(-10,185,118)">Driving Port</text>
+
+            <!-- Driven adapters (right side) -->
+            <rect x="540" y="40" width="110" height="36" rx="6" fill="rgba(74,222,128,.08)" stroke="rgba(74,222,128,.3)"
+              stroke-width="1.5" />
+            <text x="595" y="54" text-anchor="middle" fill="#4ade80" font-size="10" font-weight="bold">Postgres
+              Repo</text>
+            <text x="595" y="68" text-anchor="middle" fill="#8892a4" font-size="8">DB Adapter</text>
+            <rect x="540" y="92" width="110" height="36" rx="6" fill="rgba(74,222,128,.08)" stroke="rgba(74,222,128,.3)"
+              stroke-width="1.5" />
+            <text x="595" y="106" text-anchor="middle" fill="#4ade80" font-size="10" font-weight="bold">Stripe
+              Adapter</text>
+            <text x="595" y="120" text-anchor="middle" fill="#8892a4" font-size="8">Payment</text>
+            <rect x="540" y="144" width="110" height="36" rx="6" fill="rgba(74,222,128,.08)"
+              stroke="rgba(74,222,128,.3)" stroke-width="1.5" />
+            <text x="595" y="158" text-anchor="middle" fill="#4ade80" font-size="10" font-weight="bold">SMTP
+              Adapter</text>
+            <text x="595" y="172" text-anchor="middle" fill="#8892a4" font-size="8">Email</text>
+            <rect x="540" y="196" width="110" height="36" rx="6" fill="rgba(74,222,128,.08)"
+              stroke="rgba(74,222,128,.3)" stroke-width="1.5" />
+            <text x="595" y="210" text-anchor="middle" fill="#4ade80" font-size="10" font-weight="bold">InMemory</text>
+            <text x="595" y="224" text-anchor="middle" fill="#8892a4" font-size="8">Test Adapter</text>
+
+            <!-- Port arrows right (DRIVEN) -->
+            <line x1="412" y1="120" x2="540" y2="58" stroke="#f472b6" stroke-width="1.3" marker-end="url(#ahex)"
+              stroke-dasharray="4,2" />
+            <line x1="412" y1="132" x2="540" y2="110" stroke="#f472b6" stroke-width="1.3" marker-end="url(#ahex)"
+              stroke-dasharray="4,2" />
+            <line x1="412" y1="152" x2="540" y2="162" stroke="#f472b6" stroke-width="1.3" marker-end="url(#ahex)"
+              stroke-dasharray="4,2" />
+            <line x1="412" y1="165" x2="540" y2="214" stroke="#f472b6" stroke-width="1.3" marker-end="url(#ahex)"
+              stroke-dasharray="4,2" />
+            <text x="478" y="107" fill="#6272a4" font-size="8" transform="rotate(10,478,107)">Driven Port</text>
+
+            <text x="330" y="266" text-anchor="middle" fill="#6272a4" font-size="9">Core never imports adapters —
+              Adapters implement Core's interfaces</text>
+          </svg>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Same core works with HTTP, gRPC, CLI, Kafka — no core changes</li>
+              <li>Swap any adapter (DB, payment, email) without touching business logic</li>
+              <li>Tests use InMemory adapters — blazing fast, no infra needed</li>
+              <li>Natural fit with Domain-Driven Design</li>
+              <li>Very high maintainability for long-lived systems</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Highest boilerplate of all structural patterns</li>
+              <li>Concept overhead — ports/adapters language can confuse newcomers</li>
+              <li>Data mapping at every boundary adds verbose conversion code</li>
+              <li>Over-engineering for small/medium-sized services</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CQRS ═══ -->
+  <section id="cqrs" class="ac-cqrs">
+    <div class="container">
+      <div class="section-label">Architecture 07 · Communication</div>
+      <div class="section-title" style="margin-bottom:0">CQRS — Command Query Responsibility Segregation</div>
+      <div class="arch-block" style="margin-top:28px">
+        <div class="arch-header ac-cqrs">
+          <div class="arch-icon-lg">⚖️</div>
+          <div>
+            <div class="arch-name">CQRS</div>
+            <div class="arch-cat">Communication Pattern · Greg Young · Often Paired with Event Sourcing</div>
+            <div class="arch-tagline">Separates the model for <strong>reading data (Query)</strong> from the model for
+              <strong>writing data (Command)</strong>. Commands mutate state. Queries return data — never mutate. Read
+              and write models are optimized independently. Often uses separate databases: write-optimized PostgreSQL +
+              read-optimized Elasticsearch or Redis.
+            </div>
+            <div class="stat-row">
+              <span class="stat">Commands: Write / mutate state</span>
+              <span class="stat">Queries: Read only</span>
+              <span class="stat">Models: Separate read/write</span>
+              <span class="stat">Best with: Event Sourcing</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--cqrs)"></span> The Core Split</h4>
+            <ul>
+              <li><strong>Commands:</strong> PlaceOrderCommand, UpdateMenuCommand — mutate state, return void or error
+              </li>
+              <li><strong>Queries:</strong> GetOrderQuery, SearchMenuQuery — pure reads, return projections</li>
+              <li><strong>Write DB:</strong> Normalized PostgreSQL — optimized for transactional writes</li>
+              <li><strong>Read DB:</strong> Denormalized Elasticsearch/Redis — optimized for complex queries</li>
+              <li><strong>Projections:</strong> Event handlers that update read models from write events</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--cqrs)"></span> Why Separate?</h4>
+            <p>Read and write workloads have fundamentally different needs. Writes need ACID transactions, foreign keys,
+              strong consistency. Reads need fast aggregations, full-text search, denormalized joins, caching. CQRS lets
+              you optimize each side independently — scale read replicas, use Elasticsearch for complex queries, Redis
+              for hot data — without compromising write integrity.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--cqrs)"></span> Suitability</h4>
+            <div class="suit-grid">
+              <span class="suit-badge sb-best">✓ High read/write ratio imbalance</span>
+              <span class="suit-badge sb-best">✓ Complex query requirements</span>
+              <span class="suit-badge sb-best">✓ E-commerce search + order</span>
+              <span class="suit-badge sb-best">✓ Analytics dashboards</span>
+              <span class="suit-badge sb-best">✓ Fintech reporting</span>
+              <span class="suit-badge sb-good">~ Any system with audit requirements</span>
+              <span class="suit-badge sb-avoid">✗ Simple CRUD (severe overkill)</span>
+              <span class="suit-badge sb-size-lg">Large ✓</span>
+            </div>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--cqrs)"></span> Complexity Metrics</h4>
+            <div class="meter-row"><span class="meter-label">Overall complexity</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:85%;background:var(--cqrs)"></div>
+              </div><span class="meter-val">Very High</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Read performance</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:98%;background:var(--pro)"></div>
+              </div><span class="meter-val">Excellent</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Write performance</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:90%;background:var(--pro)"></div>
+              </div><span class="meter-val">Excellent</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Consistency</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:35%;background:var(--con)"></div>
+              </div><span class="meter-val">Eventual</span>
+            </div>
+            <div class="meter-row"><span class="meter-label">Infra cost</span>
+              <div class="meter-track">
+                <div class="meter-fill" style="width:80%;background:var(--cqrs)"></div>
+              </div><span class="meter-val">High</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 660 200" xmlns="http://www.w3.org/2000/svg" style="font-family:'Space Mono',monospace">
+            <defs>
+              <marker id="acq" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                <polygon points="0 0,7 2.5,0 5" fill="#a3e635" />
+              </marker>
+            </defs>
+            <!-- Client -->
+            <rect x="10" y="80" width="70" height="40" rx="7" fill="rgba(163,230,53,.1)" stroke="rgba(163,230,53,.4)"
+              stroke-width="1.5" />
+            <text x="45" y="97" text-anchor="middle" fill="#a3e635" font-size="10" font-weight="bold">Client</text>
+            <text x="45" y="112" text-anchor="middle" fill="#8892a4" font-size="8">API Request</text>
+
+            <!-- Fork: Command vs Query -->
+            <line x1="80" y1="90" x2="120" y2="65" stroke="#a3e635" stroke-width="1.5" marker-end="url(#acq)" />
+            <line x1="80" y1="110" x2="120" y2="135" stroke="#a3e635" stroke-width="1.5" marker-end="url(#acq)" />
+            <text x="98" y="78" fill="#6272a4" font-size="8" transform="rotate(-20,98,78)">Write</text>
+            <text x="98" y="128" fill="#6272a4" font-size="8" transform="rotate(20,98,128)">Read</text>
+
+            <!-- Command side -->
+            <rect x="120" y="40" width="140" height="50" rx="8" fill="rgba(248,113,113,.12)"
+              stroke="rgba(248,113,113,.4)" stroke-width="2" />
+            <text x="190" y="60" text-anchor="middle" fill="#f87171" font-size="11" font-weight="bold">COMMAND</text>
+            <text x="190" y="76" text-anchor="middle" fill="#8892a4" font-size="9">PlaceOrderCommand</text>
+            <text x="190" y="88" text-anchor="middle" fill="#8892a4" font-size="8">Mutates state · Async OK</text>
+
+            <!-- Query side -->
+            <rect x="120" y="110" width="140" height="50" rx="8" fill="rgba(74,222,128,.1)" stroke="rgba(74,222,128,.4)"
+              stroke-width="2" />
+            <text x="190" y="130" text-anchor="middle" fill="#4ade80" font-size="11" font-weight="bold">QUERY</text>
+            <text x="190" y="146" text-anchor="middle" fill="#8892a4" font-size="9">GetOrdersQuery</text>
+            <text x="190" y="158" text-anchor="middle" fill="#8892a4" font-size="8">Read-only · No mutation</text>
+
+            <!-- Arrows to handlers -->
+            <line x1="260" y1="65" x2="300" y2="65" stroke="#f87171" stroke-width="1.5" marker-end="url(#acq)" />
+            <line x1="260" y1="135" x2="300" y2="135" stroke="#4ade80" stroke-width="1.5" marker-end="url(#acq)" />
+
+            <!-- Command Handler -->
+            <rect x="300" y="42" width="130" height="46" rx="7" fill="rgba(248,113,113,.08)"
+              stroke="rgba(248,113,113,.3)" stroke-width="1.5" />
+            <text x="365" y="61" text-anchor="middle" fill="#f87171" font-size="10" font-weight="bold">Command
+              Handler</text>
+            <text x="365" y="76" text-anchor="middle" fill="#8892a4" font-size="8">Validates · Executes · Saves</text>
+
+            <!-- Query Handler -->
+            <rect x="300" y="112" width="130" height="46" rx="7" fill="rgba(74,222,128,.08)"
+              stroke="rgba(74,222,128,.3)" stroke-width="1.5" />
+            <text x="365" y="131" text-anchor="middle" fill="#4ade80" font-size="10" font-weight="bold">Query
+              Handler</text>
+            <text x="365" y="146" text-anchor="middle" fill="#8892a4" font-size="8">Reads · Formats · Returns</text>
+
+            <!-- Write DB -->
+            <line x1="430" y1="65" x2="470" y2="65" stroke="#f87171" stroke-width="1.5" marker-end="url(#acq)" />
+            <rect x="470" y="42" width="100" height="46" rx="7" fill="rgba(248,113,113,.08)"
+              stroke="rgba(248,113,113,.25)" stroke-width="1.5" />
+            <text x="520" y="62" text-anchor="middle" fill="#f87171" font-size="10" font-weight="bold">Write DB</text>
+            <text x="520" y="76" text-anchor="middle" fill="#8892a4" font-size="8">PostgreSQL</text>
+            <text x="520" y="88" text-anchor="middle" fill="#6272a4" font-size="7">Normalized · ACID</text>
+
+            <!-- Read DB -->
+            <line x1="430" y1="135" x2="470" y2="135" stroke="#4ade80" stroke-width="1.5" marker-end="url(#acq)" />
+            <rect x="470" y="112" width="100" height="46" rx="7" fill="rgba(74,222,128,.08)"
+              stroke="rgba(74,222,128,.25)" stroke-width="1.5" />
+            <text x="520" y="132" text-anchor="middle" fill="#4ade80" font-size="10" font-weight="bold">Read DB</text>
+            <text x="520" y="147" text-anchor="middle" fill="#8892a4" font-size="8">Elasticsearch</text>
+            <text x="520" y="159" text-anchor="middle" fill="#6272a4" font-size="7">Denormalized · Fast</text>
+
+            <!-- Projection arrow -->
+            <path d="M 570 88 C 600 100 600 100 570 112" stroke="#a3e635" stroke-width="1.5" fill="none"
+              marker-end="url(#acq)" stroke-dasharray="4,2" />
+            <text x="608" y="105" fill="#a3e635" font-size="8">sync</text>
+
+            <text x="330" y="190" text-anchor="middle" fill="#6272a4" font-size="9">Write model and Read model evolve
+              independently — each optimized for its workload</text>
+          </svg>
+        </div>
+
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-label">cqrs/command/place_order.go + query/get_orders.go</span>
+        </div>
+        <div class="code-block"><span class="cmt">// ── COMMAND SIDE — Writes to PostgreSQL (normalized)
+            ──────────</span>
+          <span class="kw">type</span> <span class="pkg">PlaceOrderCommand</span> <span class="kw">struct</span> {
+          CustomerID <span class="pkg">string</span>
+          Items []<span class="pkg">OrderItem</span>
+          PaymentToken <span class="pkg">string</span>
+          }
+
+          <span class="kw">func</span> (h *<span class="pkg">PlaceOrderHandler</span>) <span
+            class="fn">Handle</span>(ctx context.<span class="pkg">Context</span>, cmd <span
+            class="pkg">PlaceOrderCommand</span>) <span class="pkg">error</span> {
+          order := domain.<span class="fn">NewOrder</span>(cmd)
+          <span class="kw">if</span> err := h.writeRepo.<span class="fn">Save</span>(ctx, order); err != nil { <span
+            class="kw">return</span> err }
+          <span class="cmt">// Emit event → projector updates read DB (Elasticsearch)</span>
+          h.eventBus.<span class="fn">Publish</span>(<span class="str">"order.placed"</span>, <span
+            class="pkg">OrderPlacedEvent</span>{Order: order})
+          <span class="kw">return</span> nil
+          }
+
+          <span class="cmt">// ── QUERY SIDE — Reads from Elasticsearch (denormalized) ──────</span>
+          <span class="kw">type</span> <span class="pkg">GetOrdersQuery</span> <span class="kw">struct</span> {
+          CustomerID <span class="pkg">string</span>
+          Status <span class="pkg">string</span>
+          DateFrom time.<span class="pkg">Time</span>
+          Page <span class="pkg">int</span>
+          }
+
+          <span class="kw">type</span> <span class="pkg">OrderReadModel</span> <span class="kw">struct</span> { <span
+            class="cmt">// Denormalized — pre-joined for fast read</span>
+          OrderID <span class="pkg">string</span>
+          CustomerName <span class="pkg">string</span> <span class="cmt">// pre-joined from customers table</span>
+          ItemNames []<span class="pkg">string</span> <span class="cmt">// pre-joined from menu items</span>
+          RestaurantName <span class="pkg">string</span>
+          Total <span class="pkg">float64</span>
+          }
+
+          <span class="kw">func</span> (h *<span class="pkg">GetOrdersHandler</span>) <span class="fn">Handle</span>(ctx
+          context.<span class="pkg">Context</span>, q <span class="pkg">GetOrdersQuery</span>) ([]<span
+            class="pkg">OrderReadModel</span>, <span class="pkg">error</span>) {
+          <span class="cmt">// Query Elasticsearch directly — no joins needed (already denormalized)</span>
+          <span class="kw">return</span> h.readRepo.<span class="fn">Search</span>(ctx, q) <span class="cmt">// blazing
+            fast full-text + filter</span>
+          }
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Read and write models optimized independently</li>
+              <li>Scale reads and writes independently</li>
+              <li>Complex queries without polluting write model</li>
+              <li>Natural audit trail (events drive projections)</li>
+              <li>Excellent for reporting, analytics, search-heavy apps</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Eventual consistency — read model may lag behind write</li>
+              <li>Significant complexity — two models, two DBs, projections</li>
+              <li>Overkill for 80% of applications</li>
+              <li>Testing both sides doubles surface area</li>
+              <li>Projection synchronization bugs are subtle</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SERVERLESS ═══ -->
+  <section id="serverless" class="ac-server">
+    <div class="container">
+      <div class="section-label">Architecture 08 · Deployment</div>
+      <div class="section-title" style="margin-bottom:0">Serverless / FaaS Architecture</div>
+      <div class="arch-block" style="margin-top:28px">
+        <div class="arch-header ac-server">
+          <div class="arch-icon-lg">☁️</div>
+          <div>
+            <div class="arch-name">Serverless Architecture (FaaS)</div>
+            <div class="arch-cat">Deployment Pattern · Functions-as-a-Service · Event-triggered</div>
+            <div class="arch-tagline">Application logic is deployed as <strong>stateless functions triggered by
+                events</strong> (HTTP, cron, queue message). No server management, infinite auto-scaling,
+              pay-per-execution billing. In Go — compile to a tiny binary, deploy to AWS Lambda, GCP Cloud Functions, or
+              Cloudflare Workers.</div>
+            <div class="stat-row">
+              <span class="stat">Runtime: AWS Lambda / GCF / CF Workers</span>
+              <span class="stat">Scaling: Automatic ∞</span>
+              <span class="stat">Billing: Per invocation</span>
+              <span class="stat">State: External (DB/Cache)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--server)"></span> How It Works</h4>
+            <ul>
+              <li>Write a Go function that accepts a specific event type (APIGatewayProxyRequest, S3Event)</li>
+              <li>Compile: <code>GOARCH=amd64 GOOS=linux go build -o bootstrap</code></li>
+              <li>Deploy ZIP or container to Lambda/Cloud Functions</li>
+              <li>Platform provisions, scales, and terminates compute automatically</li>
+              <li>Cold start: ~100-500ms for Go (much faster than JVM)</li>
+              <li>Warm invocation: microseconds overhead</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--server)"></span> Go's Advantage for Serverless</h4>
+            <p>Go compiles to a single native binary — no runtime, no JVM startup. Cold starts are 10x faster than Java,
+              2-3x faster than Python. The binary is tiny (~10MB). Go's goroutine model handles concurrent invocations
+              efficiently within a single container. AWS Lambda supports Go natively with the <code>aws-lambda-go</code>
+              SDK.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--server)"></span> Best Use Cases</h4>
+            <ul>
+              <li>API backends with unpredictable/bursty traffic</li>
+              <li>Scheduled jobs (cron — nightly reports, cleanup)</li>
+              <li>Event processing (S3 upload → resize image)</li>
+              <li>Webhook receivers (Stripe, GitHub, Slack)</li>
+              <li>Background tasks (send email, generate PDF)</li>
+              <li>Edge functions (Cloudflare Workers)</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--server)"></span> Suitability</h4>
+            <div class="suit-grid">
+              <span class="suit-badge sb-best">✓ Bursty/unpredictable traffic</span>
+              <span class="suit-badge sb-best">✓ Webhook processing</span>
+              <span class="suit-badge sb-best">✓ Scheduled tasks</span>
+              <span class="suit-badge sb-best">✓ Startup / MVP cost savings</span>
+              <span class="suit-badge sb-good">~ Microservice add-ons</span>
+              <span class="suit-badge sb-avoid">✗ Long-running connections (WebSocket)</span>
+              <span class="suit-badge sb-avoid">✗ High-frequency low-latency APIs</span>
+              <span class="suit-badge sb-size-sm">Small ✓</span>
+              <span class="suit-badge sb-size-md">Medium ✓</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-label">serverless/lambda/order_webhook.go — AWS Lambda Handler</span>
+        </div>
+        <div class="code-block"><span class="kw">package</span> main
+
+          <span class="kw">import</span> (
+          <span class="str">"context"</span>
+          <span class="str">"encoding/json"</span>
+          <span class="str">"github.com/aws/aws-lambda-go/events"</span>
+          <span class="str">"github.com/aws/aws-lambda-go/lambda"</span>
+          )
+
+          <span class="cmt">// Stripe webhook handler — deployed as Lambda function</span>
+          <span class="kw">func</span> <span class="fn">handleWebhook</span>(ctx context.<span
+            class="pkg">Context</span>, req events.<span class="pkg">APIGatewayProxyRequest</span>) (events.<span
+            class="pkg">APIGatewayProxyResponse</span>, <span class="pkg">error</span>) {
+          <span class="cmt">// Verify Stripe signature</span>
+          event, err := stripe.<span class="fn">ConstructEvent</span>(
+          []<span class="pkg">byte</span>(req.Body),
+          req.Headers[<span class="str">"Stripe-Signature"</span>],
+          os.<span class="fn">Getenv</span>(<span class="str">"STRIPE_WEBHOOK_SECRET"</span>),
+          )
+          <span class="kw">if</span> err != nil {
+          <span class="kw">return</span> events.<span class="pkg">APIGatewayProxyResponse</span>{StatusCode: <span
+            class="num">400</span>}, nil
+          }
+
+          <span class="kw">switch</span> event.Type {
+          <span class="kw">case</span> <span class="str">"payment_intent.succeeded"</span>:
+          <span class="fn">fulfillOrder</span>(ctx, event) <span class="cmt">// trigger fulfillment</span>
+          <span class="kw">case</span> <span class="str">"payment_intent.payment_failed"</span>:
+          <span class="fn">notifyFailure</span>(ctx, event) <span class="cmt">// alert customer</span>
+          }
+
+          <span class="kw">return</span> events.<span class="pkg">APIGatewayProxyResponse</span>{StatusCode: <span
+            class="num">200</span>}, nil
+          }
+
+          <span class="kw">func</span> <span class="fn">main</span>() { lambda.<span class="fn">Start</span>(<span
+            class="fn">handleWebhook</span>) }
+
+          <span class="cmt">// Build: GOARCH=amd64 GOOS=linux go build -o bootstrap ./lambda/</span>
+          <span class="cmt">// Deploy: zip function.zip bootstrap && aws lambda update-function-code</span>
+          <span class="cmt">// Cost: $0.0000002 per request — scale to millions free tier</span>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Zero server management — focus on code only</li>
+              <li>Infinite auto-scaling — handles any traffic spike</li>
+              <li>Pay per use — cost $0 when idle</li>
+              <li>Go cold starts are very fast (~100ms)</li>
+              <li>Perfect for event-driven workloads</li>
+              <li>Integrated with cloud services (S3, SQS, DynamoDB)</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Cold starts add latency (unacceptable for SLA-bound APIs)</li>
+              <li>No persistent connections (DB pooling is tricky)</li>
+              <li>Vendor lock-in (AWS Lambda API is proprietary)</li>
+              <li>15-minute max execution time (AWS)</li>
+              <li>Local development and testing is more complex</li>
+              <li>Debugging is harder — no persistent process</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SOA ═══ -->
+  <section id="soa" class="ac-soa">
+    <div class="container">
+      <div class="section-label">Architecture 09 · Deployment</div>
+      <div class="section-title" style="margin-bottom:0">Service-Oriented Architecture (SOA)</div>
+      <div class="arch-block" style="margin-top:28px">
+        <div class="arch-header ac-soa">
+          <div class="arch-icon-lg">🕸️</div>
+          <div>
+            <div class="arch-name">Service-Oriented Architecture (SOA)</div>
+            <div class="arch-cat">Deployment Pattern · Enterprise · Pre-Microservices</div>
+            <div class="arch-tagline">Structures software as a set of <strong>interoperable services communicating over
+                a shared enterprise bus</strong> (ESB). Services are coarser-grained than microservices and often share
+              data via a central bus or shared database. The enterprise predecessor to microservices — still dominant in
+              large legacy organizations.</div>
+            <div class="stat-row">
+              <span class="stat">Services: Coarse-grained</span>
+              <span class="stat">Communication: ESB / Message Bus</span>
+              <span class="stat">Data: Often shared DB</span>
+              <span class="stat">Context: Large enterprise</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--soa)"></span> SOA vs Microservices</h4>
+            <ul>
+              <li><strong>Service size:</strong> SOA services are coarser — "OrderManagementService" vs micro's
+                "order-service"</li>
+              <li><strong>Communication:</strong> SOA uses ESB (Enterprise Service Bus) — often SOAP/XML or proprietary
+              </li>
+              <li><strong>Data sharing:</strong> SOA often allows shared databases between services</li>
+              <li><strong>Governance:</strong> SOA has heavy central governance; microservices are autonomous</li>
+              <li><strong>Technology:</strong> SOA often mixed with Java EE, BPEL, WSDL</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--soa)"></span> When SOA in Go?</h4>
+            <p>Modern Go teams rarely build classic SOA but may <em>integrate with</em> enterprise SOA systems. Go
+              services often serve as lightweight, performant adapters to legacy SOA — exposing modern REST/gRPC
+              endpoints while consuming legacy SOAP/XML services internally. A Go API gateway might sit in front of a
+              Java ESB.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--soa)"></span> Suitability</h4>
+            <div class="suit-grid">
+              <span class="suit-badge sb-best">✓ Large enterprise (banks, telcos)</span>
+              <span class="suit-badge sb-best">✓ Legacy system integration</span>
+              <span class="suit-badge sb-best">✓ Government IT systems</span>
+              <span class="suit-badge sb-good">~ ERP integration middleware</span>
+              <span class="suit-badge sb-avoid">✗ Greenfield projects</span>
+              <span class="suit-badge sb-avoid">✗ Startup / small team</span>
+              <span class="suit-badge sb-size-xl"
+                style="background:rgba(52,211,153,.1);color:var(--soa);border-color:rgba(52,211,153,.2);">Enterprise
+                ✓</span>
+            </div>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--soa)"></span> Go in SOA Context</h4>
+            <ul>
+              <li>Go as lightweight API gateway / facade over legacy services</li>
+              <li>Go adapter translating REST → SOAP for legacy consumers</li>
+              <li>Go service consuming Kafka/ActiveMQ ESB messages</li>
+              <li>Go replacing a slow Java service in an existing SOA ecosystem</li>
+              <li>Using <code>encoding/xml</code> for SOAP parsing in Go</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="example-card">
+          <div class="example-icon">🏦</div>
+          <div>
+            <div class="example-title" style="color:var(--soa)">Banking Core System Integration</div>
+            <div class="example-desc">A major bank runs 20-year-old COBOL core banking on an IBM mainframe. New Go-based
+              mobile banking API sits in front: Go service exposes modern REST JSON API to mobile apps, internally calls
+              the legacy SOAP-based CoreBanking ESB via XML. Go handles authentication (JWT), rate limiting, response
+              caching, modern error handling — while the SOA layer handles actual account transactions. This is the most
+              common "Go in SOA" pattern in enterprise.</div>
+            <div class="tags"><span class="tag t-soa">Legacy Bridge</span><span class="tag t-soa">SOAP/XML
+                Adapter</span><span class="tag t-soa">ESB Integration</span><span class="tag green">Go REST
+                Facade</span></div>
+          </div>
+        </div>
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Reuse existing enterprise services</li>
+              <li>Central governance and service catalog</li>
+              <li>Works with existing legacy infrastructure</li>
+              <li>SOAP services have strong typing (WSDL contracts)</li>
+              <li>Mature tooling in enterprise environments</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>ESB is a single point of failure and bottleneck</li>
+              <li>Heavy XML/SOAP overhead vs gRPC/JSON</li>
+              <li>Tight coupling through shared bus</li>
+              <li>Slow to change — central governance slows evolution</li>
+              <li>Not cloud-native — hard to containerize ESB</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DDD ═══ -->
+  <section id="ddd" class="ac-ddd">
+    <div class="container">
+      <div class="section-label">Architecture 10 · Structural / Philosophical</div>
+      <div class="section-title" style="margin-bottom:0">Domain-Driven Design (DDD)</div>
+      <div class="arch-block" style="margin-top:28px">
+        <div class="arch-header ac-ddd">
+          <div class="arch-icon-lg">🌐</div>
+          <div>
+            <div class="arch-name">Domain-Driven Design (DDD)</div>
+            <div class="arch-cat">Structural Philosophy · Eric Evans · Bounded Contexts</div>
+            <div class="arch-tagline">DDD is not a single architecture but a <strong>philosophy for modeling software
+                around the business domain</strong>. The model reflects how domain experts think. Bounded Contexts
+              divide the domain into explicit boundaries — each with its own model, language, and Go package/service.
+              Often combined with Clean/Hexagonal Architecture.</div>
+            <div class="stat-row">
+              <span class="stat">Focus: Business domain modeling</span>
+              <span class="stat">Key: Ubiquitous Language</span>
+              <span class="stat">Unit: Bounded Context</span>
+              <span class="stat">Pairs with: Clean, Hexagonal, CQRS</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--ddd)"></span> Core DDD Concepts in Go</h4>
+            <ul>
+              <li><strong>Entity:</strong> Go struct with identity — <code>Order{ID string}</code>. Same ID = same
+                entity.</li>
+              <li><strong>Value Object:</strong> Immutable, no identity — <code>Money{Amount, Currency}</code>. Equal by
+                value.</li>
+              <li><strong>Aggregate:</strong> Cluster of entities with one root — <code>Order</code> containing
+                <code>OrderItems</code>.
+              </li>
+              <li><strong>Repository:</strong> Go interface for aggregate persistence.</li>
+              <li><strong>Domain Service:</strong> Business logic that doesn't belong to one entity.</li>
+              <li><strong>Domain Event:</strong> <code>OrderPlaced</code>, <code>PaymentFailed</code> — things that
+                happened.</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--ddd)"></span> Bounded Contexts</h4>
+            <p>Different parts of the system have different models of the same concept. In an e-commerce app,
+              <strong>Order</strong> in the <em>Shopping Context</em> has cart items and discounts.
+              <strong>Order</strong> in the <em>Fulfillment Context</em> has warehouse locations and picking status.
+              <strong>Order</strong> in the <em>Billing Context</em> has invoice numbers and payment terms. DDD says:
+              keep these models separate. Don't unify them.
+            </p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--ddd)"></span> Ubiquitous Language</h4>
+            <p>Domain experts and developers use the <em>same words</em> in code. If the chef calls it a "Kitchen
+              Ticket" — your struct is <code>KitchenTicket</code>, not <code>OrderNotification</code>. If accountants
+              say "Invoice" — not "BillingDocument". This alignment reduces translation errors and makes code readable
+              to domain experts. In Go, package names and type names should reflect domain language exactly.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--ddd)"></span> DDD in Go — Practical</h4>
+            <ul>
+              <li>Each Bounded Context → separate Go package or service</li>
+              <li>Aggregates enforce invariants in their methods (not services)</li>
+              <li>Value objects use methods, not setters — immutable</li>
+              <li>Domain events emitted from aggregate root methods</li>
+              <li>Repository interface in domain package, implementation in infra</li>
+              <li>Anti-Corruption Layer (ACL) when integrating bounded contexts</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-label">ddd/domain/order_aggregate.go — Aggregate with Domain
+            Events</span>
+        </div>
+        <div class="code-block"><span class="kw">package</span> ordering <span class="cmt">// Package name = Bounded
+            Context name</span>
+
+          <span class="cmt">// Value Object — immutable, no identity, equal by value</span>
+          <span class="kw">type</span> <span class="pkg">Money</span> <span class="kw">struct</span> { amount <span
+            class="pkg">int64</span>; currency <span class="pkg">string</span> } <span class="cmt">// unexported
+            fields!</span>
+
+          <span class="kw">func</span> <span class="fn">NewMoney</span>(amount <span class="pkg">int64</span>, currency
+          <span class="pkg">string</span>) (<span class="pkg">Money</span>, <span class="pkg">error</span>) {
+          <span class="kw">if</span> amount < <span class="num">0</span> { <span class="kw">return</span> <span
+              class="pkg">Money</span>{}, errors.<span class="fn">New</span>(<span class="str">"amount cannot be
+              negative"</span>) }
+            <span class="kw">return</span> <span class="pkg">Money</span>{amount, currency}, nil
+            }
+            <span class="kw">func</span> (m <span class="pkg">Money</span>) <span class="fn">Add</span>(other <span
+              class="pkg">Money</span>) (<span class="pkg">Money</span>, <span class="pkg">error</span>) { <span
+              class="cmt">/* validate currencies match */</span> }
+
+            <span class="cmt">// Aggregate Root — enforces invariants for the entire aggregate</span>
+            <span class="kw">type</span> <span class="pkg">Order</span> <span class="kw">struct</span> {
+            id <span class="pkg">OrderID</span> <span class="cmt">// identity</span>
+            items []<span class="pkg">OrderItem</span> <span class="cmt">// child entities — only accessible via
+              Order</span>
+            total <span class="pkg">Money</span> <span class="cmt">// value object</span>
+            status <span class="pkg">OrderStatus</span>
+            events []<span class="pkg">DomainEvent</span> <span class="cmt">// domain events accumulated during
+              operation</span>
+            }
+
+            <span class="cmt">// Business method on aggregate — enforces invariants</span>
+            <span class="kw">func</span> (o *<span class="pkg">Order</span>) <span class="fn">AddItem</span>(item <span
+              class="pkg">MenuItem</span>, qty <span class="pkg">int</span>) <span class="pkg">error</span> {
+            <span class="kw">if</span> o.status != <span class="pkg">StatusDraft</span> {
+            <span class="kw">return</span> errors.<span class="fn">New</span>(<span class="str">"cannot add items to
+              non-draft order"</span>)
+            }
+            <span class="kw">if</span> qty <= <span class="num">0</span> { <span class="kw">return</span> errors.<span
+                class="fn">New</span>(<span class="str">"quantity must be positive"</span>) }
+              o.items = <span class="fn">append</span>(o.items, <span class="pkg">OrderItem</span>{MenuItem: item, Qty:
+              qty})
+              o.total, _ = o.total.<span class="fn">Add</span>(<span class="fn">NewMoney</span>(item.Price * <span
+                class="pkg">int64</span>(qty), <span class="str">"BDT"</span>))
+              <span class="kw">return</span> nil
+              }
+
+              <span class="kw">func</span> (o *<span class="pkg">Order</span>) <span class="fn">Place</span>() <span
+                class="pkg">error</span> {
+              <span class="kw">if</span> len(o.items) == <span class="num">0</span> { <span class="kw">return</span>
+              errors.<span class="fn">New</span>(<span class="str">"order must have items"</span>) }
+              o.status = <span class="pkg">StatusPlaced</span>
+              o.events = <span class="fn">append</span>(o.events, <span class="pkg">OrderPlacedEvent</span>{OrderID:
+              o.id})
+              <span class="kw">return</span> nil
+              <span class="cmt">// Aggregate emits events — repository publishes them after save</span>
+              }
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Code directly reflects business domain — reduces translation errors</li>
+              <li>Aggregates enforce business invariants at the right layer</li>
+              <li>Bounded contexts prevent model corruption across domains</li>
+              <li>Natural fit with Clean Architecture and microservices</li>
+              <li>Domain logic is rich, testable, and framework-free</li>
+              <li>Ubiquitous language reduces developer/domain-expert gap</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Steep learning curve — concepts like Aggregates, Value Objects take time</li>
+              <li>Requires deep domain understanding (long discovery phase)</li>
+              <li>Over-engineering for CRUD-heavy, domain-lite applications</li>
+              <li>Lots of boilerplate (Value Objects, Events, Repositories)</li>
+              <li>Risk of modeling the domain incorrectly early on</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="example-card">
+          <div class="example-icon">🏥</div>
+          <div>
+            <div class="example-title" style="color:var(--ddd)">Hospital Management System — Multiple Bounded Contexts
+            </div>
+            <div class="example-desc"><strong>Patient Context:</strong> Patient aggregate — demographics, medical
+              history, allergies. <strong>Appointment Context:</strong> Appointment aggregate — patient (just ID here,
+              not full model), doctor, slot, status. <strong>Billing Context:</strong> Invoice aggregate — line items,
+              insurance, payment. Each context has its own "Patient" concept — they don't share the model.
+              Anti-Corruption Layers translate between them. Ubiquitous Language: doctors say "Ward Round" → code has
+              <code>WardRound</code> struct, not <code>DailyVisit</code>.
+            </div>
+            <div class="tags"><span class="tag t-ddd">Bounded Contexts</span><span class="tag t-ddd">Ubiquitous
+                Language</span><span class="tag t-ddd">Aggregates</span><span class="tag t-ddd">Value
+                Objects</span><span class="tag green">Domain Events</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DECISION GUIDE ═══ -->
+  <section id="decision">
+    <div class="container">
+      <div class="section-label">Section 11</div>
+      <div class="section-title">Architecture Decision Guide</div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;">
+          <div
+            style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--mono);margin-bottom:12px;">
+            🏛️ Start with Monolithic if...</div>
+          <ul style="list-style:none;">
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              Team size is under 10 developers</li>
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              Building an MVP or startup</li>
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              Domain is not yet well-understood</li>
+            <li style="font-size:12.5px;color:var(--muted);padding:4px 0;">→ Speed to market is priority #1</li>
+          </ul>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;">
+          <div
+            style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--layer);margin-bottom:12px;">
+            🥞 Use Layered when...</div>
+          <ul style="list-style:none;">
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              Building any REST API (default choice)</li>
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              Team knows the pattern already</li>
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              ERP, CRM, Admin panels</li>
+            <li style="font-size:12.5px;color:var(--muted);padding:4px 0;">→ Want quick wins with good structure</li>
+          </ul>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;">
+          <div
+            style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--clean);margin-bottom:12px;">
+            🎯 Use Clean / Hexagonal when...</div>
+          <ul style="list-style:none;">
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              Long-lived system (5+ years)</li>
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              High test coverage is required</li>
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              Multiple delivery mechanisms (HTTP+CLI+Kafka)</li>
+            <li style="font-size:12.5px;color:var(--muted);padding:4px 0;">→ DB/framework swap likely in future</li>
+          </ul>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;">
+          <div
+            style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--micro);margin-bottom:12px;">
+            🔬 Use Microservices when...</div>
+          <ul style="list-style:none;">
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              Multiple independent teams (15+ devs)</li>
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              Different scaling needs per domain</li>
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              Independent deployment cycles needed</li>
+            <li style="font-size:12.5px;color:var(--muted);padding:4px 0;">→ Already have DevOps maturity</li>
+          </ul>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;">
+          <div
+            style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--event);margin-bottom:12px;">
+            ⚡ Use Event-Driven when...</div>
+          <ul style="list-style:none;">
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              One action triggers many reactions</li>
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              Real-time processing at scale</li>
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              Audit trail is a requirement</li>
+            <li style="font-size:12.5px;color:var(--muted);padding:4px 0;">→ Services need maximum decoupling</li>
+          </ul>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;">
+          <div
+            style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--cqrs);margin-bottom:12px;">
+            ⚖️ Use CQRS when...</div>
+          <ul style="list-style:none;">
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              Read/write workloads are very different</li>
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              Complex querying requirements (full-text search)</li>
+            <li
+              style="font-size:12.5px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">→
+              Reporting / analytics dashboards needed</li>
+            <li style="font-size:12.5px;color:var(--muted);padding:4px 0;">→ Scaling reads and writes independently</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SUMMARY TABLE ═══ -->
+  <section id="summary">
+    <div class="container">
+      <div class="section-label">Section 12 — Final Summary</div>
+      <div class="section-title">Complete Architecture Comparison Table</div>
+      <div class="table-scroll">
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>Criteria</th>
+              <th class="arch-th" style="color:var(--mono)">🏛️ Monolithic</th>
+              <th class="arch-th" style="color:var(--micro)">🔬 Microservices</th>
+              <th class="arch-th" style="color:var(--event)">⚡ Event-Driven</th>
+              <th class="arch-th" style="color:var(--clean)">🎯 Clean Arch</th>
+              <th class="arch-th" style="color:var(--layer)">🥞 Layered</th>
+              <th class="arch-th" style="color:var(--hexa)">⬡ Hexagonal</th>
+              <th class="arch-th" style="color:var(--cqrs)">⚖️ CQRS</th>
+              <th class="arch-th" style="color:var(--server)">☁️ Serverless</th>
+              <th class="arch-th" style="color:var(--soa)">🕸️ SOA</th>
+              <th class="arch-th" style="color:var(--ddd)">🌐 DDD</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Type</td>
+              <td><span class="badge" style="background:var(--mono-dim);color:var(--mono)">Structural</span></td>
+              <td><span class="badge" style="background:var(--micro-dim);color:var(--micro)">Deployment</span></td>
+              <td><span class="badge" style="background:var(--event-dim);color:var(--event)">Communication</span></td>
+              <td><span class="badge" style="background:var(--clean-dim);color:var(--clean)">Structural</span></td>
+              <td><span class="badge" style="background:var(--layer-dim);color:var(--layer)">Structural</span></td>
+              <td><span class="badge" style="background:var(--hexa-dim);color:var(--hexa)">Structural</span></td>
+              <td><span class="badge" style="background:var(--cqrs-dim);color:var(--cqrs)">Communication</span></td>
+              <td><span class="badge" style="background:var(--server-dim);color:var(--server)">Deployment</span></td>
+              <td><span class="badge" style="background:var(--soa-dim);color:var(--soa)">Deployment</span></td>
+              <td><span class="badge" style="background:var(--ddd-dim);color:var(--ddd)">Philosophy</span></td>
+            </tr>
+            <tr>
+              <td>Team Size</td>
+              <td>1–15</td>
+              <td>15–500+</td>
+              <td>Any (infra)</td>
+              <td>5–50</td>
+              <td>Any</td>
+              <td>5–50</td>
+              <td>15–100+</td>
+              <td>Any</td>
+              <td>50–1000+</td>
+              <td>10–200+</td>
+            </tr>
+            <tr>
+              <td>Project Size</td>
+              <td><span class="badge b-s">Small</span> <span class="badge b-m">Medium</span></td>
+              <td><span class="badge b-l">Large</span> <span class="badge b-xl">Enterprise</span></td>
+              <td><span class="badge b-m">Medium</span> <span class="badge b-l">Large</span></td>
+              <td><span class="badge b-m">Medium</span> <span class="badge b-l">Large</span></td>
+              <td><span class="badge b-any">Any</span></td>
+              <td><span class="badge b-m">Medium</span> <span class="badge b-l">Large</span></td>
+              <td><span class="badge b-l">Large</span> <span class="badge b-xl">Enterprise</span></td>
+              <td><span class="badge b-s">Small</span> <span class="badge b-m">Medium</span></td>
+              <td><span class="badge b-xl">Enterprise</span></td>
+              <td><span class="badge b-m">Medium</span> <span class="badge b-l">Large</span></td>
+            </tr>
+            <tr>
+              <td>Setup Complexity</td>
+              <td style="color:var(--pro)">Very Low</td>
+              <td style="color:var(--con)">Very High</td>
+              <td style="color:var(--con)">High</td>
+              <td style="color:var(--clean)">Medium</td>
+              <td style="color:var(--pro)">Low</td>
+              <td style="color:var(--clean)">Medium-High</td>
+              <td style="color:var(--con)">Very High</td>
+              <td style="color:var(--pro)">Low (FaaS managed)</td>
+              <td style="color:var(--con)">Very High</td>
+              <td style="color:var(--clean)">Medium-High</td>
+            </tr>
+            <tr>
+              <td>Testability</td>
+              <td><span class="partial">~</span> Integration tests</td>
+              <td><span class="partial">~</span> Contract tests</td>
+              <td><span class="partial">~</span> Event simulation</td>
+              <td><span class="check">✓✓</span> Unit + Integration</td>
+              <td><span class="check">✓</span> Good with interfaces</td>
+              <td><span class="check">✓✓</span> InMemory adapters</td>
+              <td><span class="partial">~</span> Two sides to test</td>
+              <td><span class="check">✓</span> Local SAM/Invoke</td>
+              <td><span class="cross">✗</span> ESB hard to mock</td>
+              <td><span class="check">✓✓</span> Domain unit tests</td>
+            </tr>
+            <tr>
+              <td>Horizontal Scaling</td>
+              <td>Limited (full copy)</td>
+              <td><span class="check">✓✓</span> Per service</td>
+              <td><span class="check">✓✓</span> Consumer groups</td>
+              <td>Depends on deploy</td>
+              <td>Depends on deploy</td>
+              <td>Depends on deploy</td>
+              <td><span class="check">✓✓</span> Read/write separately</td>
+              <td><span class="check">✓✓</span> Infinite auto</td>
+              <td><span class="partial">~</span> Service-level</td>
+              <td>Depends on deploy</td>
+            </tr>
+            <tr>
+              <td>Fault Isolation</td>
+              <td><span class="cross">✗</span> One crash = all down</td>
+              <td><span class="check">✓✓</span> Per service</td>
+              <td><span class="check">✓✓</span> Consumers independent</td>
+              <td><span class="partial">~</span> Depends on deploy</td>
+              <td><span class="cross">✗</span> Same as monolith</td>
+              <td><span class="partial">~</span> Depends on deploy</td>
+              <td><span class="check">✓</span> Read/write isolated</td>
+              <td><span class="check">✓✓</span> Function isolation</td>
+              <td><span class="partial">~</span> ESB = single point</td>
+              <td><span class="partial">~</span> Context isolation</td>
+            </tr>
+            <tr>
+              <td>Data Consistency</td>
+              <td style="color:var(--pro)">Strong (ACID)</td>
+              <td style="color:var(--con)">Eventual (Saga)</td>
+              <td style="color:var(--con)">Eventual</td>
+              <td style="color:var(--pro)">Strong (ACID)</td>
+              <td style="color:var(--pro)">Strong (ACID)</td>
+              <td style="color:var(--pro)">Strong (ACID)</td>
+              <td style="color:var(--con)">Eventual (projections)</td>
+              <td style="color:var(--clean)">Per-function strong</td>
+              <td style="color:var(--con)">Eventually</td>
+              <td style="color:var(--pro)">Strong within agg.</td>
+            </tr>
+            <tr>
+              <td>Debugging Ease</td>
+              <td style="color:var(--pro)">Excellent</td>
+              <td style="color:var(--con)">Hard (tracing needed)</td>
+              <td style="color:var(--con)">Hard (event chain)</td>
+              <td style="color:var(--pro)">Good</td>
+              <td style="color:var(--pro)">Good</td>
+              <td style="color:var(--pro)">Good</td>
+              <td style="color:var(--clean)">Medium</td>
+              <td style="color:var(--clean)">Medium (CloudWatch)</td>
+              <td style="color:var(--con)">Hard</td>
+              <td style="color:var(--pro)">Good (rich model)</td>
+            </tr>
+            <tr>
+              <td>Local Dev Ease</td>
+              <td style="color:var(--pro)">One command</td>
+              <td style="color:var(--con)">Docker Compose needed</td>
+              <td style="color:var(--con)">Broker needed</td>
+              <td style="color:var(--pro)">One command</td>
+              <td style="color:var(--pro)">One command</td>
+              <td style="color:var(--pro)">One command</td>
+              <td style="color:var(--clean)">Two DBs locally</td>
+              <td style="color:var(--clean)">SAM CLI needed</td>
+              <td style="color:var(--con)">ESB locally hard</td>
+              <td style="color:var(--pro)">Good</td>
+            </tr>
+            <tr>
+              <td>DevOps Requirement</td>
+              <td>Minimal</td>
+              <td>Advanced (K8s, mesh)</td>
+              <td>Medium (broker ops)</td>
+              <td>Minimal-Medium</td>
+              <td>Minimal</td>
+              <td>Minimal-Medium</td>
+              <td>Medium-Advanced</td>
+              <td>Minimal (cloud-managed)</td>
+              <td>Advanced (ESB)</td>
+              <td>Minimal-Medium</td>
+            </tr>
+            <tr>
+              <td>Best For (Industry)</td>
+              <td>Startup · MVP · Blog · CMS</td>
+              <td>Uber · Netflix · Amazon</td>
+              <td>Fintech · IoT · Stock</td>
+              <td>Long-lived SaaS · Enterprise</td>
+              <td>REST APIs · ERP · CRM</td>
+              <td>Multi-protocol · DDD apps</td>
+              <td>Search · Reporting · Analytics</td>
+              <td>Webhooks · Scheduled jobs</td>
+              <td>Banks · Telcos · Gov</td>
+              <td>Complex domain · Healthcare</td>
+            </tr>
+            <tr>
+              <td>Go Frameworks/Tools</td>
+              <td>Gin, Echo, Chi, GORM</td>
+              <td>gRPC, Consul, K8s</td>
+              <td>Kafka-go, NATS, RabbitMQ</td>
+              <td>Any (framework-agnostic)</td>
+              <td>Gin, Echo, sqlx</td>
+              <td>Any (clean interfaces)</td>
+              <td>Elasticsearch, Redis</td>
+              <td>aws-lambda-go, GCF SDK</td>
+              <td>encoding/xml, SOAP libs</td>
+              <td>Any + domain packages</td>
+            </tr>
+            <tr>
+              <td>ERP Suitability</td>
+              <td><span class="partial">~</span> Early stage</td>
+              <td><span class="check">✓</span> Large ERP</td>
+              <td><span class="partial">~</span> Events addon</td>
+              <td><span class="check">✓✓</span> Ideal structure</td>
+              <td><span class="check">✓✓</span> Very common</td>
+              <td><span class="check">✓</span> Good</td>
+              <td><span class="check">✓</span> Reporting module</td>
+              <td><span class="cross">✗</span> Not suitable</td>
+              <td><span class="check">✓</span> Integration layer</td>
+              <td><span class="check">✓✓</span> Ideal for complex</td>
+            </tr>
+            <tr>
+              <td>Fintech Suitability</td>
+              <td><span class="partial">~</span> Only small scale</td>
+              <td><span class="check">✓✓</span> Per-domain services</td>
+              <td><span class="check">✓✓</span> Transaction events</td>
+              <td><span class="check">✓✓</span> Auditable clean code</td>
+              <td><span class="check">✓</span> Good baseline</td>
+              <td><span class="check">✓✓</span> Swap payment providers</td>
+              <td><span class="check">✓✓</span> Reporting + transactions</td>
+              <td><span class="partial">~</span> Specific functions</td>
+              <td><span class="check">✓</span> Legacy integration</td>
+              <td><span class="check">✓✓</span> Rich financial domain</td>
+            </tr>
+            <tr>
+              <td>SaaS Suitability</td>
+              <td><span class="check">✓✓</span> Early SaaS</td>
+              <td><span class="check">✓</span> At scale</td>
+              <td><span class="partial">~</span> Feature-specific</td>
+              <td><span class="check">✓✓</span> Best for longevity</td>
+              <td><span class="check">✓✓</span> Default choice</td>
+              <td><span class="check">✓</span> Good</td>
+              <td><span class="partial">~</span> When needed</td>
+              <td><span class="check">✓</span> Background tasks</td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="check">✓</span> Complex domains</td>
+            </tr>
+            <tr>
+              <td>Overall Complexity</td>
+              <td><span class="star">★</span>☆☆☆☆</td>
+              <td><span class="star">★★★★★</span></td>
+              <td><span class="star">★★★★</span>☆</td>
+              <td><span class="star">★★★</span>☆☆</td>
+              <td><span class="star">★★</span>☆☆☆</td>
+              <td><span class="star">★★★</span>☆☆</td>
+              <td><span class="star">★★★★★</span></td>
+              <td><span class="star">★★</span>☆☆☆</td>
+              <td><span class="star">★★★★★</span></td>
+              <td><span class="star">★★★★</span>☆</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- VERDICT -->
+      <div class="verdict">
+        <h3>🎯 Final Architecture Decision Guide</h3>
+        <div class="verdict-grid">
+          <div class="verdict-item">
+            <strong style="color:var(--mono)">🏛️ START HERE → Monolithic</strong>
+            <span>Default for any new project. Fastest to ship. Migrate to microservices when team/scale demands it.
+              "Monolith-first" is the proven strategy.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--layer)">🥞 MOST COMMON → Layered Architecture</strong>
+            <span>Handler → Service → Repository is the default Go REST API structure. Simple, understood by all, works
+              at any scale with discipline.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--clean)">🎯 BEST INVESTMENT → Clean / Hexagonal</strong>
+            <span>For systems that will live 3+ years. Higher upfront cost, massive long-term maintainability payoff.
+              Maximum testability.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--micro)">🔬 AT SCALE → Microservices</strong>
+            <span>When team size, deployment frequency, or independent scaling demands it. Never start here — extract
+              from a monolith.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--event)">⚡ FOR REACTIVITY → Event-Driven</strong>
+            <span>When one action must trigger many reactions at scale. Combine with microservices. Use Kafka for
+              durability, NATS for speed.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--cqrs)">⚖️ FOR READS → CQRS</strong>
+            <span>When read and write workloads are fundamentally different. E-commerce search + order, analytics
+              dashboards, fintech reporting.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--server)">☁️ FOR EVENTS → Serverless</strong>
+            <span>Webhooks, scheduled tasks, background processing, bursty workloads. Go's fast cold start makes it
+              ideal for Lambda.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--ddd)">🌐 FOR COMPLEXITY → DDD</strong>
+            <span>When the domain is complex and the business model must drive the code structure. Pairs with
+              Clean/Hexagonal. Not for CRUD apps.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Go Software Architecture — Deep Guide · 10 Architectures · Structural · Deployment · Communication ·
+    Philosophical<br>
+    <span style="color:rgba(255,255,255,.18);margin-top:6px;display:block">Part of the Go Engineering Series: Frameworks
+      · Design Patterns · Software Architecture</span>
+  </footer>
+
+</body>
+
+</html>
