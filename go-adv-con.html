@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Go Concurrency — Complete Deep Guide</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="go-adv-co.css">
+</head>
+
+<body>
+
+  <!-- ═══ TOPBAR ═══ -->
+  <header class="topbar">
+    <a href="index.html" class="topbar-logo" aria-label="Go Engineering Series Home">
+      <div class="topbar-logo-icon"><img src="go-logo.png" alt=""></div>
+      <div class="topbar-logo-text"><span>Go</span>Backend<span>Lab</span></div>
+    </a>
+    <!-- <nav class="topbar-nav" aria-label="Section links">
+      <a href="#conc-vs-para">Concurrency vs Parallelism</a>
+      <a href="#goroutine">Goroutine</a>
+      <a href="#channel">Channel</a>
+      <a href="#waitgroup">WaitGroup</a>
+      <a href="#mutex">Mutex</a>
+      <a href="#select">Select</a>
+      <a href="#context">Context</a>
+      <a href="#once">sync.Once</a>
+      <a href="#atomic">Atomic</a>
+      <a href="#race">Race Detector</a>
+      <a href="#summary">Summary</a>
+    </nav> -->
+    <a href="index.html" class="back-btn">← Index</a>
+  </header>
+
+  <!-- ═══ STICKY NAV ═══ -->
+  <nav class="sidenav" aria-label="Quick navigation">
+    <a href="#conc-vs-para">§1 Concurrency</a>
+    <a href="#goroutine">§2 Goroutine</a>
+    <a href="#channel">§3 Channel</a>
+    <a href="#waitgroup">§4 WaitGroup</a>
+    <a href="#mutex">§5 Mutex</a>
+    <a href="#select">§6 Select</a>
+    <a href="#context">§7 Context</a>
+    <a href="#once">§8 sync.Once</a>
+    <a href="#atomic">§9 Atomic</a>
+    <a href="#race">§10 Race Detector</a>
+    <a href="#summary">Summary</a>
+  </nav>
+
+  <!-- ═══ HERO ═══ -->
+  <div class="hero">
+    <div class="hero-tag">Go Concurrency — Complete Deep Guide</div>
+    <h1>Go <span>Concurrency</span><br>Mastered Completely</h1>
+    <p>Every concurrency primitive Go offers — from goroutines and channels to context, sync.Once, and the race detector
+      — with diagrams, code, real-world use cases, and honest trade-offs.</p>
+    <div class="concept-pills">
+      <div class="cpill" style="background:var(--c1d);color:var(--c1);border-color:rgba(0,212,170,.3)">①Concurrency vs
+        Parallelism</div>
+      <div class="cpill" style="background:var(--c2d);color:var(--c2);border-color:rgba(124,106,247,.3)">②Goroutine
+      </div>
+      <div class="cpill" style="background:var(--c3d);color:var(--c3);border-color:rgba(247,201,72,.3)">③Channel</div>
+      <div class="cpill" style="background:var(--c4d);color:var(--c4);border-color:rgba(244,114,182,.3)">④WaitGroup
+      </div>
+      <div class="cpill" style="background:var(--c5d);color:var(--c5);border-color:rgba(56,189,248,.3)">⑤Mutex</div>
+      <div class="cpill" style="background:var(--c6d);color:var(--c6);border-color:rgba(163,230,53,.3)">⑥Select</div>
+      <div class="cpill" style="background:var(--c7d);color:var(--c7);border-color:rgba(251,146,60,.3)">⑦Context</div>
+      <div class="cpill" style="background:var(--c8d);color:var(--c8);border-color:rgba(52,211,153,.3)">⑧sync.Once</div>
+      <div class="cpill" style="background:var(--c9d);color:var(--c9);border-color:rgba(129,140,248,.3)">⑨Atomic</div>
+      <div class="cpill" style="background:var(--c10d);color:var(--c10);border-color:rgba(232,121,249,.3)">⑩Race
+        Detector</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+     §1 CONCURRENCY vs PARALLELISM
+════════════════════════════════════════════ -->
+  <section id="conc-vs-para" style="--ac:var(--c1);--ad:var(--c1d)">
+    <div class="container">
+      <div class="s-label">Concept 01 · Foundation</div>
+      <div class="s-title" style="margin-bottom:28px;color:var(--c1)">Concurrency vs. Parallelism</div>
+
+      <div class="concept-block">
+        <div class="concept-header">
+          <div class="ch-icon">🧠</div>
+          <div>
+            <div class="ch-name">Concurrency vs. Parallelism</div>
+            <div class="ch-cat">Foundation · Rob Pike's Core Insight · Must Understand First</div>
+            <div class="ch-tagline"><strong>"Concurrency is about dealing with lots of things at once. Parallelism is
+                about doing lots of things at once."</strong> — Rob Pike (Go co-creator). These are different problems
+              with different solutions. Go is a concurrency language that can achieve parallelism when needed.</div>
+            <div class="stat-row">
+              <span class="stat">Concurrency: Structural</span>
+              <span class="stat">Parallelism: Execution</span>
+              <span class="stat">Go's model: CSP (Communicating Sequential Processes)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="cvp-grid">
+          <div class="cvp-card" style="border-color:rgba(0,212,170,.3)">
+            <div class="cvp-title" style="color:var(--c1)">🔄 Concurrency</div>
+            <div class="cvp-sub">Structuring a program to handle multiple tasks — not necessarily at the same moment
+            </div>
+            <svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg"
+              style="font-family:'Space Mono',monospace;width:100%;max-width:280px">
+              <!-- Single CPU core -->
+              <rect x="10" y="8" width="260" height="24" rx="4" fill="rgba(0,212,170,.12)" stroke="rgba(0,212,170,.4)"
+                stroke-width="1.5" />
+              <text x="140" y="24" text-anchor="middle" fill="#00d4aa" font-size="10" font-weight="bold">1 CPU
+                CORE</text>
+              <!-- Timeline -->
+              <rect x="10" y="44" width="260" height="4" rx="2" fill="var(--surface2)" />
+              <!-- Task A slots -->
+              <rect x="10" y="42" width="50" height="8" rx="2" fill="#00d4aa" />
+              <rect x="90" y="42" width="40" height="8" rx="2" fill="#00d4aa" />
+              <rect x="170" y="42" width="60" height="8" rx="2" fill="#00d4aa" />
+              <!-- Task B slots -->
+              <rect x="60" y="42" width="30" height="8" rx="2" fill="#7c6af7" />
+              <rect x="130" y="42" width="40" height="8" rx="2" fill="#7c6af7" />
+              <rect x="230" y="42" width="40" height="8" rx="2" fill="#7c6af7" />
+              <!-- Labels -->
+              <rect x="10" y="62" width="12" height="8" rx="2" fill="#00d4aa" />
+              <text x="28" y="71" fill="#8892a4" font-size="9">Task A</text>
+              <rect x="70" y="62" width="12" height="8" rx="2" fill="#7c6af7" />
+              <text x="88" y="71" fill="#8892a4" font-size="9">Task B (interleaved)</text>
+              <!-- Description -->
+              <text x="140" y="95" text-anchor="middle" fill="#6272a4" font-size="9">Tasks take turns on one core</text>
+              <text x="140" y="110" text-anchor="middle" fill="#6272a4" font-size="9">Appears simultaneous but switches
+                fast</text>
+              <text x="140" y="125" text-anchor="middle" fill="#00d4aa" font-size="9" font-weight="bold">STRUCTURE: who
+                runs when</text>
+            </svg>
+          </div>
+          <div class="cvp-card" style="border-color:rgba(124,106,247,.3)">
+            <div class="cvp-title" style="color:var(--c2)">⚡ Parallelism</div>
+            <div class="cvp-sub">Executing multiple tasks truly simultaneously on multiple CPU cores</div>
+            <svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg"
+              style="font-family:'Space Mono',monospace;width:100%;max-width:280px">
+              <!-- Core 1 -->
+              <rect x="10" y="8" width="120" height="18" rx="3" fill="rgba(124,106,247,.12)"
+                stroke="rgba(124,106,247,.4)" stroke-width="1.5" />
+              <text x="70" y="21" text-anchor="middle" fill="#7c6af7" font-size="9" font-weight="bold">CPU CORE 1</text>
+              <rect x="10" y="30" width="260" height="8" rx="2" fill="rgba(0,212,170,.0)" />
+              <rect x="10" y="30" width="260" height="8" rx="2" fill="#00d4aa" />
+              <!-- Core 2 -->
+              <rect x="10" y="52" width="120" height="18" rx="3" fill="rgba(124,106,247,.12)"
+                stroke="rgba(124,106,247,.4)" stroke-width="1.5" />
+              <text x="70" y="65" text-anchor="middle" fill="#7c6af7" font-size="9" font-weight="bold">CPU CORE 2</text>
+              <rect x="10" y="74" width="260" height="8" rx="2" fill="#7c6af7" />
+              <!-- Core 3 -->
+              <rect x="10" y="96" width="120" height="18" rx="3" fill="rgba(124,106,247,.12)"
+                stroke="rgba(124,106,247,.4)" stroke-width="1.5" />
+              <text x="70" y="109" text-anchor="middle" fill="#7c6af7" font-size="9" font-weight="bold">CPU CORE
+                3</text>
+              <rect x="10" y="118" width="260" height="8" rx="2" fill="#f472b6" />
+              <!-- Labels -->
+              <text x="200" y="38" fill="#8892a4" font-size="9">← Task A running</text>
+              <text x="200" y="82" fill="#8892a4" font-size="9">← Task B running</text>
+              <text x="200" y="126" fill="#8892a4" font-size="9">← Task C running</text>
+              <!-- Big label -->
+              <text x="10" y="142" fill="#7c6af7" font-size="9" font-weight="bold">EXECUTION: truly at the same
+                instant</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Key Insight Box -->
+        <div class="hbox info" style="margin-bottom:14px">
+          <h4>🐹 GO'S APPROACH: CONCURRENCY BY DESIGN, PARALLELISM BY RUNTIME</h4>
+          <p>Go's goroutines and channels give you a <strong style="color:var(--text)">concurrent structure</strong>.
+            The Go runtime's M:N scheduler then maps those goroutines to OS threads, which run on physical CPU cores in
+            <strong style="color:var(--text)">true parallel</strong>. Set <code>GOMAXPROCS=runtime.NumCPU()</code> (the
+            default since Go 1.5) and your concurrent Go program automatically becomes parallel. You write for
+            concurrency; Go delivers parallelism for free.
+          </p>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--c1)"></span>Real-World Analogy</h4>
+            <ul>
+              <li><strong>Concurrency (Chef):</strong> One chef manages boiling pasta, chopping vegetables, and
+                simmering sauce — switching between tasks. Only one hand moves at a time.</li>
+              <li><strong>Parallelism (Kitchen):</strong> Three chefs each doing one task simultaneously — pasta chef,
+                vegetable chef, sauce chef — all working at the exact same moment.</li>
+              <li><strong>Go's model:</strong> You write the recipe (concurrency). The kitchen staff count (GOMAXPROCS)
+                determines how many chefs run in parallel.</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--c1)"></span>Go's M:N Scheduler</h4>
+            <ul>
+              <li><strong>M goroutines</strong> mapped to <strong>N OS threads</strong> (N = GOMAXPROCS)</li>
+              <li>OS threads pinned to physical CPU cores for true parallelism</li>
+              <li>Goroutines are cooperatively + preemptively scheduled by the Go runtime</li>
+              <li>Network I/O automatically yields — goroutine suspends, thread free for others</li>
+              <li>Work-stealing: idle threads steal goroutines from busy thread queues</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--c1)"></span>When Concurrency ≠ Parallelism</h4>
+            <ul>
+              <li>Single-core machine: concurrent Go program, no parallelism</li>
+              <li><code>GOMAXPROCS=1</code>: goroutines interleave but never truly parallel</li>
+              <li>I/O-bound programs: concurrency wins even without multiple cores</li>
+              <li>CPU-bound programs: need parallelism (multiple cores) to go faster</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--c1)"></span>CSP vs Shared Memory</h4>
+            <ul>
+              <li><strong>CSP (Go's model):</strong> communicate by passing messages through channels. No shared state
+                between goroutines.</li>
+              <li><strong>Shared memory (Java/C++):</strong> threads share variables, use locks. Error-prone,
+                deadlock-prone.</li>
+              <li><strong>Go's mantra:</strong> "Do not communicate by sharing memory; share memory by communicating."
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     §2 GOROUTINE
+════════════════════════════════════════════ -->
+  <section id="goroutine" style="--ac:var(--c2);--ad:var(--c2d)">
+    <div class="container">
+      <div class="s-label">Concept 02 · Core Primitive</div>
+      <div class="s-title" style="margin-bottom:28px;color:var(--c2)">Goroutine</div>
+      <div class="concept-block">
+        <div class="concept-header">
+          <div class="ch-icon">🚀</div>
+          <div>
+            <div class="ch-name">Goroutine</div>
+            <div class="ch-cat">Lightweight Thread · User-space · Go Runtime Managed</div>
+            <div class="ch-tagline">A goroutine is a <strong>lightweight, concurrently executing function</strong>
+              managed by the Go runtime — not the OS. Started with the <code>go</code> keyword. Initial stack is ~2KB
+              (growing dynamically up to 1GB). You can run <strong>millions</strong> of goroutines on a single machine
+              where OS threads would crash at ~10,000.</div>
+            <div class="stat-row">
+              <span class="stat">Initial stack: ~2KB</span>
+              <span class="stat">OS thread: ~1MB</span>
+              <span class="stat">Multiplier: 500x more goroutines</span>
+              <span class="stat">Keyword: go</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--c2)"></span>What is a Goroutine?</h4>
+            <p>A goroutine is a function executing concurrently with other goroutines in the same address space. Unlike
+              OS threads, goroutines are multiplexed onto a smaller number of OS threads by the Go runtime. When a
+              goroutine blocks on I/O, the runtime moves it off the thread and runs another goroutine instead —
+              maximizing CPU utilization with zero developer effort.</p>
+            <p style="margin-top:8px">Goroutines are <em>not</em> OS threads. They're an abstraction ON TOP of OS
+              threads. The Go scheduler (part of the runtime) decides which goroutines run on which threads.</p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--c2)"></span>How It Works — GMP Model</h4>
+            <ul>
+              <li><strong>G (Goroutine):</strong> The goroutine itself — function + stack + state</li>
+              <li><strong>M (Machine):</strong> OS thread managed by the runtime</li>
+              <li><strong>P (Processor):</strong> Scheduling context — holds a local run queue of goroutines</li>
+              <li>Each P has a local queue. M runs one G from its P's queue at a time</li>
+              <li>When G blocks (channel, syscall), M detaches from P, P gets another M</li>
+              <li>Work-stealing: idle P steals half the goroutines from a busy P's queue</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--c2)"></span>Goroutine Lifecycle</h4>
+            <div class="steps" style="margin-top:8px">
+              <div class="step">
+                <div class="sn" style="background:var(--c2d);color:var(--c2)">1</div>
+                <div class="step-body">
+                  <h5>Created</h5>
+                  <p><code>go myFunc()</code> — goroutine placed in P's local run queue</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="sn" style="background:var(--c2d);color:var(--c2)">2</div>
+                <div class="step-body">
+                  <h5>Runnable</h5>
+                  <p>Waiting in queue to be scheduled onto an M (OS thread)</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="sn" style="background:var(--c2d);color:var(--c2)">3</div>
+                <div class="step-body">
+                  <h5>Running</h5>
+                  <p>Executing on an M. Preempted after 10ms time slice or on yield point</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="sn" style="background:var(--c2d);color:var(--c2)">4</div>
+                <div class="step-body">
+                  <h5>Blocked</h5>
+                  <p>Waiting on channel, mutex, or syscall. M free to run other goroutines</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="sn" style="background:var(--c2d);color:var(--c2)">5</div>
+                <div class="step-body">
+                  <h5>Dead</h5>
+                  <p>Function returned. Stack reclaimed. goroutine exits cleanly.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--c2)"></span>Why Use Goroutines?</h4>
+            <ul>
+              <li>Handle 100,000+ concurrent connections with minimal memory</li>
+              <li>Parallelize CPU-bound work across all cores automatically</li>
+              <li>I/O-bound operations (HTTP, DB, disk) don't block other work</li>
+              <li>Worker pools, pipelines, fan-out patterns all built from goroutines</li>
+              <li>No callback hell, no async/await boilerplate — just <code>go func()</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- GMP Diagram -->
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg" style="font-family:'Space Mono',monospace">
+            <defs>
+              <marker id="ag" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                <polygon points="0 0,7 2.5,0 5" fill="#7c6af7" />
+              </marker>
+            </defs>
+            <text x="350" y="18" text-anchor="middle" fill="#7c6af7" font-size="11" font-weight="bold">GO RUNTIME — GMP
+              SCHEDULER MODEL</text>
+
+            <!-- Global run queue -->
+            <rect x="10" y="28" width="130" height="70" rx="8" fill="rgba(124,106,247,.12)"
+              stroke="rgba(124,106,247,.4)" stroke-width="1.5" />
+            <text x="75" y="48" text-anchor="middle" fill="#7c6af7" font-size="10" font-weight="bold">Global
+              Queue</text>
+            <rect x="18" y="56" width="28" height="14" rx="3" fill="rgba(124,106,247,.4)" /><text x="32" y="67"
+              text-anchor="middle" fill="#cdd9e5" font-size="8">G</text>
+            <rect x="50" y="56" width="28" height="14" rx="3" fill="rgba(124,106,247,.4)" /><text x="64" y="67"
+              text-anchor="middle" fill="#cdd9e5" font-size="8">G</text>
+            <rect x="82" y="56" width="28" height="14" rx="3" fill="rgba(124,106,247,.4)" /><text x="96" y="67"
+              text-anchor="middle" fill="#cdd9e5" font-size="8">G</text>
+            <text x="75" y="88" text-anchor="middle" fill="#6272a4" font-size="8">Overflow goroutines</text>
+
+            <!-- P1 -->
+            <rect x="170" y="28" width="145" height="120" rx="8" fill="rgba(124,106,247,.08)"
+              stroke="rgba(124,106,247,.35)" stroke-width="1.5" />
+            <text x="242" y="48" text-anchor="middle" fill="#7c6af7" font-size="10" font-weight="bold">P (Processor
+              1)</text>
+            <text x="242" y="61" text-anchor="middle" fill="#6272a4" font-size="8">Local run queue</text>
+            <rect x="178" y="68" width="25" height="14" rx="3" fill="rgba(0,212,170,.5)" /><text x="190" y="79"
+              text-anchor="middle" fill="#0a0e1a" font-size="8" font-weight="bold">G</text>
+            <rect x="207" y="68" width="25" height="14" rx="3" fill="rgba(0,212,170,.3)" /><text x="219" y="79"
+              text-anchor="middle" fill="#cdd9e5" font-size="8">G</text>
+            <rect x="236" y="68" width="25" height="14" rx="3" fill="rgba(0,212,170,.3)" /><text x="248" y="79"
+              text-anchor="middle" fill="#cdd9e5" font-size="8">G</text>
+            <rect x="265" y="68" width="25" height="14" rx="3" fill="rgba(0,212,170,.3)" /><text x="277" y="79"
+              text-anchor="middle" fill="#cdd9e5" font-size="8">G</text>
+            <!-- M1 -->
+            <rect x="185" y="100" width="115" height="36" rx="6" fill="rgba(0,212,170,.18)" stroke="#00d4aa"
+              stroke-width="2" />
+            <text x="242" y="115" text-anchor="middle" fill="#00d4aa" font-size="10" font-weight="bold">M (OS
+              Thread)</text>
+            <text x="242" y="128" text-anchor="middle" fill="#6272a4" font-size="8">Running G ↑</text>
+            <!-- CPU 1 -->
+            <rect x="185" y="148" width="115" height="28" rx="5" fill="rgba(74,222,128,.1)" stroke="rgba(74,222,128,.3)"
+              stroke-width="1" />
+            <text x="242" y="166" text-anchor="middle" fill="#4ade80" font-size="9">CPU Core 1</text>
+
+            <!-- P2 -->
+            <rect x="335" y="28" width="145" height="120" rx="8" fill="rgba(124,106,247,.08)"
+              stroke="rgba(124,106,247,.35)" stroke-width="1.5" />
+            <text x="407" y="48" text-anchor="middle" fill="#7c6af7" font-size="10" font-weight="bold">P (Processor
+              2)</text>
+            <text x="407" y="61" text-anchor="middle" fill="#6272a4" font-size="8">Local run queue</text>
+            <rect x="343" y="68" width="25" height="14" rx="3" fill="rgba(244,114,182,.5)" /><text x="355" y="79"
+              text-anchor="middle" fill="#0a0e1a" font-size="8" font-weight="bold">G</text>
+            <rect x="372" y="68" width="25" height="14" rx="3" fill="rgba(244,114,182,.3)" /><text x="384" y="79"
+              text-anchor="middle" fill="#cdd9e5" font-size="8">G</text>
+            <rect x="401" y="68" width="25" height="14" rx="3" fill="rgba(244,114,182,.3)" /><text x="413" y="79"
+              text-anchor="middle" fill="#cdd9e5" font-size="8">G</text>
+            <!-- M2 -->
+            <rect x="350" y="100" width="115" height="36" rx="6" fill="rgba(244,114,182,.15)" stroke="#f472b6"
+              stroke-width="2" />
+            <text x="407" y="115" text-anchor="middle" fill="#f472b6" font-size="10" font-weight="bold">M (OS
+              Thread)</text>
+            <text x="407" y="128" text-anchor="middle" fill="#6272a4" font-size="8">Running G ↑</text>
+            <!-- CPU 2 -->
+            <rect x="350" y="148" width="115" height="28" rx="5" fill="rgba(74,222,128,.1)" stroke="rgba(74,222,128,.3)"
+              stroke-width="1" />
+            <text x="407" y="166" text-anchor="middle" fill="#4ade80" font-size="9">CPU Core 2</text>
+
+            <!-- Blocked goroutine -->
+            <rect x="510" y="60" width="170" height="50" rx="8" fill="rgba(248,113,113,.08)"
+              stroke="rgba(248,113,113,.3)" stroke-width="1.5" />
+            <text x="595" y="80" text-anchor="middle" fill="#f87171" font-size="10" font-weight="bold">G
+              (Blocked)</text>
+            <text x="595" y="96" text-anchor="middle" fill="#6272a4" font-size="8">Waiting on channel/syscall</text>
+            <text x="595" y="108" text-anchor="middle" fill="#6272a4" font-size="8">M is freed → runs other G</text>
+
+            <!-- Work steal arrow -->
+            <line x1="335" y1="75" x2="315" y2="75" stroke="#7c6af7" stroke-width="1.2" stroke-dasharray="4,2"
+              marker-end="url(#ag)" />
+            <text x="260" y="197" text-anchor="middle" fill="#6272a4" font-size="8">Work-steal: idle P takes goroutines
+              from busy P's queue</text>
+            <line x1="315" y1="75" x2="170" y2="75" stroke="#7c6af7" stroke-width="1" stroke-dasharray="3,2" />
+
+            <!-- Global queue arrow -->
+            <line x1="140" y1="63" x2="170" y2="68" stroke="#7c6af7" stroke-width="1.2" stroke-dasharray="3,2"
+              marker-end="url(#ag)" />
+          </svg>
+        </div>
+
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-l">goroutine/examples.go — Creation, closures, goroutine leak</span>
+        </div>
+        <div class="code-block"><span class="cmt">// ── BASIC GOROUTINE
+            ────────────────────────────────────────────</span>
+          <span class="kw">go</span> <span class="fn">doWork</span>() <span class="cmt">// Run doWork()
+            concurrently</span>
+          <span class="kw">go func</span>() { <span class="fn">doWork</span>() }() <span class="cmt">// Anonymous
+            goroutine — immediately invoked</span>
+
+          <span class="cmt">// ── GOROUTINE WITH ARGS — ALWAYS PASS BY VALUE ─────────────────</span>
+          <span class="kw">for</span> i := <span class="num">0</span>; i < <span class="num">5</span>; i++ {
+            <span class="kw">go func</span>(id <span class="pkg">int</span>) { <span class="cmt">// ✓ Pass i as arg —
+              captures correct value</span>
+            fmt.<span class="fn">Println</span>(id)
+            }(i)
+            <span class="cmt">// ✗ WRONG: go func() { fmt.Println(i) }() ← closure captures loop var → all print
+              5</span>
+            }
+
+            <span class="cmt">// ── GOROUTINE STACK GROWTH ─────────────────────────────────────</span>
+            <span class="cmt">// Start: 2KB → grows to 1GB max → runtime.Goexit() or function return reclaims</span>
+
+            <span class="cmt">// ── GOROUTINE COUNT — 1 MILLION IS FINE ────────────────────────</span>
+            <span class="kw">for</span> i := <span class="num">0</span>; i < <span class="num">1_000_000</span>; i++ {
+              <span class="kw">go func</span>() {
+              time.<span class="fn">Sleep</span>(<span class="num">10</span> * time.Second) <span class="cmt">//
+                sleeping goroutines: ~2-4KB each</span>
+              }() <span class="cmt">// 1M × 4KB = 4GB RAM (manageable)</span>
+              }
+
+              <span class="cmt">// ── ⚠️ GOROUTINE LEAK — never do this ─────────────────────────</span>
+              <span class="kw">func</span> <span class="fn">leaky</span>() {
+              ch := <span class="fn">make</span>(chan <span class="pkg">int</span>)
+              <span class="kw">go func</span>() {
+              val := <-ch <span class="cmt">// blocks forever — nobody sends!</span>
+                fmt.<span class="fn">Println</span>(val) <span class="cmt">// goroutine leaks — never garbage
+                  collected</span>
+                }()
+                } <span class="cmt">// ← function returns without sending to ch → goroutine lives forever</span>
+                <span class="cmt">// FIX: always use context cancellation or done channels to signal goroutine
+                  exit</span>
+
+                <span class="cmt">// ── GOMAXPROCS: control parallelism ────────────────────────────</span>
+                runtime.<span class="fn">GOMAXPROCS</span>(runtime.<span class="fn">NumCPU</span>()) <span
+                  class="cmt">// Default since Go 1.5 — use all cores</span>
+                runtime.<span class="fn">GOMAXPROCS</span>(<span class="num">1</span>) <span class="cmt">// Concurrency
+                  without parallelism</span>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>2KB initial stack — 500x cheaper than OS threads (1MB)</li>
+              <li>Run millions concurrently on commodity hardware</li>
+              <li>Go runtime manages scheduling — zero OS context switch overhead</li>
+              <li>Blocking I/O doesn't waste OS threads — runtime parks goroutine</li>
+              <li>Preemptive since Go 1.14 — no starvation from CPU-bound goroutines</li>
+              <li>Stack grows/shrinks dynamically — no stack overflow errors</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Goroutine leaks are invisible — no crash, just memory growth</li>
+              <li>Cannot cancel a goroutine from outside — must use channels/context</li>
+              <li>No goroutine ID (by design) — makes debugging harder</li>
+              <li>Panic in goroutine not caught by parent — must recover() inside</li>
+              <li>Too many goroutines still cause GC pressure even at 2KB each</li>
+              <li>Loop variable capture bug is a classic trap for new Go developers</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     §3 CHANNEL
+════════════════════════════════════════════ -->
+  <section id="channel" style="--ac:var(--c3);--ad:var(--c3d)">
+    <div class="container">
+      <div class="s-label">Concept 03 · Communication</div>
+      <div class="s-title" style="margin-bottom:28px;color:var(--c3)">Go Channel</div>
+      <div class="concept-block">
+        <div class="concept-header">
+          <div class="ch-icon">📡</div>
+          <div>
+            <div class="ch-name">Go Channel</div>
+            <div class="ch-cat">Typed · Goroutine-safe · Communication Primitive · CSP Core</div>
+            <div class="ch-tagline">A channel is a <strong>typed conduit through which goroutines communicate</strong>.
+              Channels provide synchronization and data transfer in one construct. They are Go's answer to shared-memory
+              concurrency — instead of locking a shared variable, goroutines send and receive values through a channel.
+              <em>"Don't communicate by sharing memory; share memory by communicating."</em>
+            </div>
+            <div class="stat-row">
+              <span class="stat">make(chan T) — unbuffered</span>
+              <span class="stat">make(chan T, N) — buffered</span>
+              <span class="stat">Thread-safe: always</span>
+              <span class="stat">Directional: &lt;-chan / chan&lt;-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Channel types visual -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+          <div class="diagram-wrap" style="margin:0">
+            <div
+              style="font-family:'Space Mono',monospace;font-size:10px;color:var(--c3);margin-bottom:12px;letter-spacing:1px">
+              UNBUFFERED CHANNEL — make(chan T)</div>
+            <svg viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg"
+              style="font-family:'Space Mono',monospace;width:100%">
+              <defs>
+                <marker id="ac" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto">
+                  <polygon points="0 0,6 2.5,0 5" fill="#f7c948" />
+                </marker>
+              </defs>
+              <!-- Sender -->
+              <rect x="5" y="20" width="80" height="60" rx="8" fill="rgba(247,201,72,.1)" stroke="rgba(247,201,72,.4)"
+                stroke-width="1.5" />
+              <text x="45" y="45" text-anchor="middle" fill="#f7c948" font-size="10" font-weight="bold">Goroutine</text>
+              <text x="45" y="60" text-anchor="middle" fill="#f7c948" font-size="10" font-weight="bold">A (SEND)</text>
+              <text x="45" y="74" text-anchor="middle" fill="#8892a4" font-size="8">BLOCKS until</text>
+              <text x="45" y="84" text-anchor="middle" fill="#8892a4" font-size="8">B receives</text>
+              <!-- Channel -->
+              <rect x="110" y="33" width="100" height="34" rx="6" fill="rgba(247,201,72,.18)" stroke="#f7c948"
+                stroke-width="2" />
+              <text x="160" y="47" text-anchor="middle" fill="#f7c948" font-size="9" font-weight="bold">Channel</text>
+              <text x="160" y="60" text-anchor="middle" fill="#6272a4" font-size="8">capacity=0</text>
+              <!-- Receiver -->
+              <rect x="235" y="20" width="80" height="60" rx="8" fill="rgba(74,222,128,.08)"
+                stroke="rgba(74,222,128,.3)" stroke-width="1.5" />
+              <text x="275" y="45" text-anchor="middle" fill="#4ade80" font-size="10"
+                font-weight="bold">Goroutine</text>
+              <text x="275" y="60" text-anchor="middle" fill="#4ade80" font-size="10" font-weight="bold">B (RECV)</text>
+              <line x1="85" y1="50" x2="110" y2="50" stroke="#f7c948" stroke-width="1.5" marker-end="url(#ac)" />
+              <line x1="210" y1="50" x2="235" y2="50" stroke="#4ade80" stroke-width="1.5" marker-end="url(#ac)" />
+            </svg>
+            <div style="font-size:11px;color:var(--muted);margin-top:8px">Sender blocks until receiver is ready. Perfect
+              synchronization.</div>
+          </div>
+          <div class="diagram-wrap" style="margin:0">
+            <div
+              style="font-family:'Space Mono',monospace;font-size:10px;color:var(--c3);margin-bottom:12px;letter-spacing:1px">
+              BUFFERED CHANNEL — make(chan T, 3)</div>
+            <svg viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg"
+              style="font-family:'Space Mono',monospace;width:100%">
+              <defs>
+                <marker id="acb" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto">
+                  <polygon points="0 0,6 2.5,0 5" fill="#f7c948" />
+                </marker>
+              </defs>
+              <rect x="5" y="20" width="80" height="60" rx="8" fill="rgba(247,201,72,.1)" stroke="rgba(247,201,72,.4)"
+                stroke-width="1.5" />
+              <text x="45" y="45" text-anchor="middle" fill="#f7c948" font-size="10" font-weight="bold">Goroutine</text>
+              <text x="45" y="60" text-anchor="middle" fill="#f7c948" font-size="10" font-weight="bold">A (SEND)</text>
+              <text x="45" y="74" text-anchor="middle" fill="#8892a4" font-size="8">Blocks only</text>
+              <text x="45" y="84" text-anchor="middle" fill="#8892a4" font-size="8">when full</text>
+              <!-- Buffered channel with slots -->
+              <rect x="105" y="28" width="110" height="44" rx="6" fill="rgba(247,201,72,.1)" stroke="#f7c948"
+                stroke-width="1.5" />
+              <rect x="111" y="34" width="28" height="22" rx="3" fill="rgba(247,201,72,.5)" /><text x="125" y="49"
+                text-anchor="middle" fill="#0a0e1a" font-size="8" font-weight="bold">v1</text>
+              <rect x="142" y="34" width="28" height="22" rx="3" fill="rgba(247,201,72,.5)" /><text x="156" y="49"
+                text-anchor="middle" fill="#0a0e1a" font-size="8" font-weight="bold">v2</text>
+              <rect x="173" y="34" width="28" height="22" rx="3" fill="var(--surface2)" stroke="rgba(247,201,72,.3)"
+                stroke-width="1" /><text x="187" y="49" text-anchor="middle" fill="#6272a4" font-size="8">—</text>
+              <text x="160" y="66" text-anchor="middle" fill="#6272a4" font-size="8">cap=3, len=2</text>
+              <!-- Receiver -->
+              <rect x="235" y="20" width="80" height="60" rx="8" fill="rgba(74,222,128,.08)"
+                stroke="rgba(74,222,128,.3)" stroke-width="1.5" />
+              <text x="275" y="45" text-anchor="middle" fill="#4ade80" font-size="10"
+                font-weight="bold">Goroutine</text>
+              <text x="275" y="60" text-anchor="middle" fill="#4ade80" font-size="10" font-weight="bold">B (RECV)</text>
+              <line x1="85" y1="50" x2="105" y2="50" stroke="#f7c948" stroke-width="1.5" marker-end="url(#acb)" />
+              <line x1="215" y1="50" x2="235" y2="50" stroke="#4ade80" stroke-width="1.5" marker-end="url(#acb)" />
+            </svg>
+            <div style="font-size:11px;color:var(--muted);margin-top:8px">Send doesn't block until buffer full.
+              Decouples producer from consumer speed.</div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--c3)"></span>Channel Operations & Rules</h4>
+            <ul>
+              <li><strong>Send: </strong> <code>ch &lt;- val</code> — blocks if unbuffered (until receiver ready) or
+                buffer full</li>
+              <li><strong>Receive: </strong> <code>val := &lt;-ch</code> — blocks until value is available</li>
+              <li><strong>Close: </strong> <code>close(ch)</code> — only sender should close; signals no more values
+              </li>
+              <li><strong>Range: </strong> <code>for v := range ch</code> — reads until channel closed</li>
+              <li><strong>Check closed: </strong> <code>v, ok := &lt;-ch</code> — ok=false means closed</li>
+              <li>Sending on closed channel: <strong style="color:var(--con)">panic!</strong></li>
+              <li>Receiving from closed channel: returns zero value immediately</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--c3)"></span>Directional Channels</h4>
+            <ul>
+              <li><code>chan T</code> — bidirectional (can send and receive)</li>
+              <li><code>&lt;-chan T</code> — receive-only (function can only read from it)</li>
+              <li><code>chan&lt;- T</code> — send-only (function can only write to it)</li>
+              <li>Directional channels enforce correct usage at compile time</li>
+              <li>Producer gets <code>chan&lt;-</code>, consumer gets <code>&lt;-chan</code> — prevents mistakes</li>
+            </ul>
+            <div
+              style="margin-top:10px;padding:8px 12px;background:var(--surface2);border-radius:6px;font-family:'Space Mono',monospace;font-size:11px;color:var(--c3)">
+              func producer(ch chan&lt;- int) {ch &lt;- 42}<br>
+              func consumer(ch &lt;-chan int) {v := &lt;-ch}
+            </div>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--c3)"></span>Nil Channel Behavior</h4>
+            <ul>
+              <li>Send on nil channel: <strong>blocks forever</strong></li>
+              <li>Receive from nil channel: <strong>blocks forever</strong></li>
+              <li>Close nil channel: <strong style="color:var(--con)">panic!</strong></li>
+              <li>Nil channels in <code>select</code>: that case is never selected</li>
+              <li>Useful trick: disable a select case by setting its channel to nil</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--c3)"></span>Channel as Signal (Done Pattern)</h4>
+            <ul>
+              <li><code>done := make(chan struct{})</code> — zero-size struct signal</li>
+              <li>Use <code>close(done)</code> to broadcast to all receivers simultaneously</li>
+              <li>Closing broadcasts to ALL goroutines waiting on it</li>
+              <li>Sending sends to only ONE goroutine</li>
+              <li>This is the foundation of Context cancellation internally</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-l">channel/patterns.go — Unbuffered, buffered, done, pipeline</span>
+        </div>
+        <div class="code-block"><span class="cmt">// ── UNBUFFERED: synchronization point
+            ──────────────────────────</span>
+          <span class="kw">func</span> <span class="fn">unbuffered</span>() {
+          ch := <span class="fn">make</span>(chan <span class="pkg">string</span>) <span class="cmt">// capacity =
+            0</span>
+          <span class="kw">go func</span>() { ch &lt;- <span class="str">"order ready"</span> }() <span class="cmt">//
+            sender blocks until receiver ready</span>
+          msg := &lt;-ch <span class="cmt">// receiver unblocks sender</span>
+          fmt.<span class="fn">Println</span>(msg)
+          }
+
+          <span class="cmt">// ── BUFFERED: decouple producer/consumer speed ─────────────────</span>
+          <span class="kw">func</span> <span class="fn">buffered</span>() {
+          jobs := <span class="fn">make</span>(chan <span class="pkg">int</span>, <span class="num">10</span>) <span
+            class="cmt">// buffer 10 jobs — send won't block unless full</span>
+          <span class="kw">for</span> i := <span class="num">0</span>; i < <span class="num">10</span>; i++ { jobs &lt;-
+            i } <span class="cmt">// fill buffer without goroutine</span>
+            <span class="fn">close</span>(jobs)
+            <span class="kw">for</span> j := <span class="kw">range</span> jobs { fmt.<span class="fn">Println</span>(j)
+            } <span class="cmt">// range reads until closed</span>
+            }
+
+            <span class="cmt">// ── DONE CHANNEL: broadcast stop signal ───────────────────────</span>
+            <span class="kw">func</span> <span class="fn">withDone</span>() {
+            done := <span class="fn">make</span>(chan <span class="kw">struct</span>{}) <span class="cmt">// zero-size —
+              just a signal</span>
+            <span class="kw">go func</span>() {
+            <span class="kw">for</span> {
+            <span class="kw">select</span> {
+            <span class="kw">case</span> &lt;-done: <span class="cmt">// closing done broadcasts to ALL receivers</span>
+            fmt.<span class="fn">Println</span>(<span class="str">"stopping"</span>); <span class="kw">return</span>
+            <span class="kw">default</span>:
+            <span class="fn">doWork</span>()
+            }
+            }
+            }()
+            time.<span class="fn">Sleep</span>(<span class="num">5</span> * time.Second)
+            <span class="fn">close</span>(done) <span class="cmt">// ← broadcasts to ALL goroutines listening on
+              done</span>
+            }
+
+            <span class="cmt">// ── PIPELINE: chain channels ─────────────────────────────────</span>
+            <span class="kw">func</span> <span class="fn">generate</span>(nums ...<span class="pkg">int</span>)
+            &lt;-chan <span class="pkg">int</span> {
+            out := <span class="fn">make</span>(chan <span class="pkg">int</span>)
+            <span class="kw">go func</span>() { <span class="kw">for</span> _, n := <span class="kw">range</span> nums {
+            out &lt;- n }; <span class="fn">close</span>(out) }()
+            <span class="kw">return</span> out
+            }
+            <span class="kw">func</span> <span class="fn">square</span>(in &lt;-chan <span class="pkg">int</span>)
+            &lt;-chan <span class="pkg">int</span> {
+            out := <span class="fn">make</span>(chan <span class="pkg">int</span>)
+            <span class="kw">go func</span>() { <span class="kw">for</span> n := <span class="kw">range</span> in { out
+            &lt;- n*n }; <span class="fn">close</span>(out) }()
+            <span class="kw">return</span> out
+            }
+            <span class="cmt">// Usage: for v := range square(generate(2, 3, 4)) { fmt.Println(v) } → 4 9 16</span>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Goroutine-safe by design — no mutex needed for communication</li>
+              <li>Synchronization and communication in one construct</li>
+              <li>Range loop cleanly drains channel until close</li>
+              <li>Directional types enforce correct usage at compile time</li>
+              <li>close() broadcasts to all receivers — elegant done pattern</li>
+              <li>Composes naturally into pipelines and fan-out/in</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Deadlock if sender and receiver both block — hard to debug</li>
+              <li>Sending on closed channel panics — must coordinate ownership</li>
+              <li>Buffer size tuning is non-trivial — wrong size causes bottlenecks</li>
+              <li>Not suitable for sharing large structs — prefer pointer + mutex</li>
+              <li>Channels have overhead — not always faster than sync primitives</li>
+              <li>Nil channel gotchas can block indefinitely silently</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     §4 WAITGROUP
+════════════════════════════════════════════ -->
+  <section id="waitgroup" style="--ac:var(--c4);--ad:var(--c4d)">
+    <div class="container">
+      <div class="s-label">Concept 04 · Synchronization</div>
+      <div class="s-title" style="margin-bottom:28px;color:var(--c4)">sync.WaitGroup</div>
+      <div class="concept-block">
+        <div class="concept-header">
+          <div class="ch-icon">⏳</div>
+          <div>
+            <div class="ch-name">sync.WaitGroup</div>
+            <div class="ch-cat">Synchronization Primitive · Barrier · Collection Point</div>
+            <div class="ch-tagline">A WaitGroup <strong>waits for a collection of goroutines to finish</strong>. The
+              main goroutine calls <code>Add(n)</code> to set the count, each goroutine calls <code>Done()</code> when
+              finished, and <code>Wait()</code> blocks until the counter reaches zero. It's the standard way to fan-out
+              work and collect completion.</div>
+            <div class="stat-row">
+              <span class="stat">Methods: Add · Done · Wait</span>
+              <span class="stat">Zero value: ready to use</span>
+              <span class="stat">Must not be copied after first use</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 700 190" xmlns="http://www.w3.org/2000/svg" style="font-family:'Space Mono',monospace">
+            <defs>
+              <marker id="aw" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto">
+                <polygon points="0 0,6 2.5,0 5" fill="#f472b6" />
+              </marker>
+            </defs>
+            <!-- Main goroutine -->
+            <rect x="10" y="20" width="120" height="150" rx="8" fill="rgba(244,114,182,.1)"
+              stroke="rgba(244,114,182,.4)" stroke-width="1.5" />
+            <text x="70" y="44" text-anchor="middle" fill="#f472b6" font-size="10" font-weight="bold">main</text>
+            <text x="70" y="58" text-anchor="middle" fill="#f472b6" font-size="10" font-weight="bold">goroutine</text>
+            <text x="70" y="80" text-anchor="middle" fill="#8892a4" font-size="9">wg.Add(3)</text>
+            <text x="70" y="96" text-anchor="middle" fill="#f7c948" font-size="9">go work()</span></text>
+            <text x="70" y="112" text-anchor="middle" fill="#f7c948" font-size="9">go work()</text>
+            <text x="70" y="128" text-anchor="middle" fill="#f7c948" font-size="9">go work()</text>
+            <text x="70" y="148" text-anchor="middle" fill="#f472b6" font-size="9">wg.Wait()</text>
+            <text x="70" y="162" text-anchor="middle" fill="#6272a4" font-size="8">← BLOCKS HERE</text>
+
+            <!-- Counter box -->
+            <rect x="175" y="55" width="100" height="80" rx="8" fill="rgba(244,114,182,.18)" stroke="#f472b6"
+              stroke-width="2.5" />
+            <text x="225" y="78" text-anchor="middle" fill="#f472b6" font-size="11" font-weight="bold">WaitGroup</text>
+            <text x="225" y="96" text-anchor="middle" fill="#cdd9e5" font-size="18" font-weight="bold"
+              id="wg-count">3</text>
+            <text x="225" y="115" text-anchor="middle" fill="#8892a4" font-size="9">counter</text>
+            <text x="225" y="128" text-anchor="middle" fill="#6272a4" font-size="8">0 → unblocks Wait()</text>
+
+            <!-- Arrow Add -->
+            <line x1="130" y1="80" x2="175" y2="90" stroke="#f472b6" stroke-width="1.3" marker-end="url(#aw)" />
+            <text x="152" y="78" fill="#6272a4" font-size="8">Add(3)</text>
+
+            <!-- Worker goroutines -->
+            <rect x="305" y="20" width="105" height="55" rx="7" fill="rgba(247,201,72,.1)" stroke="rgba(247,201,72,.35)"
+              stroke-width="1.5" />
+            <text x="357" y="43" text-anchor="middle" fill="#f7c948" font-size="10" font-weight="bold">Worker 1</text>
+            <text x="357" y="58" text-anchor="middle" fill="#8892a4" font-size="8">does work...</text>
+            <text x="357" y="68" text-anchor="middle" fill="#f472b6" font-size="8">wg.Done() ←</text>
+
+            <rect x="305" y="88" width="105" height="55" rx="7" fill="rgba(247,201,72,.1)" stroke="rgba(247,201,72,.35)"
+              stroke-width="1.5" />
+            <text x="357" y="111" text-anchor="middle" fill="#f7c948" font-size="10" font-weight="bold">Worker 2</text>
+            <text x="357" y="126" text-anchor="middle" fill="#8892a4" font-size="8">does work...</text>
+            <text x="357" y="136" text-anchor="middle" fill="#f472b6" font-size="8">wg.Done() ←</text>
+
+            <rect x="305" y="156" width="105" height="40" rx="7" fill="rgba(247,201,72,.1)"
+              stroke="rgba(247,201,72,.35)" stroke-width="1.5" />
+            <text x="357" y="174" text-anchor="middle" fill="#f7c948" font-size="10" font-weight="bold">Worker 3</text>
+            <text x="357" y="188" text-anchor="middle" fill="#f472b6" font-size="8">wg.Done() ←</text>
+
+            <!-- Go keyword arrows -->
+            <line x1="130" y1="96" x2="305" y2="47" stroke="#f7c948" stroke-width="1.2" stroke-dasharray="4,2"
+              marker-end="url(#aw)" />
+            <line x1="130" y1="112" x2="305" y2="115" stroke="#f7c948" stroke-width="1.2" stroke-dasharray="4,2"
+              marker-end="url(#aw)" />
+            <line x1="130" y1="128" x2="305" y2="172" stroke="#f7c948" stroke-width="1.2" stroke-dasharray="4,2"
+              marker-end="url(#aw)" />
+
+            <!-- Done arrows to counter -->
+            <line x1="305" y1="58" x2="275" y2="88" stroke="#f472b6" stroke-width="1.2" marker-end="url(#aw)" />
+            <line x1="305" y1="125" x2="275" y2="100" stroke="#f472b6" stroke-width="1.2" marker-end="url(#aw)" />
+            <line x1="305" y1="172" x2="275" y2="112" stroke="#f472b6" stroke-width="1.2" marker-end="url(#aw)" />
+
+            <!-- Unblock arrow -->
+            <rect x="450" y="75" width="230" height="42" rx="7" fill="rgba(74,222,128,.1)" stroke="rgba(74,222,128,.3)"
+              stroke-width="1.5" />
+            <text x="565" y="93" text-anchor="middle" fill="#4ade80" font-size="10" font-weight="bold">counter ==
+              0</text>
+            <text x="565" y="108" text-anchor="middle" fill="#8892a4" font-size="9">wg.Wait() unblocks → main
+              continues</text>
+            <line x1="275" y1="96" x2="450" y2="96" stroke="#4ade80" stroke-width="1.5" stroke-dasharray="4,2"
+              marker-end="url(#aw)" />
+          </svg>
+        </div>
+
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-l">waitgroup/patterns.go — Correct usage + common mistakes</span>
+        </div>
+        <div class="code-block"><span class="cmt">// ── CORRECT USAGE
+            ──────────────────────────────────────────────</span>
+          <span class="kw">func</span> <span class="fn">processOrders</span>(orders []<span class="pkg">Order</span>) {
+          <span class="kw">var</span> wg sync.<span class="pkg">WaitGroup</span> <span class="cmt">// zero value ready
+            to use</span>
+
+          <span class="kw">for</span> _, order := <span class="kw">range</span> orders {
+          wg.<span class="fn">Add</span>(<span class="num">1</span>) <span class="cmt">// ← Add BEFORE launching
+            goroutine</span>
+          <span class="kw">go func</span>(o <span class="pkg">Order</span>) {
+          defer wg.<span class="fn">Done</span>() <span class="cmt">// ← defer ensures Done() always called</span>
+          <span class="fn">processOrder</span>(o)
+          }(order) <span class="cmt">// ← pass order as arg (avoid loop var capture)</span>
+          }
+          wg.<span class="fn">Wait</span>() <span class="cmt">// ← blocks until all Done() calls match Add()
+            calls</span>
+          fmt.<span class="fn">Println</span>(<span class="str">"all orders processed"</span>)
+          }
+
+          <span class="cmt">// ── WRONG: Add inside goroutine — RACE CONDITION ───────────────</span>
+          <span class="cmt">// for _, order := range orders {</span>
+          <span class="cmt">// go func(o Order) {</span>
+          <span class="cmt">// wg.Add(1) ← WRONG: wg.Wait() may fire before Add called!</span>
+          <span class="cmt">// defer wg.Done()</span>
+          <span class="cmt">// processOrder(o)</span>
+          <span class="cmt">// }(order)</span>
+          <span class="cmt">// }</span>
+
+          <span class="cmt">// ── WRONG: Don't copy WaitGroup ───────────────────────────────</span>
+          <span class="cmt">// func bad(wg sync.WaitGroup) { wg.Wait() } ← copy! doesn't work</span>
+          <span class="cmt">// func good(wg *sync.WaitGroup) { wg.Wait() } ← pointer ✓</span>
+
+          <span class="cmt">// ── ADVANCED: WaitGroup + error collection ─────────────────────</span>
+          <span class="kw">func</span> <span class="fn">processWithErrors</span>(items []<span class="pkg">Item</span>)
+          []<span class="pkg">error</span> {
+          <span class="kw">var</span> (
+          wg sync.<span class="pkg">WaitGroup</span>
+          mu sync.<span class="pkg">Mutex</span>
+          errs []<span class="pkg">error</span>
+          )
+          <span class="kw">for</span> _, item := <span class="kw">range</span> items {
+          wg.<span class="fn">Add</span>(<span class="num">1</span>)
+          <span class="kw">go func</span>(it <span class="pkg">Item</span>) {
+          defer wg.<span class="fn">Done</span>()
+          <span class="kw">if</span> err := <span class="fn">process</span>(it); err != nil {
+          mu.<span class="fn">Lock</span>()
+          errs = <span class="fn">append</span>(errs, err) <span class="cmt">// mutex protects shared errs slice</span>
+          mu.<span class="fn">Unlock</span>()
+          }
+          }(item)
+          }
+          wg.<span class="fn">Wait</span>()
+          <span class="kw">return</span> errs
+          }
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Simple 3-method API: Add, Done, Wait</li>
+              <li>Zero value is ready to use — no initialization needed</li>
+              <li><code>defer wg.Done()</code> ensures completion even on panic</li>
+              <li>Works with any number of goroutines — dynamic Add count</li>
+              <li>Reusable after Wait() completes — counter resets to zero</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Must call Add() before goroutine starts — not inside goroutine</li>
+              <li>Never copy a WaitGroup — must pass by pointer</li>
+              <li>No way to collect return values — need extra channel or slice+mutex</li>
+              <li>No timeout — use context for cancellable waiting</li>
+              <li>Add/Done mismatch (negative counter) causes panic</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     §5 MUTEX
+════════════════════════════════════════════ -->
+  <section id="mutex" style="--ac:var(--c5);--ad:var(--c5d)">
+    <div class="container">
+      <div class="s-label">Concept 05 · Shared State Protection</div>
+      <div class="s-title" style="margin-bottom:28px;color:var(--c5)">sync.Mutex & sync.RWMutex</div>
+      <div class="concept-block">
+        <div class="concept-header">
+          <div class="ch-icon">🔐</div>
+          <div>
+            <div class="ch-name">Mutex & RWMutex</div>
+            <div class="ch-cat">Mutual Exclusion · Shared Memory Protection · sync package</div>
+            <div class="ch-tagline">A Mutex (Mutual Exclusion lock) ensures <strong>only one goroutine accesses shared
+                data at a time</strong>. Use <code>Mutex</code> when all access is read+write. Use <code>RWMutex</code>
+              (read-write mutex) when reads are frequent and writes are rare — allows multiple concurrent readers OR one
+              exclusive writer.</div>
+            <div class="stat-row">
+              <span class="stat">Mutex: Lock / Unlock</span>
+              <span class="stat">RWMutex: RLock / RUnlock / Lock / Unlock</span>
+              <span class="stat">Rule: always use defer Unlock</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--c5)"></span>Mutex vs RWMutex</h4>
+            <ul>
+              <li><strong>sync.Mutex:</strong> One goroutine at a time — any operation (R or W)</li>
+              <li><strong>sync.RWMutex:</strong> Multiple concurrent readers OR one exclusive writer</li>
+              <li>Use Mutex: protecting a counter, appending to a slice, map writes</li>
+              <li>Use RWMutex: cache with frequent reads and rare writes</li>
+              <li><code>RLock()</code>: multiple goroutines can hold simultaneously</li>
+              <li><code>Lock()</code>: blocks until ALL RLock holders release</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--c5)"></span>When to Use Mutex vs Channel</h4>
+            <ul>
+              <li><strong>Use Mutex when:</strong> protecting state (counter, cache, shared map). Simple ownership — one
+                goroutine owns data.</li>
+              <li><strong>Use Channel when:</strong> passing ownership of data between goroutines, coordinating work,
+                signaling events.</li>
+              <li>Rob Pike's rule: "Use channels to orchestrate; use mutexes to protect."</li>
+              <li>Example: <code>sync.Map</code> is a built-in concurrent-safe map (use over map+Mutex for read-heavy)
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-l">mutex/safe_cache.go — Mutex and RWMutex patterns</span>
+        </div>
+        <div class="code-block"><span class="cmt">// ── sync.Mutex: exclusive access
+            ─────────────────────────────</span>
+          <span class="kw">type</span> <span class="pkg">SafeCounter</span> <span class="kw">struct</span> {
+          mu sync.<span class="pkg">Mutex</span>
+          count <span class="pkg">int</span>
+          }
+          <span class="kw">func</span> (c *<span class="pkg">SafeCounter</span>) <span class="fn">Inc</span>() {
+          c.mu.<span class="fn">Lock</span>()
+          defer c.mu.<span class="fn">Unlock</span>() <span class="cmt">// always defer — even if panic occurs</span>
+          c.count++
+          }
+
+          <span class="cmt">// ── sync.RWMutex: many readers, one writer ────────────────────</span>
+          <span class="kw">type</span> <span class="pkg">MenuCache</span> <span class="kw">struct</span> {
+          mu sync.<span class="pkg">RWMutex</span>
+          items <span class="pkg">map</span>[<span class="pkg">string</span>]<span class="pkg">MenuItem</span>
+          }
+
+          <span class="kw">func</span> (c *<span class="pkg">MenuCache</span>) <span class="fn">Get</span>(id <span
+            class="pkg">string</span>) (<span class="pkg">MenuItem</span>, <span class="pkg">bool</span>) {
+          c.mu.<span class="fn">RLock</span>() <span class="cmt">// Multiple goroutines can RLock simultaneously</span>
+          defer c.mu.<span class="fn">RUnlock</span>()
+          item, ok := c.items[id]
+          <span class="kw">return</span> item, ok
+          }
+
+          <span class="kw">func</span> (c *<span class="pkg">MenuCache</span>) <span class="fn">Set</span>(id <span
+            class="pkg">string</span>, item <span class="pkg">MenuItem</span>) {
+          c.mu.<span class="fn">Lock</span>() <span class="cmt">// Exclusive — blocks all readers and writers</span>
+          defer c.mu.<span class="fn">Unlock</span>()
+          c.items[id] = item
+          }
+
+          <span class="cmt">// ── ⚠ DEADLOCK: never lock the same mutex twice ───────────────</span>
+          <span class="cmt">// mu.Lock()</span>
+          <span class="cmt">// mu.Lock() ← deadlock! goroutine blocks itself waiting for itself</span>
+
+          <span class="cmt">// ── sync.Map: built-in concurrent map ────────────────────────</span>
+          <span class="kw">var</span> m sync.<span class="pkg">Map</span>
+          m.<span class="fn">Store</span>(<span class="str">"key"</span>, <span class="str">"value"</span>) <span
+            class="cmt">// goroutine-safe write</span>
+          v, ok := m.<span class="fn">Load</span>(<span class="str">"key"</span>) <span class="cmt">// goroutine-safe
+            read</span>
+          m.<span class="fn">Range</span>(<span class="kw">func</span>(k, v <span class="pkg">any</span>) <span
+            class="pkg">bool</span> { <span class="cmt">// goroutine-safe iteration</span>
+          fmt.<span class="fn">Println</span>(k, v); <span class="kw">return</span> true
+          })
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Simple — Lock/Unlock pattern is universally understood</li>
+              <li>RWMutex dramatically improves read-heavy workload performance</li>
+              <li><code>defer mu.Unlock()</code> guarantees unlock even on panic</li>
+              <li>Lower overhead than channels for simple shared state</li>
+              <li>sync.Map provides zero-config concurrent map for read-heavy use</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Deadlock risk: forgot to Unlock, double Lock, lock ordering bugs</li>
+              <li>Must not copy mutex after first use</li>
+              <li>Priority inversion and lock contention at high concurrency</li>
+              <li>Channels are often more readable for ownership passing</li>
+              <li>Cannot be used recursively — locking twice in same goroutine = deadlock</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     §6 SELECT
+════════════════════════════════════════════ -->
+  <section id="select" style="--ac:var(--c6);--ad:var(--c6d)">
+    <div class="container">
+      <div class="s-label">Concept 06 · Multi-Channel Control</div>
+      <div class="s-title" style="margin-bottom:28px;color:var(--c6)">Select Statement</div>
+      <div class="concept-block">
+        <div class="concept-header">
+          <div class="ch-icon">🎛️</div>
+          <div>
+            <div class="ch-name">Select Statement</div>
+            <div class="ch-cat">Multi-Channel Multiplexer · Non-blocking Operations · Timeout Pattern</div>
+            <div class="ch-tagline">Select lets a goroutine <strong>wait on multiple channel operations
+                simultaneously</strong>. Like a switch statement, but for channels. Blocks until one case is ready, then
+              executes it. If multiple cases are ready simultaneously, one is chosen at random. The <code>default</code>
+              case makes select non-blocking.</div>
+            <div class="stat-row">
+              <span class="stat">Blocks: until one case ready</span>
+              <span class="stat">Multiple ready: random selection</span>
+              <span class="stat">default: non-blocking</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-l">select/patterns.go — Timeout, default, nil channel disable</span>
+        </div>
+        <div class="code-block"><span class="cmt">// ── BASIC SELECT: wait on multiple channels
+            ────────────────────</span>
+          <span class="kw">select</span> {
+          <span class="kw">case</span> msg := &lt;-ch1:
+          fmt.<span class="fn">Println</span>(<span class="str">"received from ch1:"</span>, msg)
+          <span class="kw">case</span> msg := &lt;-ch2:
+          fmt.<span class="fn">Println</span>(<span class="str">"received from ch2:"</span>, msg)
+          <span class="kw">case</span> ch3 &lt;- <span class="str">"data"</span>:
+          fmt.<span class="fn">Println</span>(<span class="str">"sent to ch3"</span>)
+          } <span class="cmt">// blocks until ONE case is ready</span>
+
+          <span class="cmt">// ── TIMEOUT PATTERN: most important real-world use ─────────────</span>
+          <span class="kw">func</span> <span class="fn">fetchWithTimeout</span>() (<span class="pkg">Result</span>,
+          <span class="pkg">error</span>) {
+          resultCh := <span class="fn">make</span>(chan <span class="pkg">Result</span>, <span class="num">1</span>)
+          <span class="kw">go func</span>() { resultCh &lt;- <span class="fn">slowAPICall</span>() }()
+
+          <span class="kw">select</span> {
+          <span class="kw">case</span> res := &lt;-resultCh:
+          <span class="kw">return</span> res, nil
+          <span class="kw">case</span> &lt;-time.<span class="fn">After</span>(<span class="num">3</span> *
+          time.Second): <span class="cmt">// ← fires after 3s</span>
+          <span class="kw">return</span> <span class="pkg">Result</span>{}, errors.<span class="fn">New</span>(<span
+            class="str">"timeout"</span>)
+          }
+          }
+
+          <span class="cmt">// ── NON-BLOCKING with default ──────────────────────────────────</span>
+          <span class="kw">select</span> {
+          <span class="kw">case</span> v := &lt;-ch:
+          fmt.<span class="fn">Println</span>(<span class="str">"got:"</span>, v)
+          <span class="kw">default</span>:
+          fmt.<span class="fn">Println</span>(<span class="str">"channel empty — move on"</span>) <span class="cmt">//
+            no blocking!</span>
+          }
+
+          <span class="cmt">// ── DISABLE A CASE using nil channel ──────────────────────────</span>
+          <span class="kw">var</span> ch2 chan <span class="pkg">int</span> <span class="cmt">// nil channel — this case
+            is NEVER selected</span>
+          <span class="kw">select</span> {
+          <span class="kw">case</span> v := &lt;-ch1: fmt.<span class="fn">Println</span>(v)
+          <span class="kw">case</span> v := &lt;-ch2: fmt.<span class="fn">Println</span>(v) <span class="cmt">// ←
+            never runs (ch2 is nil)</span>
+          }
+
+          <span class="cmt">// ── GRACEFUL SHUTDOWN PATTERN ─────────────────────────────────</span>
+          <span class="kw">func</span> <span class="fn">worker</span>(jobs &lt;-chan <span class="pkg">Job</span>, done
+          &lt;-chan <span class="kw">struct</span>{}) {
+          <span class="kw">for</span> {
+          <span class="kw">select</span> {
+          <span class="kw">case</span> job := &lt;-jobs: <span class="fn">processJob</span>(job)
+          <span class="kw">case</span> &lt;-done: <span class="kw">return</span> <span class="cmt">// shutdown
+            signal</span>
+          }
+          }
+          }
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Wait on multiple channels without spinning or goroutines</li>
+              <li>Timeout pattern is trivial with time.After()</li>
+              <li>Non-blocking channel operations via default case</li>
+              <li>Graceful shutdown by combining done channel with work channel</li>
+              <li>Nil channel trick elegantly disables cases dynamically</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Pseudo-random case selection can be surprising</li>
+              <li>No priority between cases — all equal chance</li>
+              <li>Complex nested selects become hard to read</li>
+              <li>time.After leaks timer if case fires on other channel first (use time.NewTimer instead)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     §7 CONTEXT
+════════════════════════════════════════════ -->
+  <section id="context" style="--ac:var(--c7);--ad:var(--c7d)">
+    <div class="container">
+      <div class="s-label">Concept 07 · Cancellation & Deadlines</div>
+      <div class="s-title" style="margin-bottom:28px;color:var(--c7)">context.Context</div>
+      <div class="concept-block">
+        <div class="concept-header">
+          <div class="ch-icon">⏱️</div>
+          <div>
+            <div class="ch-name">context.Context</div>
+            <div class="ch-cat">Cancellation · Deadlines · Request-scoped Values · Standard Library</div>
+            <div class="ch-tagline">Context carries <strong>cancellation signals, deadlines, and key-value
+                pairs</strong> across API boundaries and goroutines. It is the idiomatic way to cancel long-running
+              operations, propagate request timeouts, and pass request-scoped values (like user ID, trace ID) without
+              function signature pollution.</div>
+            <div class="stat-row">
+              <span class="stat">WithCancel: manual cancel</span>
+              <span class="stat">WithTimeout: auto-cancel after duration</span>
+              <span class="stat">WithDeadline: cancel at absolute time</span>
+              <span class="stat">WithValue: attach request-scoped data</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" style="font-family:'Space Mono',monospace">
+            <defs>
+              <marker id="actx" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto">
+                <polygon points="0 0,6 2.5,0 5" fill="#fb923c" />
+              </marker>
+            </defs>
+            <!-- Context tree -->
+            <text x="350" y="18" text-anchor="middle" fill="#fb923c" font-size="11" font-weight="bold">CONTEXT
+              PROPAGATION TREE — cancellation flows downward</text>
+            <!-- Root -->
+            <rect x="285" y="28" width="130" height="36" rx="7" fill="rgba(251,146,60,.2)" stroke="#fb923c"
+              stroke-width="2.5" />
+            <text x="350" y="43" text-anchor="middle" fill="#fb923c" font-size="10"
+              font-weight="bold">context.Background()</text>
+            <text x="350" y="57" text-anchor="middle" fill="#8892a4" font-size="8">root — never cancelled</text>
+            <!-- WithTimeout child -->
+            <line x1="350" y1="64" x2="200" y2="88" stroke="#fb923c" stroke-width="1.5" marker-end="url(#actx)" />
+            <line x1="350" y1="64" x2="500" y2="88" stroke="#fb923c" stroke-width="1.5" marker-end="url(#actx)" />
+            <rect x="110" y="88" width="180" height="36" rx="7" fill="rgba(251,146,60,.15)" stroke="rgba(251,146,60,.5)"
+              stroke-width="1.5" />
+            <text x="200" y="103" text-anchor="middle" fill="#fb923c" font-size="10">WithTimeout(ctx, 5s)</text>
+            <text x="200" y="117" text-anchor="middle" fill="#8892a4" font-size="8">auto-cancels after 5s</text>
+            <rect x="410" y="88" width="180" height="36" rx="7" fill="rgba(251,146,60,.15)" stroke="rgba(251,146,60,.5)"
+              stroke-width="1.5" />
+            <text x="500" y="103" text-anchor="middle" fill="#fb923c" font-size="10">WithValue(ctx, k, v)</text>
+            <text x="500" y="117" text-anchor="middle" fill="#8892a4" font-size="8">adds request-scoped data</text>
+            <!-- Grandchildren -->
+            <line x1="200" y1="124" x2="130" y2="148" stroke="#fb923c" stroke-width="1.2" stroke-dasharray="4,2"
+              marker-end="url(#actx)" />
+            <line x1="200" y1="124" x2="270" y2="148" stroke="#fb923c" stroke-width="1.2" stroke-dasharray="4,2"
+              marker-end="url(#actx)" />
+            <rect x="60" y="148" width="140" height="30" rx="6" fill="rgba(248,113,113,.08)"
+              stroke="rgba(248,113,113,.3)" stroke-width="1" />
+            <text x="130" y="163" text-anchor="middle" fill="#f87171" font-size="9">DB Query goroutine</text>
+            <text x="130" y="176" text-anchor="middle" fill="#6272a4" font-size="8">ctx.Done() ← cancel</text>
+            <rect x="208" y="148" width="140" height="30" rx="6" fill="rgba(248,113,113,.08)"
+              stroke="rgba(248,113,113,.3)" stroke-width="1" />
+            <text x="278" y="163" text-anchor="middle" fill="#f87171" font-size="9">HTTP call goroutine</text>
+            <text x="278" y="176" text-anchor="middle" fill="#6272a4" font-size="8">ctx.Done() ← cancel</text>
+            <!-- Cancel propagation -->
+            <text x="350" y="196" text-anchor="middle" fill="#fb923c" font-size="9" font-weight="bold">Cancelling parent
+              cancels ALL children automatically</text>
+          </svg>
+        </div>
+
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-l">context/patterns.go — WithTimeout, WithCancel, propagation</span>
+        </div>
+        <div class="code-block"><span class="cmt">// ── Rule 1: Pass Context as first parameter
+            ────────────────────</span>
+          <span class="kw">func</span> <span class="fn">GetUser</span>(ctx context.<span class="pkg">Context</span>,
+          userID <span class="pkg">string</span>) (*<span class="pkg">User</span>, <span class="pkg">error</span>) {
+          <span class="cmt">// all functions that might be slow take ctx as first arg</span>
+          <span class="kw">return</span> db.<span class="fn">QueryContext</span>(ctx, <span class="str">"SELECT * FROM
+            users WHERE id=$1"</span>, userID)
+          }
+
+          <span class="cmt">// ── WithTimeout: cancel after duration ────────────────────────</span>
+          <span class="kw">func</span> <span class="fn">fetchOrder</span>(orderID <span class="pkg">string</span>)
+          (*<span class="pkg">Order</span>, <span class="pkg">error</span>) {
+          ctx, cancel := context.<span class="fn">WithTimeout</span>(context.<span class="fn">Background</span>(), <span
+            class="num">3</span>*time.Second)
+          defer <span class="fn">cancel</span>() <span class="cmt">// ← ALWAYS defer cancel — releases resources
+            immediately</span>
+
+          <span class="kw">return</span> db.<span class="fn">QueryContext</span>(ctx, <span class="str">"SELECT * FROM
+            orders WHERE id=$1"</span>, orderID)
+          <span class="cmt">// if 3s pass before query completes → ctx.Done() closes → query cancels</span>
+          }
+
+          <span class="cmt">// ── WithCancel: manual cancellation ───────────────────────────</span>
+          <span class="kw">func</span> <span class="fn">longJob</span>(ctx context.<span class="pkg">Context</span>)
+          <span class="pkg">error</span> {
+          childCtx, cancel := context.<span class="fn">WithCancel</span>(ctx)
+          defer <span class="fn">cancel</span>()
+          <span class="kw">for</span> {
+          <span class="kw">select</span> {
+          <span class="kw">case</span> &lt;-childCtx.<span class="fn">Done</span>(): <span class="cmt">// parent or
+            manual cancel</span>
+          <span class="kw">return</span> childCtx.<span class="fn">Err</span>() <span class="cmt">// context.Canceled or
+            DeadlineExceeded</span>
+          <span class="kw">default</span>:
+          <span class="fn">doUnitOfWork</span>()
+          }
+          }
+          }
+
+          <span class="cmt">// ── WithValue: request-scoped data (trace ID, user ID) ────────</span>
+          <span class="kw">type</span> ctxKey <span class="kw">string</span>
+          <span class="kw">const</span> RequestIDKey ctxKey = <span class="str">"requestID"</span>
+
+          ctx := context.<span class="fn">WithValue</span>(r.<span class="fn">Context</span>(), RequestIDKey, <span
+            class="str">"req-abc-123"</span>)
+          reqID := ctx.<span class="fn">Value</span>(RequestIDKey).(<span class="pkg">string</span>) <span
+            class="cmt">// type assert to get value</span>
+          <span class="cmt">// Rule: use private type for keys — prevents collisions between packages</span>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Propagates cancellation automatically to all child operations</li>
+              <li>Deadline/timeout flows across goroutines, DB queries, HTTP calls</li>
+              <li>Prevents goroutine leaks from long-running operations</li>
+              <li>Standard — works with net/http, database/sql, gRPC, all major libraries</li>
+              <li>WithValue carries request-scoped data without polluting function signatures</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Adding ctx to every function signature is boilerplate (required, not optional)</li>
+              <li>Forgetting <code>defer cancel()</code> leaks resources (common mistake)</li>
+              <li>WithValue uses interface{} keys — runtime panic on type mismatch</li>
+              <li>Context is not a replacement for config or optional parameters</li>
+              <li>Can't cancel an already-started DB query (driver must support it)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     §8 SYNC.ONCE
+════════════════════════════════════════════ -->
+  <section id="once" style="--ac:var(--c8);--ad:var(--c8d)">
+    <div class="container">
+      <div class="s-label">Concept 08 · One-Time Initialization</div>
+      <div class="s-title" style="margin-bottom:28px;color:var(--c8)">sync.Once</div>
+      <div class="concept-block">
+        <div class="concept-header">
+          <div class="ch-icon">1️⃣</div>
+          <div>
+            <div class="ch-name">sync.Once</div>
+            <div class="ch-cat">Lazy Initialization · Singleton · Exactly-Once Execution</div>
+            <div class="ch-tagline">sync.Once guarantees a function is executed <strong>exactly once</strong> —
+              regardless of how many goroutines call it simultaneously. All subsequent calls to <code>Do()</code> after
+              the first are no-ops. Zero overhead after the first execution. The backbone of goroutine-safe lazy
+              initialization and the Singleton pattern in Go.</div>
+            <div class="stat-row">
+              <span class="stat">Method: Do(f func())</span>
+              <span class="stat">Guarantee: exactly once</span>
+              <span class="stat">Goroutine-safe: always</span>
+              <span class="stat">After first call: zero cost</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-l">once/singleton.go — DB pool, lazy init, configuration</span>
+        </div>
+        <div class="code-block"><span class="cmt">// ── GOROUTINE-SAFE SINGLETON WITH sync.Once
+            ────────────────────</span>
+          <span class="kw">type</span> <span class="pkg">DBPool</span> <span class="kw">struct</span> { db *sql.<span
+            class="pkg">DB</span> }
+
+          <span class="kw">var</span> (
+          dbInstance *<span class="pkg">DBPool</span>
+          dbOnce sync.<span class="pkg">Once</span> <span class="cmt">// zero value ready to use</span>
+          )
+
+          <span class="kw">func</span> <span class="fn">GetDB</span>() *<span class="pkg">DBPool</span> {
+          dbOnce.<span class="fn">Do</span>(<span class="kw">func</span>() { <span class="cmt">// first call: executes
+            this function</span>
+          db, _ := sql.<span class="fn">Open</span>(<span class="str">"postgres"</span>, os.<span
+            class="fn">Getenv</span>(<span class="str">"DATABASE_URL"</span>))
+          dbInstance = &<span class="pkg">DBPool</span>{db: db}
+          }) <span class="cmt">// subsequent calls: no-op</span>
+          <span class="kw">return</span> dbInstance <span class="cmt">// always returns same instance</span>
+          }
+
+          <span class="cmt">// ── 1000 goroutines all call GetDB() simultaneously ───────────</span>
+          <span class="cmt">// sql.Open() is called EXACTLY ONCE — no double-init, no race condition</span>
+
+          <span class="cmt">// ── LAZY CONFIG LOADING ────────────────────────────────────────</span>
+          <span class="kw">type</span> <span class="pkg">Config</span> <span class="kw">struct</span> { Port <span
+            class="pkg">int</span>; Secret <span class="pkg">string</span> }
+          <span class="kw">var</span> (
+          cfg <span class="pkg">Config</span>
+          cfgOnce sync.<span class="pkg">Once</span>
+          )
+          <span class="kw">func</span> <span class="fn">GetConfig</span>() <span class="pkg">Config</span> {
+          cfgOnce.<span class="fn">Do</span>(<span class="kw">func</span>() {
+          cfg = <span class="fn">loadFromEnv</span>() <span class="cmt">// reads .env file exactly once</span>
+          })
+          <span class="kw">return</span> cfg
+          }
+
+          <span class="cmt">// ── ⚠ GOTCHA: once.Do does NOT re-run if f panics ─────────────</span>
+          <span class="cmt">// If f panics, Do marks it as "done" — future calls also skip it</span>
+          <span class="cmt">// Guard against this by recovering inside f if needed</span>
+
+          <span class="cmt">// ── sync.OnceFunc (Go 1.21) — cleaner API ─────────────────────</span>
+          <span class="cmt">// initDB := sync.OnceFunc(func() { /* init */ })</span>
+          <span class="cmt">// initDB() // subsequent calls no-op</span>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>Atomic guarantee — exactly one execution even under heavy concurrency</li>
+              <li>Zero overhead after first call (atomic read, branch predict)</li>
+              <li>Eliminates double-checked locking anti-pattern</li>
+              <li>Works for any initialization — not just singletons</li>
+              <li>Zero value is ready — no constructor needed</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>If Do() panics, subsequent calls silently do nothing</li>
+              <li>Cannot reset or re-run — truly once per Once instance</li>
+              <li>No error return — must store error in outer variable</li>
+              <li>Deadlock if Do() tries to call Do() on same Once (self-call)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     §9 ATOMIC
+════════════════════════════════════════════ -->
+  <section id="atomic" style="--ac:var(--c9);--ad:var(--c9d)">
+    <div class="container">
+      <div class="s-label">Concept 09 · Lock-Free Operations</div>
+      <div class="s-title" style="margin-bottom:28px;color:var(--c9)">sync/atomic — Atomic Operations</div>
+      <div class="concept-block">
+        <div class="concept-header">
+          <div class="ch-icon">⚛️</div>
+          <div>
+            <div class="ch-name">sync/atomic</div>
+            <div class="ch-cat">Lock-Free · CPU-level Atomicity · Low-Level Primitive</div>
+            <div class="ch-tagline">Atomic operations are <strong>indivisible CPU-level operations on primitive
+                types</strong> — no goroutine can observe them in a half-completed state. Faster than mutexes for simple
+              counters, flags, and pointers because they use hardware instructions (CAS — Compare-And-Swap) instead of
+              OS-level locking. The building block of lock-free data structures.</div>
+            <div class="stat-row">
+              <span class="stat">No mutex overhead</span>
+              <span class="stat">Types: int32/64, uint32/64, pointer, bool</span>
+              <span class="stat">Go 1.19+: atomic.Int64, atomic.Bool etc.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-l">atomic/counter.go — Modern API (Go 1.19+) and classic</span>
+        </div>
+        <div class="code-block"><span class="cmt">// ── MODERN API: atomic.Int64 (Go 1.19+)
+            ───────────────────────</span>
+          <span class="kw">var</span> reqCount atomic.<span class="pkg">Int64</span>
+
+          <span class="cmt">// Multiple goroutines safe — no mutex needed:</span>
+          reqCount.<span class="fn">Add</span>(<span class="num">1</span>) <span class="cmt">// increment</span>
+          n := reqCount.<span class="fn">Load</span>() <span class="cmt">// read</span>
+          reqCount.<span class="fn">Store</span>(<span class="num">0</span>) <span class="cmt">// set</span>
+          old := reqCount.<span class="fn">Swap</span>(<span class="num">100</span>) <span class="cmt">// swap and
+            return old value</span>
+
+          <span class="cmt">// ── atomic.Bool (Go 1.19+) ────────────────────────────────────</span>
+          <span class="kw">var</span> isRunning atomic.<span class="pkg">Bool</span>
+
+          isRunning.<span class="fn">Store</span>(true)
+          <span class="kw">if</span> isRunning.<span class="fn">Load</span>() { fmt.<span
+            class="fn">Println</span>(<span class="str">"server is up"</span>) }
+
+          <span class="cmt">// ── COMPARE AND SWAP (CAS) — foundation of lock-free ──────────</span>
+          <span class="kw">var</span> counter int64
+          atomic.<span class="fn">CompareAndSwapInt64</span>(&counter, <span class="num">0</span>, <span
+            class="num">1</span>)
+          <span class="cmt">// Only sets counter=1 if current value is 0 — atomic test-and-set</span>
+          <span class="cmt">// Used to implement lock-free state machines and spinlocks</span>
+
+          <span class="cmt">// ── PERFORMANCE COMPARISON: atomic vs mutex ────────────────────</span>
+          <span class="cmt">// Mutex.Lock/Unlock: ~20ns per op (kernel-assisted)</span>
+          <span class="cmt">// atomic.AddInt64: ~3ns per op (single CPU instruction)</span>
+          <span class="cmt">// → 6x faster for simple counter increments</span>
+
+          <span class="cmt">// ── WHEN TO USE ATOMIC vs MUTEX ───────────────────────────────</span>
+          <span class="cmt">// Atomic: simple int counter, bool flag, single pointer read/write</span>
+          <span class="cmt">// Mutex: updating multiple fields, complex data structures, maps</span>
+
+          <span class="cmt">// ── ⚠ WRONG: non-atomic read of atomic value ─────────────────</span>
+          <span class="kw">var</span> count int64
+          <span class="cmt">// go func() { count++ }() ← DATA RACE!</span>
+          <span class="cmt">// go func() { fmt.Println(count) } ← DATA RACE!</span>
+          <span class="cmt">// Fix: atomic.AddInt64(&count, 1) and atomic.LoadInt64(&count)</span>
+        </div>
+
+        <div class="pro-con-grid">
+          <div class="pro-list">
+            <h4>✓ ADVANTAGES</h4>
+            <ul>
+              <li>6-10x faster than mutex for simple operations</li>
+              <li>No goroutine blocking — truly lock-free</li>
+              <li>CPU hardware guarantee — indivisible at instruction level</li>
+              <li>Modern API (atomic.Int64) is ergonomic and misuse-resistant</li>
+              <li>Perfect for high-frequency counters (request count, error count)</li>
+            </ul>
+          </div>
+          <div class="con-list">
+            <h4>✗ DISADVANTAGES</h4>
+            <ul>
+              <li>Only works on single primitive values — not struct fields together</li>
+              <li>CAS loops can spin indefinitely under high contention</li>
+              <li>Easy to use incorrectly — mixing atomic and non-atomic access = race</li>
+              <li>No memory ordering guarantees without explicit barriers</li>
+              <li>Cannot atomically update two values — need mutex for that</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     §10 RACE DETECTOR
+════════════════════════════════════════════ -->
+  <section id="race" style="--ac:var(--c10);--ad:var(--c10d)">
+    <div class="container">
+      <div class="s-label">Concept 10 · Debug & Safety</div>
+      <div class="s-title" style="margin-bottom:28px;color:var(--c10)">Race Detector & Deadlock Detection</div>
+      <div class="concept-block">
+        <div class="concept-header">
+          <div class="ch-icon">🕵️</div>
+          <div>
+            <div class="ch-name">Race Detector & Deadlock Detection</div>
+            <div class="ch-cat">Built-in Tooling · Production Safety · go test -race</div>
+            <div class="ch-tagline">Go ships with a <strong>built-in data race detector</strong> using Google's
+              ThreadSanitizer. Run with <code>go test -race</code> or <code>go run -race</code>. Detects concurrent
+              reads and writes to shared variables that aren't synchronized. Also understand deadlock detection — Go's
+              runtime prints a deadlock stack trace and panics when all goroutines are blocked.</div>
+            <div class="stat-row">
+              <span class="stat">Race: go test -race</span>
+              <span class="stat">Overhead: 5-15x slowdown (dev/test only)</span>
+              <span class="stat">Deadlock: runtime auto-detects</span>
+              <span class="stat">Memory: 5-10x more RAM</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--c10)"></span>Data Race — What Is It?</h4>
+            <p>A data race occurs when two or more goroutines access the same variable concurrently, and at least one of
+              the accesses is a write, and they are not synchronized by any synchronization primitive (channel, mutex,
+              atomic).</p>
+            <p style="margin-top:8px">Data races are <strong>undefined behavior in Go</strong> — they can cause
+              corrupted data, crashes, or seemingly correct but wrong results. They are the #1 bug in concurrent code.
+            </p>
+          </div>
+          <div class="info-block">
+            <h4><span class="dot" style="background:var(--c10)"></span>Common Deadlock Causes</h4>
+            <ul>
+              <li>Goroutine A holds lock 1, waits for lock 2</li>
+              <li>Goroutine B holds lock 2, waits for lock 1 → circular wait</li>
+              <li>Channel send with no receiver — both goroutines waiting</li>
+              <li>All goroutines blocked → runtime detects → panic: deadlock</li>
+              <li>WaitGroup counter goes negative (more Done() than Add())</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-bar">
+          <div class="dr"></div>
+          <div class="dy"></div>
+          <div class="dg"></div><span class="cb-l">race/detection.go — Race example, fix, deadlock example</span>
+        </div>
+        <div class="code-block"><span class="cmt">// ── DATA RACE EXAMPLE
+            ─────────────────────────────────────────</span>
+          <span class="kw">var</span> counter <span class="pkg">int</span>
+
+          <span class="kw">func</span> <span class="fn">racyIncrement</span>() {
+          <span class="kw">var</span> wg sync.<span class="pkg">WaitGroup</span>
+          <span class="kw">for</span> i := <span class="num">0</span>; i < <span class="num">1000</span>; i++ {
+            wg.<span class="fn">Add</span>(<span class="num">1</span>)
+            <span class="kw">go func</span>() {
+            defer wg.<span class="fn">Done</span>()
+            counter++ <span class="cmt">// ← DATA RACE: read-modify-write not atomic</span>
+            }()
+            }
+            wg.<span class="fn">Wait</span>()
+            <span class="cmt">// counter might be 800, 950, 1000 — non-deterministic! ❌</span>
+            }
+
+            <span class="cmt">// ── FIX 1: atomic ────────────────────────────────────────────</span>
+            <span class="kw">var</span> atomicCounter atomic.<span class="pkg">Int64</span>
+            <span class="kw">go func</span>() { atomicCounter.<span class="fn">Add</span>(<span class="num">1</span>)
+            }() <span class="cmt">// ✓ safe</span>
+
+            <span class="cmt">// ── FIX 2: mutex ──────────────────────────────────────────────</span>
+            <span class="kw">var</span> mu sync.<span class="pkg">Mutex</span>
+            <span class="kw">go func</span>() {
+            mu.<span class="fn">Lock</span>()
+            defer mu.<span class="fn">Unlock</span>()
+            counter++ <span class="cmt">// ✓ safe</span>
+            }()
+
+            <span class="cmt">// ── DETECT: run with -race flag ───────────────────────────────</span>
+            <span class="cmt">// $ go test -race ./...</span>
+            <span class="cmt">// $ go run -race main.go</span>
+            <span class="cmt">// Output:</span>
+            <span class="cmt">// WARNING: DATA RACE</span>
+            <span class="cmt">// Write at 0x... by goroutine 7:</span>
+            <span class="cmt">// main.racyIncrement.func1()</span>
+            <span class="cmt">// /app/main.go:12</span>
+            <span class="cmt">// Previous read at 0x... by goroutine 6:</span>
+            <span class="cmt">// → Exact file and line number reported!</span>
+
+            <span class="cmt">// ── DEADLOCK EXAMPLE ─────────────────────────────────────────</span>
+            <span class="kw">func</span> <span class="fn">deadlock</span>() {
+            ch := <span class="fn">make</span>(chan <span class="pkg">int</span>)
+            ch &lt;- <span class="num">42</span> <span class="cmt">// ← deadlock: no goroutine receives, main goroutine
+              blocks</span>
+            }
+            <span class="cmt">// Runtime output: fatal error: all goroutines are asleep - deadlock!</span>
+            <span class="cmt">// → Go runtime detects when ALL goroutines are blocked and panics</span>
+            <span class="cmt">// ← This is the ONLY deadlock Go auto-detects</span>
+            <span class="cmt">// ← Partial deadlock (some goroutines still running) is NOT detected</span>
+        </div>
+
+        <div class="hbox warn" style="margin-top:12px">
+          <h4>⚠ COMMON CONCURRENCY PITFALLS — AVOID THESE</h4>
+          <ul>
+            <li><strong>Loop variable capture:</strong> <code>go func() { use(i) }()</code> — all goroutines see same
+              <code>i</code>. Fix: pass as argument <code>go func(id int) { use(id) }(i)</code>
+            </li>
+            <li><strong>Goroutine leak:</strong> goroutine blocked on channel with no sender/receiver. Always use
+              context cancellation or done channels.</li>
+            <li><strong>Forgetting defer cancel():</strong> WithTimeout/WithCancel context never cancelled — resource
+              leak until GC.</li>
+            <li><strong>Closing a closed channel:</strong> panic. Designate one owner (sender). Use sync.Once to close
+              safely.</li>
+            <li><strong>Non-atomic map access:</strong> concurrent map reads+writes without mutex → runtime panic
+              "concurrent map write".</li>
+            <li><strong>WaitGroup copied:</strong> pass *WaitGroup, never WaitGroup by value.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     SUMMARY
+════════════════════════════════════════════ -->
+  <section id="summary">
+    <div class="container">
+      <div class="s-label">Final Summary</div>
+      <div class="s-title" style="margin-bottom:8px">Go Concurrency — Complete Reference Summary</div>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:36px">Every primitive at a glance — when to reach for
+        each tool.</p>
+
+      <div class="sum-grid">
+        <div class="sum-card" style="border-top:3px solid var(--c1)">
+          <span class="sum-icon">🧠</span>
+          <div class="sum-title" style="color:var(--c1)">Concurrency vs Parallelism</div>
+          <div class="sum-desc">Concurrency = structure (dealing with many). Parallelism = execution (doing many at
+            once). Go gives you concurrency; GOMAXPROCS gives you parallelism.</div>
+          <span class="sum-when" style="background:var(--c1d);color:var(--c1)">Fundamental — know this first</span>
+        </div>
+        <div class="sum-card" style="border-top:3px solid var(--c2)">
+          <span class="sum-icon">🚀</span>
+          <div class="sum-title" style="color:var(--c2)">Goroutine</div>
+          <div class="sum-desc">2KB lightweight thread. go myFunc(). GMP scheduler. Always pass loop variables as args.
+            Use context for cancellation.</div>
+          <span class="sum-when" style="background:var(--c2d);color:var(--c2)">For every concurrent task</span>
+        </div>
+        <div class="sum-card" style="border-top:3px solid var(--c3)">
+          <span class="sum-icon">📡</span>
+          <div class="sum-title" style="color:var(--c3)">Channel</div>
+          <div class="sum-desc">Typed communication pipe. Unbuffered = sync point. Buffered = decouple speeds. close()
+            broadcasts. Use for ownership transfer.</div>
+          <span class="sum-when" style="background:var(--c3d);color:var(--c3)">For passing data between
+            goroutines</span>
+        </div>
+        <div class="sum-card" style="border-top:3px solid var(--c4)">
+          <span class="sum-icon">⏳</span>
+          <div class="sum-title" style="color:var(--c4)">WaitGroup</div>
+          <div class="sum-desc">Wait for N goroutines to complete. Add before launch. Always defer Done(). Pass by
+            pointer. Cannot collect return values alone.</div>
+          <span class="sum-when" style="background:var(--c4d);color:var(--c4)">For fan-out and collection</span>
+        </div>
+        <div class="sum-card" style="border-top:3px solid var(--c5)">
+          <span class="sum-icon">🔐</span>
+          <div class="sum-title" style="color:var(--c5)">Mutex / RWMutex</div>
+          <div class="sum-desc">Protects shared state. Mutex: exclusive. RWMutex: many readers OR one writer. Always
+            defer Unlock. Never copy.</div>
+          <span class="sum-when" style="background:var(--c5d);color:var(--c5)">For protecting shared variables</span>
+        </div>
+        <div class="sum-card" style="border-top:3px solid var(--c6)">
+          <span class="sum-icon">🎛️</span>
+          <div class="sum-title" style="color:var(--c6)">Select</div>
+          <div class="sum-desc">Wait on multiple channels. Random if multiple ready. default = non-blocking. nil channel
+            = disabled case. Timeout via time.After().</div>
+          <span class="sum-when" style="background:var(--c6d);color:var(--c6)">For multi-channel coordination</span>
+        </div>
+        <div class="sum-card" style="border-top:3px solid var(--c7)">
+          <span class="sum-icon">⏱️</span>
+          <div class="sum-title" style="color:var(--c7)">Context</div>
+          <div class="sum-desc">Cancellation, deadlines, request values. Always first param. Always defer cancel().
+            Flows from parent to all children automatically.</div>
+          <span class="sum-when" style="background:var(--c7d);color:var(--c7)">For cancellation and timeouts</span>
+        </div>
+        <div class="sum-card" style="border-top:3px solid var(--c8)">
+          <span class="sum-icon">1️⃣</span>
+          <div class="sum-title" style="color:var(--c8)">sync.Once</div>
+          <div class="sum-desc">Execute exactly once even with 1M concurrent callers. Zero-value ready. Zero overhead
+            after first call. No reset possible.</div>
+          <span class="sum-when" style="background:var(--c8d);color:var(--c8)">For lazy singleton initialization</span>
+        </div>
+        <div class="sum-card" style="border-top:3px solid var(--c9)">
+          <span class="sum-icon">⚛️</span>
+          <div class="sum-title" style="color:var(--c9)">sync/atomic</div>
+          <div class="sum-desc">Lock-free CPU-level operations. 6x faster than mutex for simple values. Use
+            atomic.Int64, atomic.Bool (Go 1.19+). For counters and flags only.</div>
+          <span class="sum-when" style="background:var(--c9d);color:var(--c9)">For high-freq counters &amp; flags</span>
+        </div>
+        <div class="sum-card" style="border-top:3px solid var(--c10)">
+          <span class="sum-icon">🕵️</span>
+          <div class="sum-title" style="color:var(--c10)">Race Detector</div>
+          <div class="sum-desc"><code>go test -race</code>. Finds data races using ThreadSanitizer. 5-15x slower —
+            dev/test only. Runtime auto-detects total deadlocks.</div>
+          <span class="sum-when" style="background:var(--c10d);color:var(--c10)">Always run in CI pipeline</span>
+        </div>
+      </div>
+
+      <!-- Decision table -->
+      <div style="margin-top:32px;">
+        <div
+          style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;letter-spacing:1px;text-transform:uppercase">
+          Decision Guide: Which Primitive to Use?</div>
+        <div class="table-scroll">
+          <table class="comp-table">
+            <thead>
+              <tr>
+                <th>Situation</th>
+                <th>Use This</th>
+                <th>Why</th>
+                <th>Avoid This</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Run code concurrently</td>
+                <td><span class="bdg b2">go func()</span></td>
+                <td>Goroutine is the atomic unit of concurrency</td>
+                <td>OS threads (too heavy)</td>
+              </tr>
+              <tr>
+                <td>Pass data between goroutines</td>
+                <td><span class="bdg b3">channel</span></td>
+                <td>Type-safe, goroutine-safe ownership transfer</td>
+                <td>Shared variable without sync</td>
+              </tr>
+              <tr>
+                <td>Wait for N goroutines</td>
+                <td><span class="bdg b4">WaitGroup</span></td>
+                <td>Simple barrier — Add/Done/Wait</td>
+                <td>time.Sleep (wrong)</td>
+              </tr>
+              <tr>
+                <td>Protect shared counter/map</td>
+                <td><span class="bdg b5">Mutex</span></td>
+                <td>Simple exclusive access to shared state</td>
+                <td>Channel (overkill)</td>
+              </tr>
+              <tr>
+                <td>Frequent reads, rare writes</td>
+                <td><span class="bdg b5">RWMutex</span></td>
+                <td>Multiple concurrent readers allowed</td>
+                <td>Mutex (blocks all readers)</td>
+              </tr>
+              <tr>
+                <td>Wait on multiple channels</td>
+                <td><span class="bdg b6">select</span></td>
+                <td>Built-in multi-channel multiplexer</td>
+                <td>Polling loop (wasteful)</td>
+              </tr>
+              <tr>
+                <td>Timeout / cancel operation</td>
+                <td><span class="bdg b7">context</span></td>
+                <td>Standard propagation across goroutines and libs</td>
+                <td>Timer channel alone</td>
+              </tr>
+              <tr>
+                <td>Non-blocking channel check</td>
+                <td><span class="bdg b6">select + default</span></td>
+                <td>Default case makes select non-blocking</td>
+                <td>Spinning goroutine</td>
+              </tr>
+              <tr>
+                <td>Initialize singleton</td>
+                <td><span class="bdg b8">sync.Once</span></td>
+                <td>Exactly once, goroutine safe, zero overhead after</td>
+                <td>init() (always runs)</td>
+              </tr>
+              <tr>
+                <td>High-freq counter / flag</td>
+                <td><span class="bdg b9">atomic.Int64</span></td>
+                <td>6x faster than mutex, hardware guarantee</td>
+                <td>Mutex (overkill for single int)</td>
+              </tr>
+              <tr>
+                <td>Broadcast stop signal</td>
+                <td><span class="bdg b3">close(done)</span> or <span class="bdg b7">ctx.Cancel()</span></td>
+                <td>close() fans out to all goroutines at once</td>
+                <td>Sending N times for N goroutines</td>
+              </tr>
+              <tr>
+                <td>Find concurrency bugs</td>
+                <td><span class="bdg b10">go test -race</span></td>
+                <td>ThreadSanitizer catches races at runtime</td>
+                <td>Code review alone (insufficient)</td>
+              </tr>
+              <tr>
+                <td>Concurrent-safe map</td>
+                <td><span class="bdg b5">sync.Map</span> or <span class="bdg b5">map+RWMutex</span></td>
+                <td>sync.Map for read-heavy, RWMutex for write-heavy</td>
+                <td>Plain map (concurrent panic)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Final verdict -->
+      <div class="verdict">
+        <h3>🐹 Go Concurrency — The Big Picture</h3>
+        <div class="verdict-grid">
+          <div class="verdict-item">
+            <strong style="color:var(--c1)">Start with goroutines + channels</strong>
+            <span>These two primitives solve 80% of concurrency problems idiomatically. Channels handle communication
+              and synchronization together.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--c4)">WaitGroup for fan-out collection</strong>
+            <span>When you launch N goroutines and need to wait for all — WaitGroup is the standard. Always Add before
+              launch, defer Done.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--c5)">Mutex for shared state, not channels</strong>
+            <span>When multiple goroutines need to update the same struct/map/counter — mutex is cleaner than a
+              channel-based guardian goroutine.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--c7)">Context is not optional</strong>
+            <span>Every function that does I/O, DB, or network should accept ctx as first param. Enables timeouts and
+              cancellation to propagate correctly.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--c10)">Always run -race in CI</strong>
+            <span>Data races are undefined behavior. They don't always crash immediately — they cause subtle,
+              non-deterministic bugs that are nearly impossible to debug without the race detector.</span>
+          </div>
+          <div class="verdict-item">
+            <strong style="color:var(--c2)">Don't leak goroutines</strong>
+            <span>A goroutine blocked forever is a memory leak. Every goroutine must have a clear exit path — context
+              cancellation, done channel, or function return.</span>
+          </div>
+        </div>
+
+        <!-- The golden rules -->
+        <div
+          style="margin-top:24px;padding:20px 24px;background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.2);border-radius:10px;">
+          <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--c1);margin-bottom:14px;">
+            📜 The 6 Golden Rules of Go Concurrency</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px;">
+            <div style="font-size:13px;color:var(--muted);padding:6px 0;display:flex;gap:10px;align-items:baseline;">
+              <span style="color:var(--c1);font-family:'Space Mono',monospace;font-size:11px;flex-shrink:0;">RULE
+                1</span> Don't communicate by sharing memory; share memory by communicating.
+            </div>
+            <div style="font-size:13px;color:var(--muted);padding:6px 0;display:flex;gap:10px;align-items:baseline;">
+              <span style="color:var(--c1);font-family:'Space Mono',monospace;font-size:11px;flex-shrink:0;">RULE
+                2</span> Every goroutine must have a way to exit — always provide a done channel or context.
+            </div>
+            <div style="font-size:13px;color:var(--muted);padding:6px 0;display:flex;gap:10px;align-items:baseline;">
+              <span style="color:var(--c1);font-family:'Space Mono',monospace;font-size:11px;flex-shrink:0;">RULE
+                3</span> Always call <code>defer wg.Done()</code> and <code>defer cancel()</code> — never trust your own
+              code not to panic.
+            </div>
+            <div style="font-size:13px;color:var(--muted);padding:6px 0;display:flex;gap:10px;align-items:baseline;">
+              <span style="color:var(--c1);font-family:'Space Mono',monospace;font-size:11px;flex-shrink:0;">RULE
+                4</span> Pass loop variables as goroutine arguments — never close over them.
+            </div>
+            <div style="font-size:13px;color:var(--muted);padding:6px 0;display:flex;gap:10px;align-items:baseline;">
+              <span style="color:var(--c1);font-family:'Space Mono',monospace;font-size:11px;flex-shrink:0;">RULE
+                5</span> Only the sender closes a channel. Never close from the receiver side.
+            </div>
+            <div style="font-size:13px;color:var(--muted);padding:6px 0;display:flex;gap:10px;align-items:baseline;">
+              <span style="color:var(--c1);font-family:'Space Mono',monospace;font-size:11px;flex-shrink:0;">RULE
+                6</span> Run <code>go test -race</code> in CI on every commit. No exceptions.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Go Concurrency — Complete Deep Guide · Goroutines · Channels · WaitGroup · Mutex · Select · Context · sync.Once ·
+    Atomic · Race Detector<br>
+    <span style="color:rgba(255,255,255,.18);margin-top:6px;display:block">Part of the Go Engineering Series — <a
+        href="index.html" style="color:rgba(0,212,170,.5);text-decoration:none">← Back to Index</a></span>
+  </footer>
+
+</body>
+
+</html>
